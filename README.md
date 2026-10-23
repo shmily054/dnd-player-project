@@ -116,6 +116,9 @@ server/search.mjs  ──►  /api/search  ──►  React 规则库界面
 
 ## 快速开始
 
+### Windows可以直接双击`dnd-player-project\player card ds\start.bat`启动网页前端角色卡页面
+
+
 ### 1. 准备目录
 
 克隆后保持两个目录的相对位置：
@@ -127,6 +130,7 @@ dnd-player-card/
 ```
 
 `player card ds/config.json` 中的默认数据库路径是 `../database`。
+
 
 ### 2. 安装与开发模式
 
@@ -155,7 +159,7 @@ npm run build
 npm start
 ```
 
-Windows 也可以直接双击 `player card ds/start.bat`。首次运行会自动安装依赖并按需构建前端。
+首次运行会自动安装依赖并按需构建前端。
 
 ### 4. 重建规则库索引
 
@@ -188,23 +192,6 @@ npm run db:build
 
 ---
 
-## 数据与隐私
-
-| 路径 | 内容 |
-|---|---|
-| `player card ds/data/characters/<id>.json` | 角色存档 |
-| `player card ds/data/backups/<id>/` | 自动备份，最多 30 份 |
-| `player card ds/data/portraits/` | 上传的头像 |
-| `player card ds/data/compendium.json` | 生成的结构化规则索引 |
-| `player card ds/data/compendium-report.json` | 索引解析报告与警告 |
-| `player card ds/data/settings.json` | 应用设置覆盖 |
-
-应用不会上传角色数据，也不包含遥测。所有内容都保存在本机。
-
-> 如果把仓库公开发布，务必确认 `data/characters/`、`data/portraits/`、`data/backups/` 中没有个人角色资料或不想公开的图片。
-
----
-
 ## 常用脚本
 
 在 `player card ds/` 下运行：
@@ -220,44 +207,6 @@ npm run db:build
 | `npm run db:migrate-old` | 重新导入旧角色数据（会覆盖示例角色，谨慎使用） |
 
 当前测试状态：**27 项全部通过**。
-
----
-
-## 发布到 GitHub 前
-
-当前工作目录还保留着开发依赖、生成产物和个人数据。仓库根目录的 `.gitignore` 已覆盖以下路径；它们可以留在本机，但不应该进入新的提交。
-
-### 不要提交
-
-```text
-player card ds/node_modules/
-player card ds/dist/
-player card ds/data/characters/
-player card ds/data/backups/
-player card ds/data/portraits/
-player card ds/data/compendium.json
-player card ds/data/compendium-report.json
-player card ds/data/settings.json
-player card ds/backups/
-player card ds/.zcode/
-player card ds/.superdesign/
-player card ds/screenshots/
-database/source/*.pdf
-database/pages_text.json
-database/phb_pages_text.json
-database/outline_debug.json
-database/phb_outline.json
-```
-
-`data/compendium.json` 可以通过 `npm run db:build` 重新生成，不必提交。`database/source/README.md` 是说明文件，会保留在仓库中。
-
-### 还需要确认
-
-- 一个示例角色（如果希望仓库打开后能看到演示数据），不要使用真实角色和头像。
-- 一个正式的 `LICENSE` 文件。
-- 如果这些文件曾被 Git 跟踪，需要从索引移除后再提交。`git rm --cached` 不会删除本地文件，但会改变仓库内容。
-
-> **注意：已经推送到 GitHub 的文件不会因为一次删除提交而从历史中消失。** 在把仓库改为公开之前，需要重写历史（例如使用 `git filter-repo`），或者改用全新的仓库发布清理后的内容。
 
 ---
 
