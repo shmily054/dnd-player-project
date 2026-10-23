@@ -12,7 +12,7 @@ import {
 import { applyLevelUp, getLevelUpPlan } from '@/lib/level-up'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
-const fixturePath = path.resolve(here, '..', 'data', 'characters', 'justinian01.json')
+const fixturePath = path.resolve(here, 'fixtures', 'sample-character.json')
 const base = () => JSON.parse(fs.readFileSync(fixturePath, 'utf8')) as Character
 
 describe('角色数值计算', () => {
@@ -26,7 +26,7 @@ describe('角色数值计算', () => {
     expect(proficiencyBonus(20)).toBe(6)
   })
 
-  it('圣武士查士丁尼的核心派生值', () => {
+  it('示例圣武士的核心派生值', () => {
     const c = base()
     expect(totalLevel(c)).toBe(4)
     expect(skillBonus(c, 'athletics')).toBe(4)

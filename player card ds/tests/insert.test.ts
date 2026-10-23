@@ -6,7 +6,7 @@ import type { Character, CompendiumEntry } from '@/types'
 import { insertEntry } from '@/lib/insert'
 
 const here = path.dirname(fileURLToPath(import.meta.url))
-const fixturePath = path.resolve(here, '..', 'data', 'characters', 'justinian01.json')
+const fixturePath = path.resolve(here, 'fixtures', 'sample-character.json')
 const base = () => JSON.parse(fs.readFileSync(fixturePath, 'utf8')) as Character
 
 const layOnHands: CompendiumEntry = {

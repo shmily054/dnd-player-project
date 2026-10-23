@@ -71,7 +71,7 @@
 ├─ database/
 │  ├─ player handbook/              # 《玩家手册》Markdown 分章
 │  ├─ dungeon master guidance/      # 《城主指南》Markdown 分章
-│  ├─ source/                       # 原始 PDF（可选，体积较大）
+│  ├─ source/                       # 原始 PDF（可选，仅本地保留，不提交）
 │  └─ scripts/                      # PDF 提取与检索辅助脚本
 │
 └─ player card ds/
@@ -225,7 +225,7 @@ npm run db:build
 
 ## 发布到 GitHub 前
 
-当前工作目录包含开发依赖、生成产物和个人数据。公开前建议至少处理以下内容：
+当前工作目录还保留着开发依赖、生成产物和个人数据。仓库根目录的 `.gitignore` 已覆盖以下路径；它们可以留在本机，但不应该进入新的提交。
 
 ### 不要提交
 
@@ -241,18 +241,23 @@ player card ds/data/settings.json
 player card ds/backups/
 player card ds/.zcode/
 player card ds/.superdesign/
-database/source/
+player card ds/screenshots/
+database/source/*.pdf
+database/pages_text.json
+database/phb_pages_text.json
+database/outline_debug.json
+database/phb_outline.json
 ```
 
-`data/compendium.json` 可以通过 `npm run db:build` 重新生成，不必提交。
+`data/compendium.json` 可以通过 `npm run db:build` 重新生成，不必提交。`database/source/README.md` 是说明文件，会保留在仓库中。
 
-### 建议补充
+### 还需要确认
 
-- 一个 `.gitignore`，覆盖上述路径。
 - 一个示例角色（如果希望仓库打开后能看到演示数据），不要使用真实角色和头像。
 - 一个正式的 `LICENSE` 文件。
+- 如果这些文件曾被 Git 跟踪，需要从索引移除后再提交。`git rm --cached` 不会删除本地文件，但会改变仓库内容。
 
-如果仓库当前已经跟踪了这些文件，需要使用 `git rm --cached` 从索引移除后再提交。注意：这不会删除本地文件，但会改变仓库内容。
+> **注意：已经推送到 GitHub 的文件不会因为一次删除提交而从历史中消失。** 在把仓库改为公开之前，需要重写历史（例如使用 `git filter-repo`），或者改用全新的仓库发布清理后的内容。
 
 ---
 
