@@ -15,7 +15,7 @@ function log(msg) {
 }
 
 function run(command, args) {
-  const r = spawnSync(command, args, { cwd: ROOT, stdio: 'inherit', shell: false })
+  const r = spawnSync(command, args, { cwd: ROOT, stdio: 'inherit', shell: process.platform === 'win32' })
   if (r.error) {
     console.error(`[start] Failed to run ${command}: ${r.error.message}`)
     return false
