@@ -1,0 +1,50 @@
+<header style="position:sticky;top:0;z-index:40;display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:10px 24px;background:#fbf7ec;border-bottom:1px solid #d6c5a4;box-shadow:0 4px 20px rgba(71,48,18,.06);font-family:system-ui,'Noto Sans SC','Microsoft YaHei',sans-serif;color:#2b241b;">
+  <div style="display:flex;align-items:center;gap:9px;white-space:nowrap;">
+    <div style="width:30px;height:30px;display:grid;place-items:center;border:1px solid #a9772f;border-radius:9px;color:#a9772f;background:linear-gradient(160deg,rgba(201,154,71,.16),transparent);font-family:'Iowan Old Style','Palatino Linotype','Noto Serif SC',Georgia,serif;font-size:16px;font-weight:700;">D</div>
+    <div style="font-family:'Iowan Old Style','Palatino Linotype','Noto Serif SC',Georgia,serif;font-weight:700;font-size:16.8px;letter-spacing:.12em;color:#6b4426;">角色卡 · 规则库</div>
+  </div>
+
+  <nav style="display:flex;align-items:center;gap:2px;padding:2px;border:1px solid #d6c5a4;border-radius:9px;background:#f5ecd9;">
+    <button :class="{ 'active': activeTab === 'char' }" style="border:0;padding:5px 10px;border-radius:7px;font-size:12.5px;white-space:nowrap;cursor:pointer;" :style="activeTab === 'char' ? 'background:#6b4426;color:#fbf7ec;' : 'background:transparent;color:#7d6c55;'">角色卡</button>
+    <button :class="{ 'active': activeTab === 'rules' }" style="border:0;padding:5px 10px;border-radius:7px;font-size:12.5px;white-space:nowrap;cursor:pointer;" :style="activeTab === 'rules' ? 'background:#6b4426;color:#fbf7ec;' : 'background:transparent;color:#7d6c55;'">规则库</button>
+    <button :class="{ 'active': activeTab === 'quick' }" style="border:0;padding:5px 10px;border-radius:7px;font-size:12.5px;white-space:nowrap;cursor:pointer;" :style="activeTab === 'quick' ? 'background:#6b4426;color:#fbf7ec;' : 'background:transparent;color:#7d6c55;'">速查</button>
+  </nav>
+
+  <div style="flex:1 1 12px;"></div>
+
+  <div style="display:flex;align-items:center;gap:6px;background:#f5ecd9;border:1px solid #d6c5a4;border-radius:9px;padding:3px 6px 3px 9px;">
+    <span style="font-size:12.5px;color:#2b241b;max-width:210px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ characterName }}<span style="color:#7d6c55;"> · {{ characterMeta }}</span></span>
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#7d6c55" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 9 6 6 6-6"/></svg>
+    <button title="新建角色" style="width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#7d6c55;display:grid;place-items:center;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"/></svg>
+    </button>
+    <button title="复制角色" style="width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#7d6c55;display:grid;place-items:center;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+    </button>
+    <button title="删除角色" style="width:24px;height:24px;border:0;border-radius:6px;background:transparent;color:#7d6c55;display:grid;place-items:center;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M8 6V4h8v2M19 6l-1 14H6L5 6"/></svg>
+    </button>
+  </div>
+
+  <div style="display:flex;align-items:center;gap:6px;flex-wrap:wrap;">
+    <span style="font-size:11.2px;color:#7d6c55;display:flex;align-items:center;gap:5px;padding:4px 7px;white-space:nowrap;">
+      <span style="width:6px;height:6px;border-radius:50%;background:#7d6c55;"></span>{{ saveState }}
+    </span>
+    <button style="display:inline-flex;align-items:center;justify-content:center;gap:5px;border-radius:8px;border:1px solid #2f5d50;background:#2f5d50;color:#f7f2e6;font-size:12.3px;font-weight:600;padding:6px 10px;white-space:nowrap;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>检索
+    </button>
+    <button style="display:inline-flex;align-items:center;gap:5px;border-radius:8px;border:1px solid #b9a276;background:#f5ecd9;color:#2b241b;font-size:12.3px;font-weight:600;padding:6px 10px;white-space:nowrap;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9"/><path d="M12 7v5l3 2"/></svg>短休
+    </button>
+    <button style="display:inline-flex;align-items:center;gap:5px;border-radius:8px;border:1px solid #b9a276;background:#f5ecd9;color:#2b241b;font-size:12.3px;font-weight:600;padding:6px 10px;white-space:nowrap;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20 14.5A8.5 8.5 0 0 1 9.5 4a8.5 8.5 0 1 0 10.5 10.5Z"/></svg>长休
+    </button>
+    <button style="display:inline-flex;align-items:center;gap:5px;border-radius:8px;border:1px solid #a9772f;background:#f5ecd9;color:#6b4426;font-size:12.3px;font-weight:600;padding:6px 10px;white-space:nowrap;cursor:pointer;">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="m5 12 7-7 7 7M12 5v14"/></svg>升级
+      <span v-if="canLevel" style="width:5px;height:5px;border-radius:50%;background:#a9772f;"></span>
+    </button>
+    <button title="设置" style="width:30px;height:30px;border:0;border-radius:8px;background:transparent;color:#7d6c55;display:grid;place-items:center;cursor:pointer;">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9c.14.37.43.68.8.82H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>
+    </button>
+  </div>
+</header>

@@ -1,0 +1,683 @@
+{
+  "schemaVersion": 1,
+  "id": "justinian01",
+  "name": "查士丁尼",
+  "playerName": "",
+  "portrait": "/media/portraits/justinian01.png",
+  "classes": [
+    {
+      "name": "圣武士",
+      "subclass": "奉献之誓",
+      "level": 4,
+      "hitDie": 10
+    }
+  ],
+  "race": {
+    "name": "阿斯莫",
+    "subrace": ""
+  },
+  "background": "贵族",
+  "alignment": "",
+  "xp": 2751,
+  "abilities": {
+    "str": 18,
+    "dex": 14,
+    "con": 14,
+    "int": 11,
+    "wis": 11,
+    "cha": 16
+  },
+  "saveProfs": [
+    "wis",
+    "cha"
+  ],
+  "skillProfs": [
+    "history",
+    "insight",
+    "intimidation",
+    "nature",
+    "perception",
+    "persuasion",
+    "religion"
+  ],
+  "skillExpertise": [],
+  "toolProfs": [],
+  "languages": [
+    "通用语",
+    "天界语"
+  ],
+  "armorProfs": [
+    "所有护甲",
+    "盾牌"
+  ],
+  "weaponProfs": [
+    "简易武器",
+    "军用武器"
+  ],
+  "hp": {
+    "max": 41,
+    "current": 41,
+    "temp": 0
+  },
+  "hitDice": {
+    "remaining": 4
+  },
+  "ac": {
+    "mode": "manual",
+    "manual": 19
+  },
+  "initiative": {
+    "mode": "manual",
+    "manual": 2
+  },
+  "speed": 30,
+  "exhaustion": 0,
+  "conditions": [],
+  "deathSaves": {
+    "successes": 0,
+    "failures": 0
+  },
+  "concentration": null,
+  "spellcasting": {
+    "ability": "cha",
+    "slots": {
+      "1": {
+        "total": 3,
+        "used": 0
+      },
+      "2": {
+        "total": 0,
+        "used": 0
+      },
+      "3": {
+        "total": 0,
+        "used": 0
+      },
+      "4": {
+        "total": 0,
+        "used": 0
+      },
+      "5": {
+        "total": 0,
+        "used": 0
+      },
+      "6": {
+        "total": 0,
+        "used": 0
+      },
+      "7": {
+        "total": 0,
+        "used": 0
+      },
+      "8": {
+        "total": 0,
+        "used": 0
+      },
+      "9": {
+        "total": 0,
+        "used": 0
+      }
+    },
+    "pactSlots": null,
+    "spells": [
+      {
+        "id": "spell-1",
+        "name": "光亮术",
+        "en": "Light",
+        "level": 0,
+        "school": "塑能",
+        "castingTime": "1动作",
+        "range": "触及",
+        "components": "V、M(一只萤火虫或一片磷光苔藓)",
+        "duration": "1小时",
+        "concentration": false,
+        "ritual": false,
+        "classes": [
+          "吟游诗人",
+          "术士",
+          "法师",
+          "牧师"
+        ],
+        "description": "你触碰一个尺寸在任意方向上都不超过 10尺的物件。在法\n术终止前,物件将在其20尺半径范围内发出明亮光照,并在其\n外20尺范围发出微光光照。光的颜色由你决定,该物件被不透\n明的东西完全遮盖时,其光照被遮挡。如果你再次施展该法术,\n或者使用一个动作解散该法术,则该法术终止。\n如果你指定敌对生物所持握或着装的一个物件作为目标,则\n该生物必须进行一次敏捷豁免以尝试摆脱该法术的效应。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": false,
+        "source": "圣武士",
+        "note": "让物件发出 20 尺明亮光（+20 尺微光），持续 1 小时"
+      },
+      {
+        "id": "spell-2",
+        "name": "神导术",
+        "en": "Guidance",
+        "level": 0,
+        "school": "预言",
+        "castingTime": "1动作",
+        "range": "触及",
+        "components": "V、S",
+        "duration": "专注,至多1分钟",
+        "concentration": true,
+        "ritual": false,
+        "classes": [
+          "德鲁伊",
+          "牧师"
+        ],
+        "description": "你触碰一个自愿的生物。在法术终止前,目标可以选择在一\n次属性检定时额外掷一粒d4,并将所得数值加入检定结果中。它\n可以在进行属性检定之前或之后掷骰。法术随后即终止。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": false,
+        "source": "圣武士",
+        "note": "目标一次属性检定额外 +1d4"
+      },
+      {
+        "id": "spell-3",
+        "name": "圣火术",
+        "en": "Sacred Flame",
+        "level": 0,
+        "school": "塑能",
+        "castingTime": "1动作",
+        "range": "60尺",
+        "components": "V、S",
+        "duration": "立即",
+        "concentration": false,
+        "ritual": false,
+        "classes": [
+          "牧师"
+        ],
+        "description": "如同火焰般的辉光向施法距离内你能看见的一个生物倾泻\n而下。目标必须要进行一次敏捷豁免,豁免失败则受到1d8点光\n耀伤害。目标在这次豁免检定中无法获得掩护的增益。\n你到达 5级时,该法术的伤害增加1d8(变为2d8)。11级\n时再加1d8(变为3d8),17级时再加1d8(变为4d8)。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": false,
+        "source": "圣武士",
+        "note": "60 尺内目标敏捷豁免失败受 1d8 光耀伤害"
+      },
+      {
+        "id": "spell-5",
+        "name": "防护善恶",
+        "en": "Protection from Evil and Good",
+        "level": 1,
+        "school": "防护",
+        "castingTime": "1动作",
+        "range": "触及",
+        "components": "V、S、M(圣水或者银和铁的粉末,作为该法术的耗",
+        "duration": "专注,至多10分钟",
+        "concentration": true,
+        "ritual": false,
+        "classes": [
+          "圣武士",
+          "法师",
+          "牧师",
+          "邪术师"
+        ],
+        "description": "材)\n在法术终止前,你触碰的一个自愿生物获得针对以下某类生\n物的防护:异怪、天界生物、元素生物、精类生物、邪魔和不死\n生物。\n该防护提供以下增益:该类生物对目标生物进行的攻击检定\n具有劣势;目标不会被该类生物魅惑,恐慌或附身;如果目标已\n被该类生物影响而陷入魅惑、恐慌,或被附身,则目标之后进行\n对抗相关效应的豁免检定时具有优势。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": true,
+        "source": "圣武士",
+        "note": "目标受异界/不死生物攻击劣势，免疫其魅惑/恐吓/附身"
+      },
+      {
+        "id": "spell-6",
+        "name": "虔诚护盾",
+        "en": "Shield of Faith",
+        "level": 1,
+        "school": "防护",
+        "castingTime": "1附赠动作",
+        "range": "60尺",
+        "components": "V、S、M(一小块写有神圣文字的羊皮纸)",
+        "duration": "专注,至多10分钟",
+        "concentration": true,
+        "ritual": false,
+        "classes": [
+          "圣武士",
+          "牧师"
+        ],
+        "description": "围绕着施法距离内你指定的一个生物出现一片闪着微光的\n魔法力场。使目标在法术持续时间内AC获得 +2加值。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": true,
+        "source": "圣武士",
+        "note": "目标获得 +2 AC"
+      },
+      {
+        "id": "spell-7",
+        "name": "祝福术",
+        "en": "Bless",
+        "level": 1,
+        "school": "附魔",
+        "castingTime": "1动作",
+        "range": "30尺",
+        "components": "V、S、M(一钵圣水)",
+        "duration": "专注,至多1分钟",
+        "concentration": true,
+        "ritual": false,
+        "classes": [
+          "圣武士",
+          "牧师"
+        ],
+        "description": "你用言语祝福施法距离内至多三个生物。在法术终止前,每\n当受术目标进行攻击检定或豁免检定时,可以额外掷一次d4并\n加在其结果上。",
+        "higherLevels": "升环施法效应。使用2环或更高法术位施展该法术时,你使\n用的法术位每比1环高一环,就可以多指定一个目标。",
+        "prepared": true,
+        "alwaysPrepared": true,
+        "source": "圣武士",
+        "note": "至多 3 目标，攻击检定/豁免额外 +1d4"
+      },
+      {
+        "id": "spell-8",
+        "name": "强令对决",
+        "en": "Compelled Duel",
+        "level": 1,
+        "school": "附魔",
+        "castingTime": "1附赠动作",
+        "range": "30尺",
+        "components": "V",
+        "duration": "专注,至多1分钟",
+        "concentration": true,
+        "ritual": false,
+        "classes": [
+          "圣武士"
+        ],
+        "description": "你尝试强令一个生物与你决斗。指定施法距离内一个你能看\n见的生物作为法术的目标。该生物必须进行一次感知豁免,豁免\n失败则该生物将被你的神圣要求所吸引。在法术持续时间内,该\n生物对除你之外任何生物发动攻击检定时都具有劣势,并且每当\n其试图移动至与你相距超过30尺的距离时,都必须进行一次感\n知豁免。豁免成功则该目标的移动本回合内暂时不受该魔法限制。\n当你攻击另一个生物时,或者当你对另一个敌对生物施展法\n术时,又或者当一个你的友方生物对该目标造成伤害或者对其施\n展伤害性法术时,又或者你在距离该目标超过30尺的位置结束\n你的回合时,该法术终止。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": false,
+        "source": "圣武士",
+        "note": "目标对他人攻击劣势，且难以远离你"
+      },
+      {
+        "id": "spell-9",
+        "name": "净化食粮",
+        "en": "Purify Food and Drink",
+        "level": 1,
+        "school": "变化",
+        "castingTime": "1动作",
+        "range": "10尺",
+        "components": "V、S",
+        "duration": "立即",
+        "concentration": false,
+        "ritual": true,
+        "classes": [
+          "圣武士",
+          "德鲁伊",
+          "牧师"
+        ],
+        "description": "你指定施法距离内一点,净化指定点周围半径5尺球状区域\n内的非魔法饮食品,并驱除其浸染的所有毒素和疾病。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": false,
+        "source": "圣武士",
+        "note": "净化 5 尺内食水的毒素与疾病（仪式）"
+      },
+      {
+        "id": "spell-10",
+        "name": "雷鸣斩",
+        "en": "Thunderous Smite",
+        "level": 1,
+        "school": "塑能",
+        "castingTime": "1附赠动作",
+        "range": "自身",
+        "components": "V",
+        "duration": "专注,至多1分钟",
+        "concentration": true,
+        "ritual": false,
+        "classes": [
+          "圣武士"
+        ],
+        "description": "你在法术持续时间内下一次用近战武器攻击命中某个生物\n时将发出雷霆巨响,并使你周围300尺都能听见该响声。该攻击\n对目标造成额外2d6点雷鸣伤害,如果目标是一个生物,则它必\n须要进行一次力量豁免,豁免失败则目标往远离你的方向推动10\n尺并应击倒地。",
+        "higherLevels": "",
+        "prepared": true,
+        "alwaysPrepared": false,
+        "source": "圣武士",
+        "note": "下次近战命中额外 2d6 雷鸣，可推飞并击倒"
+      }
+    ]
+  },
+  "attacks": [
+    {
+      "id": "atk-1",
+      "name": "魔法长剑",
+      "ability": "str",
+      "proficient": true,
+      "magicBonus": 1,
+      "damageDice": "1d8",
+      "damageType": "挥砍",
+      "properties": [
+        "两用"
+      ],
+      "range": "5尺",
+      "notes": "攻击 +7，伤害 1d8+5",
+      "sourceItemId": "item-1"
+    },
+    {
+      "id": "atk-2",
+      "name": "标枪",
+      "ability": "str",
+      "proficient": true,
+      "magicBonus": 0,
+      "damageDice": "1d6",
+      "damageType": "穿刺",
+      "properties": [
+        "投掷"
+      ],
+      "range": "30/120",
+      "notes": "攻击 +6，伤害 1d6+4",
+      "sourceItemId": "item-2"
+    }
+  ],
+  "resources": [
+    {
+      "id": "res-1",
+      "name": "圣疗",
+      "total": 20,
+      "used": 0,
+      "reset": "long",
+      "source": "圣武士",
+      "auto": true,
+      "infinite": false
+    },
+    {
+      "id": "res-2",
+      "name": "神圣感知",
+      "total": 3,
+      "used": 0,
+      "reset": "long",
+      "source": "圣武士",
+      "auto": true,
+      "infinite": false
+    },
+    {
+      "id": "res-3",
+      "name": "引导神力",
+      "total": 2,
+      "used": 0,
+      "reset": "short",
+      "source": "自定义",
+      "auto": false,
+      "infinite": false
+    },
+    {
+      "id": "res-4",
+      "name": "天启变身",
+      "total": 1,
+      "used": 0,
+      "reset": "long",
+      "source": "自定义",
+      "auto": false
+    }
+  ],
+  "inventory": [
+    {
+      "id": "item-1",
+      "name": "魔法长剑",
+      "qty": 1,
+      "weight": 3,
+      "cost": "15 gp",
+      "category": "武器",
+      "equipped": true,
+      "attuned": false,
+      "description": "攻击 +7，伤害 1d8+5",
+      "source": "导入",
+      "magicBonus": 1,
+      "weapon": {
+        "damage": "1d8",
+        "damageType": "挥砍",
+        "properties": [
+          "两用"
+        ],
+        "range": "5尺",
+        "versatile": "1d10",
+        "attackAbility": "str"
+      }
+    },
+    {
+      "id": "item-2",
+      "name": "标枪",
+      "qty": 6,
+      "weight": 2,
+      "cost": "5 sp",
+      "category": "武器",
+      "equipped": false,
+      "attuned": false,
+      "description": "攻击 +6，伤害 1d6+4",
+      "source": "导入",
+      "weapon": {
+        "damage": "1d6",
+        "damageType": "穿刺",
+        "properties": [
+          "投掷"
+        ],
+        "range": "30/120",
+        "attackAbility": "str"
+      }
+    },
+    {
+      "id": "item-3",
+      "name": "盾牌",
+      "qty": 1,
+      "weight": 6,
+      "cost": "10 gp",
+      "category": "盾牌",
+      "equipped": true,
+      "attuned": false,
+      "description": "AC 19 的来源之一",
+      "source": "导入",
+      "armor": {
+        "base": 0,
+        "dexCap": null,
+        "category": "shield",
+        "acBonus": 2,
+        "strengthReq": null,
+        "stealthDisadvantage": false
+      }
+    },
+    {
+      "id": "item-4",
+      "name": "圣徽",
+      "qty": 1,
+      "weight": 0,
+      "cost": "",
+      "category": "冒险用品",
+      "equipped": false,
+      "attuned": false,
+      "description": "",
+      "source": "导入"
+    },
+    {
+      "id": "item-5",
+      "name": "板条甲",
+      "qty": 1,
+      "weight": 60,
+      "cost": "200 gp",
+      "category": "护甲",
+      "equipped": true,
+      "attuned": false,
+      "description": "AC 19 的来源之一",
+      "source": "导入",
+      "armor": {
+        "base": 17,
+        "dexCap": null,
+        "category": "heavy",
+        "acBonus": 0,
+        "strengthReq": 15,
+        "stealthDisadvantage": true
+      }
+    },
+    {
+      "id": "item-6",
+      "name": "祭司套组",
+      "qty": 1,
+      "weight": 0,
+      "cost": "",
+      "category": "冒险用品",
+      "equipped": false,
+      "attuned": false,
+      "description": "",
+      "source": "导入"
+    },
+    {
+      "id": "item-7",
+      "name": "精灵之靴",
+      "qty": 1,
+      "weight": 0,
+      "cost": "",
+      "category": "奇物",
+      "equipped": true,
+      "attuned": true,
+      "description": "着装这双靴子时,无论在何种表面上移动,你都不会发出\n脚步声。你进行有关无声移动的敏捷(隐匿)检定时具有优势。",
+      "source": "导入"
+    },
+    {
+      "id": "item-8",
+      "name": "治疗药水",
+      "qty": 3,
+      "weight": 0,
+      "cost": "",
+      "category": "药水",
+      "equipped": false,
+      "attuned": false,
+      "description": "2d4+2",
+      "source": "导入"
+    }
+  ],
+  "currency": {
+    "pp": 0,
+    "gp": 612,
+    "ep": 0,
+    "sp": 149,
+    "cp": 18
+  },
+  "features": [
+    {
+      "id": "feature-2",
+      "name": "神圣感知",
+      "source": "圣武士",
+      "description": "附赠动作，感知 60 尺内天界生物/邪魔/不死生物及受祝圣/亵渎之物（3 次/长休）。",
+      "auto": false
+    },
+    {
+      "id": "feature-3",
+      "name": "天界抗性",
+      "source": "阿斯莫",
+      "description": "光辉、暗蚀伤害减半。",
+      "auto": false
+    },
+    {
+      "id": "feature-4",
+      "name": "治愈之手",
+      "source": "阿斯莫",
+      "description": "魔法动作，2d4 回血。",
+      "auto": false
+    },
+    {
+      "id": "feature-5",
+      "name": "黑暗视觉",
+      "source": "阿斯莫",
+      "description": "60 尺。",
+      "auto": false
+    },
+    {
+      "id": "feature-6",
+      "name": "奉献之誓",
+      "source": "圣武士 3 级誓言",
+      "description": "赠予誓约法术，获得引导神力×2 并解锁圣洁武器。",
+      "auto": false
+    },
+    {
+      "id": "feature-7",
+      "name": "天启",
+      "source": "阿斯莫",
+      "description": "附赠动作变身，三种形态任选其一，持续 1 分钟，1 次/长休。",
+      "auto": false
+    },
+    {
+      "id": "feat-f0ap2sarad",
+      "name": "哨兵",
+      "source": "专长",
+      "description": "你的掌握的技术让你在击破敌人防御时占尽优势,并获得下\n列增益:\n•你的借机攻击命中目标时,目标在本回合剩下时间内的移动速\n度降至0。\n•生物即使执行撤离动作离开你的触及范围也会引发你的借机\n攻击。\n•处于你周边5尺范围内的生物对除你外的目标发动攻击后(且\n被攻击者没有这个专长),你可以用你的反应对该攻击者发动\n一次近战攻击。",
+      "searchName": "哨兵",
+      "auto": false
+    },
+    {
+      "id": "feat-zfglz25vif",
+      "name": "圣疗",
+      "source": "圣武士",
+      "level": 1,
+      "description": "你的触碰溢满祝福,可以医治伤口。你获得一个治疗能量池,\n其内的治疗能量在每次完成长休后自动补满。治疗能量池储备的\n可恢复生命值总值等于你的圣武士职业等级×5。\n你可以用一个动作触碰一个生物,并抽取治疗能量池中的能\n量恢复该生物的生命值,其恢复量最多等于你治疗能量池中剩余\n的治疗量。\n此外,你也可以使用 5点治疗量治愈目标生物身上的一种疾\n病,或者祛除一种中毒效应。你可以在一次圣疗中治愈复数的疾\n病并祛除复数的毒素,但你需要为每一种疾病和毒素分别支付治\n疗量。\n该职业特性对不死生物和构装生物无效。",
+      "searchName": "圣疗",
+      "auto": false
+    },
+    {
+      "id": "feat-bhqj1nb5k9",
+      "name": "至圣斩",
+      "source": "圣武士",
+      "level": 2,
+      "description": "第 2级起,你使用近战武器攻击命中一个生物时,可以消耗\n一枚法术位,并对目标造成除武器伤害外附加的光耀伤害。额外\n伤害的数值为1环法术位时的2d8,以及更高法术位时每比1环\n高一环就外加1d8,其最高值为5d8。如果目标是不死生物或邪\n魔,则该伤害将再额外增加1d8。",
+      "searchName": "至圣斩",
+      "auto": false
+    }
+  ],
+  "roleplay": {
+    "personality": "",
+    "ideals": "",
+    "bonds": "",
+    "flaws": "",
+    "appearance": "银色卷毛；眼睛、皮肤白里透金。26 岁，5 尺，150 磅。",
+    "backstory": "",
+    "allies": "",
+    "notes": "外貌：银色卷毛；眼睛、皮肤白里透金。26 岁，5 尺，150 磅。\n导入自 Obsidian 角色卡（2026-10-17）。"
+  },
+  "createdAt": 1792567186491,
+  "updatedAt": 1792720526402,
+  "audit": [
+    {
+      "id": "audit-hd",
+      "severity": "fixed",
+      "title": "生命骰总数已修正",
+      "detail": "旧存档记录为 3 颗，按 4 级修正为 4 颗 d10；当前可用保持 3。",
+      "status": "applied"
+    },
+    {
+      "id": "audit-heroes-feast",
+      "severity": "fixed",
+      "title": "「英雄宴」环位已修正",
+      "detail": "旧存档记为 1 环；规则库中英雄宴为 6 环。已改为 6 环，但 4 级圣武士目前没有 6 环法术位。",
+      "status": "applied"
+    },
+    {
+      "id": "audit-divine-smite",
+      "severity": "warn",
+      "title": "「至圣斩」是职业特性，不是法术",
+      "detail": "至圣斩（Divine Smite）应在特性中记录。旧存档把它放在法术列表里；可以一键转为特性，或保留现状。",
+      "status": "applied",
+      "action": {
+        "type": "convert-spell-to-feature",
+        "spellId": "spell-4"
+      }
+    },
+    {
+      "id": "audit-prepared",
+      "severity": "warn",
+      "title": "准备法术数量高于职业上限",
+      "detail": "4 级圣武士准备上限为魅力调整值 +3 + 职业等级一半 2 = 5；当前准备了 11 个。誓言法术和自定义法术不占上限，请按需调整。",
+      "status": "ignored"
+    },
+    {
+      "id": "audit-channel-divinity",
+      "severity": "warn",
+      "title": "引导神力次数与规则不符",
+      "detail": "旧存档记录为 2 次/短休。PHB 圣武士的引导神力在使用后必须完成短休或长休才能再次使用，即 1 次；请确认是否为自定义能力。",
+      "status": "applied",
+      "action": {
+        "type": "set-resource-total",
+        "resourceId": "res-3",
+        "total": 1
+      }
+    },
+    {
+      "id": "audit-skills",
+      "severity": "warn",
+      "title": "技能熟练数量偏多",
+      "detail": "当前有 7 项技能熟练。圣武士职业提供 2 项，贵族背景通常提供 2 项；额外熟练可能来自专长、种族或自定义，请核对。",
+      "status": "ignored"
+    }
+  ]
+}

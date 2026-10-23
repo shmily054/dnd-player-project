@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "character-sheet": {
+      "targetKind": "existing-ui",
+      "projectId": "2ac28d3e-2fd1-446b-929e-c4eb16d4dd50",
+      "baselineDraftId": "a814af88-9b5a-48db-9178-dd69847d6f9b",
+      "activeDraftId": "a814af88-9b5a-48db-9178-dd69847d6f9b",
+      "designSystemPath": ".superdesign/design-system.md",
+      "referenceIds": [
+        "a1c02dbf-c267-4c8e-9102-a2439b9fd509",
+        "9a7b9a45-e25f-4fa2-adaa-fcc51ec12e5a",
+        "435bf20e-c3fb-4b5c-a500-be02d75bd02a"
+      ],
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        ".superdesign/tmp/styles-1.css",
+        ".superdesign/tmp/styles-2.css",
+        "src/components/ui.tsx",
+        "src/pages/CharacterPage.tsx",
+        "src/App.tsx:380:440",
+        "src/components/SheetHero.tsx:66:174",
+        "src/components/AbilitiesPanel.tsx:44:133",
+        "src/components/CombatPanel.tsx:40:186",
+        "src/components/AttackPanel.tsx:37:101",
+        "src/components/SpellsPanel.tsx:76:268",
+        "src/components/ResourcesPanel.tsx:18:65",
+        "src/components/InventoryPanel.tsx:28:118",
+        "src/components/FeaturesPanel.tsx:43:129",
+        "src/components/RoleplayPanel.tsx:11:42",
+        "src/components/AuditPanel.tsx:16:55"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "cea5bf1c8f287af29f5e207e1f5be48735298dcbdd4f44f85a718e60711e85e3",
+        ".superdesign/tmp/styles-1.css": "f0fef14c02544536e67d11fa9bfe713cb67ef4e6829dd0b810faddf21f43d58e",
+        ".superdesign/tmp/styles-2.css": "1d6bdfcb5ae7a0d07e4bcf8fab2cd76948393549d121741fbc60a6e302e0c7aa",
+        "src/components/ui.tsx": "571e1679678e71e1d78bd9e4daaebca9153af16376fc183efdba6b77285593b3",
+        "src/pages/CharacterPage.tsx": "14edc21b1a82206ccfbef880bf119bae184330cbfeed887246229a74051a6cae",
+        "src/App.tsx": "e659e52b3722a3782eac619b3e8d0bb6bb04480cddab87ae500c5be3ef6f5b05",
+        "src/components/SheetHero.tsx": "eef93412b8f35bef5e60ed5724030430b873b591ad65232a461c0ebc48d629d9",
+        "src/components/AbilitiesPanel.tsx": "2aaf7eae6727e8561467477cfd1d8cbccecddfad8d2e7c2fbb3d14c0c223d03d",
+        "src/components/CombatPanel.tsx": "77a85047cb5372c250125ef27ee153453d8bef300d92f4a6aa2b41274b911b4e",
+        "src/components/AttackPanel.tsx": "708926fed8a5978cd3cf7e095e5da2d372c876ced7af6d521a61afe4d2293940",
+        "src/components/SpellsPanel.tsx": "a3e3ec75abeb27cd742771bf46b35ba6dfc7b379616793a2e961d2b39487de6a",
+        "src/components/ResourcesPanel.tsx": "3ebbc782d3de6306b39835767ad406eb4c252f3184f05ff22a9ab862b07a1a9d",
+        "src/components/InventoryPanel.tsx": "ab0271105a83b3abab00ec04c93ef683de29ee336f3a5f1acebfb65704882b77",
+        "src/components/FeaturesPanel.tsx": "fedc95c7cd7ed01198ebc6f89cef1f2ffc6b056a3b2b97159d227985b02bc8e7",
+        "src/components/RoleplayPanel.tsx": "41c63ed974ece4ca0e7748baa2b473965038b6e5acccf8533e6fbf4e5142631a",
+        "src/components/AuditPanel.tsx": "62d5bfe5098e1355c661083341d4ac1e9c441c111f8dc2144b1fb163c504c48b"
+      },
+      "components": [
+        {
+          "name": "TopBar",
+          "id": "3ff06d05-48af-4a82-9b12-53d0ebe51e7d",
+          "sourcePath": "src/App.tsx"
+        },
+        {
+          "name": "MobileNav",
+          "id": "ab1f046a-94ad-4341-8718-bad0c215f73b",
+          "sourcePath": "src/App.tsx"
+        }
+      ],
+      "drafts": {
+        "a814af88-9b5a-48db-9178-dd69847d6f9b": {
+          "title": "Adventurer Ledger Baseline",
+          "visualDirection": "current-state pixel reproduction (imported live DOM)",
+          "parentDraftId": null,
+          "currentVersion": 3
+        },
+        "d60f8da3-b200-4669-89c4-e7dcc1888e8b": {
+          "title": "方向 A · 边注档案",
+          "visualDirection": "adventurer ledger — marginalia dossier, 3-column masonry",
+          "parentDraftId": "a814af88-9b5a-48db-9178-dd69847d6f9b",
+          "currentVersion": 3
+        },
+        "fb6af6e6-07a3-4791-abf9-22d69be8b0b8": {
+          "title": "方向 B · 战桌仪表",
+          "visualDirection": "adventurer ledger — table HUD, dark vitals strip, 7/5 columns",
+          "parentDraftId": "a814af88-9b5a-48db-9178-dd69847d6f9b",
+          "currentVersion": 3
+        }
+      },
+      "updatedAt": "2026-10-22T03:00:31.453Z"
+    }
+  }
+}

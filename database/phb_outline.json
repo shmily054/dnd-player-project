@@ -1,0 +1,1097 @@
+[
+ {
+  "depth": 0,
+  "title": "封面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "制作组",
+  "page": 2
+ },
+ {
+  "depth": 0,
+  "title": "目录",
+  "page": 3
+ },
+ {
+  "depth": 0,
+  "title": "前言",
+  "page": 4
+ },
+ {
+  "depth": 0,
+  "title": "简介",
+  "page": 5
+ },
+ {
+  "depth": 1,
+  "title": "充满冒险的世界",
+  "page": 5
+ },
+ {
+  "depth": 1,
+  "title": "使用本书",
+  "page": 5
+ },
+ {
+  "depth": 1,
+  "title": "如何进行游戏",
+  "page": 6
+ },
+ {
+  "depth": 1,
+  "title": "冒险",
+  "page": 7
+ },
+ {
+  "depth": 0,
+  "title": "第1部分 创建角色",
+  "page": null
+ },
+ {
+  "depth": 1,
+  "title": "第1章 一步步创建角色",
+  "page": 10
+ },
+ {
+  "depth": 2,
+  "title": "高于1级",
+  "page": 13
+ },
+ {
+  "depth": 1,
+  "title": "第2章 种族",
+  "page": 16
+ },
+ {
+  "depth": 2,
+  "title": "选择一个种族",
+  "page": 16
+ },
+ {
+  "depth": 2,
+  "title": "矮人",
+  "page": 17
+ },
+ {
+  "depth": 2,
+  "title": "精灵",
+  "page": 20
+ },
+ {
+  "depth": 2,
+  "title": "半身人",
+  "page": 23
+ },
+ {
+  "depth": 2,
+  "title": "人类",
+  "page": 25
+ },
+ {
+  "depth": 2,
+  "title": "龙裔",
+  "page": 28
+ },
+ {
+  "depth": 2,
+  "title": "侏儒",
+  "page": 31
+ },
+ {
+  "depth": 2,
+  "title": "半精灵",
+  "page": 34
+ },
+ {
+  "depth": 2,
+  "title": "半兽人",
+  "page": 36
+ },
+ {
+  "depth": 2,
+  "title": "提夫林",
+  "page": 38
+ },
+ {
+  "depth": 1,
+  "title": "第3章 职业",
+  "page": 41
+ },
+ {
+  "depth": 2,
+  "title": "野蛮人",
+  "page": 42
+ },
+ {
+  "depth": 3,
+  "title": "野蛮人道途",
+  "page": 45
+ },
+ {
+  "depth": 2,
+  "title": "吟游诗人",
+  "page": 46
+ },
+ {
+  "depth": 3,
+  "title": "吟游诗人学院",
+  "page": 49
+ },
+ {
+  "depth": 2,
+  "title": "牧师",
+  "page": 50
+ },
+ {
+  "depth": 3,
+  "title": "神圣领域",
+  "page": 53
+ },
+ {
+  "depth": 2,
+  "title": "德鲁伊",
+  "page": 57
+ },
+ {
+  "depth": 3,
+  "title": "德鲁伊结社",
+  "page": 60
+ },
+ {
+  "depth": 2,
+  "title": "战士",
+  "page": 63
+ },
+ {
+  "depth": 3,
+  "title": "武术范型",
+  "page": 65
+ },
+ {
+  "depth": 2,
+  "title": "武僧",
+  "page": 68
+ },
+ {
+  "depth": 3,
+  "title": "修行宗派",
+  "page": 71
+ },
+ {
+  "depth": 2,
+  "title": "圣武士",
+  "page": 74
+ },
+ {
+  "depth": 3,
+  "title": "神圣誓言",
+  "page": 78
+ },
+ {
+  "depth": 2,
+  "title": "游侠",
+  "page": 81
+ },
+ {
+  "depth": 3,
+  "title": "游侠范型",
+  "page": 84
+ },
+ {
+  "depth": 2,
+  "title": "游荡者",
+  "page": 86
+ },
+ {
+  "depth": 3,
+  "title": "游荡者范型",
+  "page": 88
+ },
+ {
+  "depth": 2,
+  "title": "术士",
+  "page": 91
+ },
+ {
+  "depth": 3,
+  "title": "术法起源",
+  "page": 94
+ },
+ {
+  "depth": 2,
+  "title": "邪术师",
+  "page": 97
+ },
+ {
+  "depth": 3,
+  "title": "异界宗主",
+  "page": 100
+ },
+ {
+  "depth": 2,
+  "title": "法师",
+  "page": 104
+ },
+ {
+  "depth": 3,
+  "title": "奥术传承",
+  "page": 107
+ },
+ {
+  "depth": 1,
+  "title": "第4章 个性与背景",
+  "page": 113
+ },
+ {
+  "depth": 2,
+  "title": "角色细节",
+  "page": 113
+ },
+ {
+  "depth": 2,
+  "title": "激励",
+  "page": 116
+ },
+ {
+  "depth": 2,
+  "title": "背景",
+  "page": 116
+ },
+ {
+  "depth": 1,
+  "title": "第5章 装备",
+  "page": 129
+ },
+ {
+  "depth": 2,
+  "title": "起始装备",
+  "page": 129
+ },
+ {
+  "depth": 2,
+  "title": "财富",
+  "page": 129
+ },
+ {
+  "depth": 2,
+  "title": "护甲与盾牌",
+  "page": 130
+ },
+ {
+  "depth": 2,
+  "title": "武器",
+  "page": 131
+ },
+ {
+  "depth": 2,
+  "title": "冒险用品",
+  "page": 133
+ },
+ {
+  "depth": 2,
+  "title": "工具",
+  "page": 137
+ },
+ {
+  "depth": 2,
+  "title": "坐骑与载具",
+  "page": 138
+ },
+ {
+  "depth": 2,
+  "title": "贸易商品",
+  "page": 139
+ },
+ {
+  "depth": 2,
+  "title": "开支",
+  "page": 139
+ },
+ {
+  "depth": 2,
+  "title": "饰品",
+  "page": 141
+ },
+ {
+  "depth": 1,
+  "title": "第6章 自定义选项",
+  "page": 143
+ },
+ {
+  "depth": 2,
+  "title": "兼职",
+  "page": 143
+ },
+ {
+  "depth": 2,
+  "title": "专长",
+  "page": 144
+ },
+ {
+  "depth": 0,
+  "title": "第2部分 进行游戏",
+  "page": null
+ },
+ {
+  "depth": 1,
+  "title": "第7章 属性值应用",
+  "page": 151
+ },
+ {
+  "depth": 2,
+  "title": "属性值与调整值",
+  "page": 151
+ },
+ {
+  "depth": 2,
+  "title": "优势与劣势",
+  "page": 151
+ },
+ {
+  "depth": 2,
+  "title": "熟练加值",
+  "page": 151
+ },
+ {
+  "depth": 2,
+  "title": "属性检定",
+  "page": 152
+ },
+ {
+  "depth": 2,
+  "title": "各属性值应用",
+  "page": 153
+ },
+ {
+  "depth": 2,
+  "title": "和面检定",
+  "page": 156
+ },
+ {
+  "depth": 1,
+  "title": "第8章 冒险",
+  "page": 158
+ },
+ {
+  "depth": 2,
+  "title": "时间",
+  "page": 158
+ },
+ {
+  "depth": 2,
+  "title": "移动",
+  "page": 158
+ },
+ {
+  "depth": 2,
+  "title": "环境",
+  "page": 160
+ },
+ {
+  "depth": 2,
+  "title": "社交",
+  "page": 162
+ },
+ {
+  "depth": 2,
+  "title": "休息",
+  "page": 163
+ },
+ {
+  "depth": 2,
+  "title": "冒险之余",
+  "page": 163
+ },
+ {
+  "depth": 1,
+  "title": "第9章 战斗",
+  "page": 166
+ },
+ {
+  "depth": 2,
+  "title": "战斗流程",
+  "page": 166
+ },
+ {
+  "depth": 2,
+  "title": "移动与位置",
+  "page": 167
+ },
+ {
+  "depth": 2,
+  "title": "战斗动作",
+  "page": 168
+ },
+ {
+  "depth": 2,
+  "title": "发动攻击",
+  "page": 169
+ },
+ {
+  "depth": 2,
+  "title": "掩护",
+  "page": 171
+ },
+ {
+  "depth": 2,
+  "title": "伤害与治疗",
+  "page": 171
+ },
+ {
+  "depth": 2,
+  "title": "骑乘战斗",
+  "page": 173
+ },
+ {
+  "depth": 0,
+  "title": "第3部分 魔法规则",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "第10章 施法",
+  "page": 176
+ },
+ {
+  "depth": 1,
+  "title": "法术是什么",
+  "page": 176
+ },
+ {
+  "depth": 1,
+  "title": "施展法术",
+  "page": 177
+ },
+ {
+  "depth": 0,
+  "title": "第11章 法术",
+  "page": 181
+ },
+ {
+  "depth": 1,
+  "title": "法术列表",
+  "page": 181
+ },
+ {
+  "depth": 2,
+  "title": "吟游诗人法术",
+  "page": 181
+ },
+ {
+  "depth": 2,
+  "title": "牧师法术",
+  "page": 182
+ },
+ {
+  "depth": 2,
+  "title": "德鲁伊法术",
+  "page": 183
+ },
+ {
+  "depth": 2,
+  "title": "圣武士法术",
+  "page": 185
+ },
+ {
+  "depth": 2,
+  "title": "游侠法术",
+  "page": 185
+ },
+ {
+  "depth": 2,
+  "title": "术士法术",
+  "page": 186
+ },
+ {
+  "depth": 2,
+  "title": "邪术师法术",
+  "page": 188
+ },
+ {
+  "depth": 2,
+  "title": "法师法术",
+  "page": 189
+ },
+ {
+  "depth": 1,
+  "title": "法术详述",
+  "page": 191
+ },
+ {
+  "depth": 2,
+  "title": "A",
+  "page": 191
+ },
+ {
+  "depth": 2,
+  "title": "B",
+  "page": 196
+ },
+ {
+  "depth": 2,
+  "title": "C",
+  "page": 200
+ },
+ {
+  "depth": 2,
+  "title": "D",
+  "page": 209
+ },
+ {
+  "depth": 2,
+  "title": "E",
+  "page": 214
+ },
+ {
+  "depth": 2,
+  "title": "F",
+  "page": 217
+ },
+ {
+  "depth": 2,
+  "title": "G",
+  "page": 222
+ },
+ {
+  "depth": 2,
+  "title": "H",
+  "page": 226
+ },
+ {
+  "depth": 2,
+  "title": "I",
+  "page": 229
+ },
+ {
+  "depth": 2,
+  "title": "J",
+  "page": 231
+ },
+ {
+  "depth": 2,
+  "title": "K",
+  "page": 231
+ },
+ {
+  "depth": 2,
+  "title": "L",
+  "page": 231
+ },
+ {
+  "depth": 2,
+  "title": "M",
+  "page": 233
+ },
+ {
+  "depth": 2,
+  "title": "N",
+  "page": 239
+ },
+ {
+  "depth": 2,
+  "title": "O",
+  "page": 240
+ },
+ {
+  "depth": 2,
+  "title": "P",
+  "page": 240
+ },
+ {
+  "depth": 2,
+  "title": "R",
+  "page": 247
+ },
+ {
+  "depth": 2,
+  "title": "S",
+  "page": 249
+ },
+ {
+  "depth": 2,
+  "title": "T",
+  "page": 256
+ },
+ {
+  "depth": 2,
+  "title": "U",
+  "page": 260
+ },
+ {
+  "depth": 2,
+  "title": "V",
+  "page": 260
+ },
+ {
+  "depth": 2,
+  "title": "W",
+  "page": 260
+ },
+ {
+  "depth": 2,
+  "title": "Z",
+  "page": 264
+ },
+ {
+  "depth": 0,
+  "title": "附录A 状态",
+  "page": 265
+ },
+ {
+  "depth": 0,
+  "title": "附录B 多元宇宙诸神",
+  "page": 268
+ },
+ {
+  "depth": 0,
+  "title": "附录C 存在位面",
+  "page": 274
+ },
+ {
+  "depth": 1,
+  "title": "物质位面",
+  "page": 274
+ },
+ {
+  "depth": 1,
+  "title": "物质界外",
+  "page": 274
+ },
+ {
+  "depth": 0,
+  "title": "附录D 生物资料",
+  "page": 278
+ },
+ {
+  "depth": 0,
+  "title": "附录E 启蒙读物",
+  "page": 286
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 1
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 29
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 9
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 8
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 40
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 112
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 117
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 142
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 149
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 150
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 157
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 161
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 165
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 174
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 175
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 180
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 211
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 225
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 245
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 288
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 15
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 35
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 18
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": null
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 32
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 43
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 64
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 47
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 51
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 58
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 69
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 75
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 82
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 87
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 92
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 98
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 105
+ },
+ {
+  "depth": 0,
+  "title": "空白页面",
+  "page": 198
+ }
+]
