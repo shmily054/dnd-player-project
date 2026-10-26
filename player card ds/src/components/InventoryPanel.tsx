@@ -1,8 +1,10 @@
-import { Plus, Search, Trash2 } from 'lucide-react'
+import { GripVertical, Plus, Search, Trash2 } from 'lucide-react'
 import type { Character, Item } from '@/types'
 import { COINS } from '@/types'
 import { carryCapacity, coinTotalGp, encumbrance } from '@/lib/calc'
 import { createBlankItem } from '@/lib/insert'
+import { reorderById } from '@/lib/reorder'
+import { useReorder } from '@/lib/use-reorder'
 import { Badge, Btn, Empty, NumberField, Panel, TextInput, Toggle } from '@/components/ui'
 
 export function InventoryPanel({
@@ -15,6 +17,9 @@ export function InventoryPanel({
   const enc = encumbrance(character)
   const capacity = carryCapacity(character)
   const attuned = character.inventory.filter((i) => i.attuned).length
+  const { drag, getHandleProps } = useReorder((activeId, overId, position) => {
+    patch((c) => ({ ...c, inventory: reorderById(c.inventory, activeId, overId, position) }))
+  })
   const update = (id: string, p: Partial<Item>) => {
     patch((c) => ({ ...c, inventory: c.inventory.map((i) => (i.id === id ? { ...i, ...p } : i)) }))
   }
@@ -57,8 +62,20 @@ export function InventoryPanel({
       ) : (
         <div className="inv-list">
           {character.inventory.map((item) => (
-            <div className="inv-row" key={item.id}>
+            <div
+              className={`inv-row reorder-row${drag?.activeId === item.id ? ' is-dragging' : ''}${drag?.overId === item.id ? ` is-drop-${drag.position}` : ''}`}
+              key={item.id}
+              data-reorder-id={item.id}
+              data-reorder-scope="inventory"
+            >
               <div className="inv-main">
+                <button
+                  type="button"
+                  className="reorder-handle"
+                  {...getHandleProps(item.id, 'inventory')}
+                  title="拖动排序；也可使用上下方向键"
+                  aria-label={`移动物品 ${item.name}`}
+                ><GripVertical size={14} /></button>
                 <Toggle checked={item.equipped} onChange={(v) => update(item.id, { equipped: v })} title="装备" />
                 <div className="inv-name">
                   <TextInput value={item.name} onChange={(v) => update(item.id, { name: v })} />

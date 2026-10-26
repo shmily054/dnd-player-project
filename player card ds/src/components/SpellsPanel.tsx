@@ -1,7 +1,9 @@
 import { useMemo, useState } from 'react'
-import { BookOpen, ChevronDown, ChevronUp, Plus, RefreshCw, Search, Trash2 } from 'lucide-react'
+import { BookOpen, ChevronDown, ChevronUp, GripVertical, Plus, RefreshCw, Search, Trash2 } from 'lucide-react'
 import type { Character, SpellEntry } from '@/types'
 import { ABILITIES, SPELL_LEVEL_NAMES } from '@/types'
+import { reorderById } from '@/lib/reorder'
+import { useReorder } from '@/lib/use-reorder'
 import {
   formatMod, maxSpellLevel, preparedCount, preparedLimit, spellAttackBonus, spellSaveDC,
   suggestedSpellSlots,
@@ -30,6 +32,15 @@ export function SpellsPanel({
     if (set.size === 0) set.add(0)
     return [...set].sort((a, b) => a - b)
   }, [character.spellcasting])
+  const { drag, getHandleProps } = useReorder((activeId, overId, position) => {
+    patch((c) => ({
+      ...c,
+      spellcasting: {
+        ...c.spellcasting,
+        spells: reorderById(c.spellcasting.spells, activeId, overId, position),
+      },
+    }))
+  })
 
   const updateSpell = (id: string, p: Partial<SpellEntry>) => {
     patch((c) => ({ ...c, spellcasting: { ...c.spellcasting, spells: c.spellcasting.spells.map((s) => (s.id === id ? { ...s, ...p } : s)) } }))
@@ -196,7 +207,19 @@ export function SpellsPanel({
                   </button>
                 )
                 return (
-                  <div className="spell-row" key={s.id}>
+                  <div
+                    className={`spell-row reorder-row${drag?.activeId === s.id ? ' is-dragging' : ''}${drag?.overId === s.id ? ` is-drop-${drag.position}` : ''}`}
+                    key={s.id}
+                    data-reorder-id={s.id}
+                    data-reorder-scope={`spells:${lv}`}
+                  >
+                    <button
+                      type="button"
+                      className="reorder-handle"
+                      {...getHandleProps(s.id, `spells:${lv}`)}
+                      title="在同环位内拖动排序；也可使用上下方向键"
+                      aria-label={`移动法术 ${s.name}`}
+                    ><GripVertical size={14} /></button>
                     <div className="s-main">
                       <div className="s-name">
                         <button className="spell-name-btn" onClick={() => setExpanded(open ? null : s.id)}>

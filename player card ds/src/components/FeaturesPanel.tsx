@@ -1,8 +1,10 @@
 import { useMemo } from 'react'
-import { BookOpen, Plus, Trash2 } from 'lucide-react'
+import { BookOpen, GripVertical, Plus, Trash2 } from 'lucide-react'
 import type { Character, Feature } from '@/types'
 import { RESET_LABELS } from '@/types'
 import { createBlankFeature } from '@/lib/insert'
+import { reorderById } from '@/lib/reorder'
+import { useReorder } from '@/lib/use-reorder'
 import { Badge, Btn, Empty, NumberField, Panel, Pips, Select, TextArea } from '@/components/ui'
 
 export function FeaturesPanel({
@@ -21,6 +23,9 @@ export function FeaturesPanel({
     }
     return [...map.entries()]
   }, [character.features])
+  const { drag, getHandleProps } = useReorder((activeId, overId, position) => {
+    patch((c) => ({ ...c, features: reorderById(c.features, activeId, overId, position) }))
+  })
 
   const update = (id: string, p: Partial<Feature>) => {
     patch((c) => ({ ...c, features: c.features.map((f) => (f.id === id ? { ...f, ...p } : f)) }))
@@ -63,8 +68,20 @@ export function FeaturesPanel({
               <Badge>{items.length}</Badge>
             </div>
             {items.map((f) => (
-              <details className="feature-card" key={f.id}>
+              <details
+                className={`feature-card reorder-row${drag?.activeId === f.id ? ' is-dragging' : ''}${drag?.overId === f.id ? ` is-drop-${drag.position}` : ''}`}
+                key={f.id}
+                data-reorder-id={f.id}
+                data-reorder-scope={`features:${source}`}
+              >
                 <summary className="f-head">
+                  <button
+                    type="button"
+                    className="reorder-handle"
+                    {...getHandleProps(f.id, `features:${source}`)}
+                    title="在同来源分组内拖动排序；也可使用上下方向键"
+                    aria-label={`移动特性 ${f.name}`}
+                  ><GripVertical size={14} /></button>
                   <div className="min-w-0">
                     <span className="f-name">{f.name}</span>
                     <span className="f-source">
