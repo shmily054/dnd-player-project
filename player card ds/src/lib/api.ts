@@ -28,6 +28,7 @@ export interface SearchParams {
   school?: string
   class?: string
   featureClass?: string
+  species?: string
   rarity?: string
   kind?: string
   book?: string

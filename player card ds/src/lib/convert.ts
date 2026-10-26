@@ -102,6 +102,18 @@ export function classFeatureFromEntry(e: CompendiumEntry): Feature {
   }
 }
 
+export function speciesFeatureFromEntry(e: CompendiumEntry): Feature {
+  return {
+    id: uid('feat'),
+    name: e.name,
+    source: e.speciesName || '种族特性',
+    level: e.level ?? 1,
+    description: e.description || '',
+    searchName: e.name,
+    auto: false,
+  }
+}
+
 export function spellLevelLabel(level: number): string {
   return level === 0 ? '戏法' : `${level}环`
 }
@@ -113,6 +125,7 @@ export function entrySubtitle(e: CompendiumEntry): string {
   if (e.type === 'item') return `${e.itemType || ''}${e.subtype ? `（${e.subtype}）` : ''} · ${e.rarity || ''}${e.attunement ? ' · 需同调' : ''}`
   if (e.type === 'feat') return `专长${e.prerequisite ? ` · 先决：${e.prerequisite}` : ''}`
   if (e.type === 'classFeature') return `职业特性 · ${e.className || '未知职业'} · ${e.level ?? '?'}级`
+  if (e.type === 'speciesTrait') return `种族特性 · ${e.speciesName || '未知种族'} · ${e.level ?? 1}级`
   if (e.type === 'condition') return '状态'
   if (e.type === 'equipment') {
     if (e.kind === 'weapon') return `武器 · ${e.damage || '—'} ${e.damageType || ''}${e.properties?.length ? ` · ${e.properties.join('/')}` : ''}`

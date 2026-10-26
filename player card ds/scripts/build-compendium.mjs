@@ -6,6 +6,7 @@
  *  - 魔法物品
  *  - 专长
  *  - 职业特性（12 个职业的基础特性）
+ *  - 种族特性（第四章的 10 个种族）
  *  - 状态
  *  - 护甲 / 盾牌 / 武器
  *
@@ -801,6 +802,93 @@ function parseClassFeatures(file, dbDir) {
   return { entries, missing }
 }
 
+/* ---------------- 种族特性 ---------------- */
+
+const SPECIES_NESTED_TRAITS = new Set([
+  '侏儒|森林侏儒',
+  '侏儒|岩石侏儒',
+])
+
+function parseSpeciesTraitStart(line, speciesName) {
+  const t = line.trim()
+  if (!t || t.startsWith('#') || t.startsWith('•')) return null
+  const dot = t.indexOf('。')
+  if (dot < 2) return null
+  const { name, en } = splitName(t.slice(0, dot).trim())
+  if (!name || name.length < 2 || name.length > 20 || name.startsWith('你') || !/^[\u4e00-\u9fff·]+$/.test(name)) return null
+  if (!en || !/^[A-Za-z][A-Za-z' -]*$/.test(en)) return null
+  if (SPECIES_NESTED_TRAITS.has(`${speciesName}|${name}`)) return null
+  return { name, en, inlineBody: t.slice(dot + 1).trim() }
+}
+
+function parseSpeciesTraits(file, dbDir) {
+  const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
+  const pages = linePageMap(lines)
+  const { book, chapter } = bookInfo(file, dbDir)
+  const root = findHeadingIndex(lines, /^##\s*种族详述/)
+  if (root < 0) return { entries: [], missing: ['未找到种族详述章节'], coverage: {} }
+  const nextRoot = findHeadingIndex(lines, /^##\s+/, root + 1)
+  const rootEnd = nextRoot < 0 ? lines.length : nextRoot
+  const headings = []
+  for (let i = root + 1; i < rootEnd; i++) {
+    const match = lines[i].trim().match(/^###\s+(.+)$/)
+    if (match) headings.push({ index: i, ...splitName(match[1]) })
+  }
+
+  const entries = []
+  const missing = []
+  const coverage = {}
+  for (let h = 0; h < headings.length; h++) {
+    const species = headings[h]
+    const end = h + 1 < headings.length ? headings[h + 1].index : rootEnd
+    const marker = lines.findIndex((line, index) => index > species.index && index < end && /特殊特质/.test(line))
+    if (marker < 0) {
+      missing.push(`${species.name}（未找到特殊特质起点）`)
+      coverage[species.name] = 0
+      continue
+    }
+
+    const starts = []
+    for (let i = marker + 1; i < end; i++) {
+      const trait = parseSpeciesTraitStart(lines[i], species.name)
+      if (trait) starts.push({ ...trait, index: i })
+    }
+    coverage[species.name] = starts.length
+    if (!starts.length) {
+      missing.push(`${species.name}（未解析到种族特性）`)
+      continue
+    }
+
+    for (let k = 0; k < starts.length; k++) {
+      const trait = starts[k]
+      const traitEnd = k + 1 < starts.length ? starts[k + 1].index : end
+      const description = cleanBodyLines([
+        trait.inlineBody,
+        ...lines.slice(trait.index + 1, traitEnd),
+      ])
+      const firstSentence = description.split('。')[0]
+      const levelMatch = firstSentence.match(/到达\s*(\d+)\s*级|从第\s*(\d+)\s*级开始/)
+      const level = Number(levelMatch?.[1] || levelMatch?.[2] || 1)
+      const page = pages[trait.index] ?? null
+      if (!description) missing.push(`${species.name}/${trait.name}（无正文）`)
+      entries.push({
+        uid: makeUid('speciesTrait', `${species.name}|${trait.name}`, page, trait.en),
+        type: 'speciesTrait',
+        name: trait.name,
+        en: trait.en,
+        speciesName: species.name,
+        speciesEn: species.en,
+        level,
+        description,
+        page,
+        book,
+        chapter,
+      })
+    }
+  }
+  return { entries, missing, coverage }
+}
+
 /* ---------------- 状态 ---------------- */
 
 function parseConditions(file, dbDir) {
@@ -1062,6 +1150,7 @@ export function buildCompendium(dbDir) {
   const itemFile = byBase(path.join('dungeon master guidance', '07-第7章宝藏.md')) || byKeyword('第7章宝藏')
   const equipmentFile = byBase(path.join('player handbook', '05-第5章装备.md')) || byKeyword('第5章装备') || byKeyword('第6章装备') || byKeyword('装备')
   const classFile = byBase(path.join('player handbook', '03-第3章职业.md')) || byKeyword('第3章职业') || byKeyword('第3章角色职业') || byKeyword('角色职业')
+  const originFile = byBase(path.join('player handbook', '04-第4章角色起源.md')) || byKeyword('第4章角色起源') || byKeyword('角色起源')
 
   const spells = spellFile ? parseSpells(spellFile, db) : []
   const feats = featFile ? parseFeats(featFile, db) : { entries: [], found: 0 }
@@ -1069,6 +1158,7 @@ export function buildCompendium(dbDir) {
   const items = itemFile ? parseMagicItems(itemFile, db) : []
   const equipment = equipmentFile ? parseEquipment(equipmentFile, db) : []
   const classFeatures = classFile ? parseClassFeatures(classFile, db) : { entries: [], missing: [] }
+  const speciesTraits = originFile ? parseSpeciesTraits(originFile, db) : { entries: [], missing: [], coverage: {} }
 
   if (!spellFile) warnings.push('未找到法术章节文件')
   if (!featFile) warnings.push('未找到专长章节文件')
@@ -1076,6 +1166,7 @@ export function buildCompendium(dbDir) {
   if (!itemFile) warnings.push('未找到第7章宝藏文件')
   if (!equipmentFile) warnings.push('未找到装备章节文件')
   if (!classFile) warnings.push('未找到职业章节文件')
+  if (!originFile) warnings.push('未找到角色起源章节文件')
 
   const spellMissingClasses = spells.filter((s) => s.classes.length === 0).map((s) => s.name)
   const missingFeats = feats.is2024 ? [] : FEAT_NAMES.filter((en) => !feats.entries.some((f) => f.en === en))
@@ -1088,11 +1179,13 @@ export function buildCompendium(dbDir) {
   if (missingFeats.length) report.missing.feats = missingFeats
   if (missingConditions.length) report.missing.conditions = missingConditions
   if (classFeatures.missing.length) report.missing.classFeatures = classFeatures.missing
+  if (speciesTraits.missing.length) report.missing.speciesTraits = speciesTraits.missing
   if (missingFeats.length) warnings.push(`有 ${missingFeats.length} 个专长未解析到：${missingFeats.join(', ')}`)
   if (missingConditions.length) warnings.push(`有 ${missingConditions.length} 个状态未解析到`)
   if (classFeatures.missing.length) warnings.push(`有 ${classFeatures.missing.length} 个职业特性未解析到正文：${classFeatures.missing.join(', ')}`)
+  if (speciesTraits.missing.length) warnings.push(`有 ${speciesTraits.missing.length} 个种族特性解析问题：${speciesTraits.missing.join(', ')}`)
 
-  const all = [...spells, ...items, ...feats.entries, ...conditions, ...equipment, ...classFeatures.entries]
+  const all = [...spells, ...items, ...feats.entries, ...conditions, ...equipment, ...classFeatures.entries, ...speciesTraits.entries]
   const entries = all.filter((e, i, arr) => arr.findIndex((x) => x.uid === e.uid) === i)
 
   report.counts = {
@@ -1104,6 +1197,7 @@ export function buildCompendium(dbDir) {
     shields: equipment.filter((e) => e.kind === 'shield').length,
     weapons: equipment.filter((e) => e.kind === 'weapon').length,
     classFeatures: classFeatures.entries.length,
+    speciesTraits: speciesTraits.entries.length,
     total: entries.length,
   }
   report.parsedAt = new Date().toISOString()
@@ -1119,6 +1213,7 @@ export function buildCompendium(dbDir) {
     builtAt: new Date().toISOString(),
     source: { dir: db, hash: report.sourceHash, files: report.files },
     counts: report.counts,
+    speciesTraits: speciesTraits.coverage,
     entries,
     warnings,
     missing: report.missing,
@@ -1132,6 +1227,7 @@ export function writeCompendium(dbDir, outDir) {
   const report = {
     builtAt: data.builtAt,
     counts: data.counts,
+    speciesTraits: data.speciesTraits,
     warnings: data.warnings,
     missing: data.missing,
     source: data.source,

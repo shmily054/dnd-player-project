@@ -9,12 +9,13 @@ import { Highlight } from '@/components/Highlight'
 import { Badge, Btn, Empty, Select, TextInput } from '@/components/ui'
 
 const TYPE_LABEL: Record<string, string> = {
-  all: '全部', spell: '法术', item: '魔法物品', feat: '专长', classFeature: '职业特性', condition: '状态', equipment: '装备', raw: '规则全文',
+  all: '全部', spell: '法术', item: '魔法物品', feat: '专长', classFeature: '职业特性', speciesTrait: '种族特性', condition: '状态', equipment: '装备', raw: '规则全文',
 }
 const TYPE_TONE: Record<string, 'gold' | 'green' | 'blue' | 'red' | 'default'> = {
-  spell: 'blue', item: 'gold', feat: 'green', classFeature: 'green', condition: 'red', equipment: 'default', raw: 'default',
+  spell: 'blue', item: 'gold', feat: 'green', classFeature: 'green', speciesTrait: 'green', condition: 'red', equipment: 'default', raw: 'default',
 }
 const CASTER_CLASSES = ['吟游诗人', '牧师', '德鲁伊', '圣武士', '游侠', '术士', '邪术师', '魔契师', '法师']
+const SPECIES_NAMES = ['阿斯莫', '龙裔', '矮人', '精灵', '侏儒', '歌利亚', '半身人', '人类', '兽人', '提夫林']
 const ITEM_KINDS = ['武器', '护甲', '盾牌', '奇物', '戒指', '权杖', '法杖', '魔杖', '药水', '卷轴']
 
 export function CompendiumExplorer({
@@ -122,7 +123,7 @@ export function CompendiumExplorer({
             className="input"
             value={q}
             autoFocus={autoFocus}
-            placeholder="搜索法术、物品、专长、职业特性、状态、规则原文…  支持中文或英文名"
+            placeholder="搜索法术、物品、专长、职业特性、种族特性、状态、规则原文…  支持中文或英文名"
             onChange={(e) => { setQ(e.target.value); setLimit(40) }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && results[0]) {
@@ -172,6 +173,14 @@ export function CompendiumExplorer({
             onChange={(v) => setFilter(classFilterKey, v)}
             placeholder="所有职业"
             options={classOptions.map((c) => ({ value: c, label: c }))}
+          />
+        )}
+        {type === 'speciesTrait' && (
+          <Select
+            value={filters.species || ''}
+            onChange={(v) => setFilter('species', v)}
+            placeholder="所有种族"
+            options={SPECIES_NAMES.map((name) => ({ value: name, label: name }))}
           />
         )}
         {showRarity && (
@@ -275,7 +284,8 @@ function ResultDetail({
   const insertLabel = e?.type === 'spell' ? '加入法术'
     : e?.type === 'feat' ? '加入特性'
       : e?.type === 'classFeature' ? '加入职业特性'
-        : e?.type === 'condition' ? '切换状态' : '加入物品'
+        : e?.type === 'speciesTrait' ? '加入种族特性'
+          : e?.type === 'condition' ? '切换状态' : '加入物品'
   return (
     <>
       <h3>
@@ -293,6 +303,7 @@ function ResultDetail({
           {e.type === 'equipment' && e.weight ? <Badge>{e.weight} 磅</Badge> : null}
           {e.type === 'feat' && e.prerequisite ? <Badge tone="gold">先决：{e.prerequisite}</Badge> : null}
           {e.type === 'classFeature' ? <><Badge tone="green">{e.className || '职业特性'}</Badge><Badge>{e.level ?? '?'}级</Badge></> : null}
+          {e.type === 'speciesTrait' ? <><Badge tone="green">{e.speciesName || '种族特性'}</Badge><Badge>{e.level ?? 1}级</Badge></> : null}
         </div>
       )}
       {e?.type === 'spell' && (

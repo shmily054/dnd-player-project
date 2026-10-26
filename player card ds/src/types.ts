@@ -187,7 +187,7 @@ export interface CharacterSummary {
 
 export interface CompendiumEntry {
   uid: string
-  type: 'spell' | 'item' | 'feat' | 'classFeature' | 'condition' | 'equipment'
+  type: 'spell' | 'item' | 'feat' | 'classFeature' | 'speciesTrait' | 'condition' | 'equipment'
   name: string
   en?: string
   book: string
@@ -196,6 +196,8 @@ export interface CompendiumEntry {
   description: string
   level?: number
   className?: string
+  speciesName?: string
+  speciesEn?: string
   school?: string
   ritual?: boolean
   concentration?: boolean
@@ -227,7 +229,7 @@ export interface CompendiumEntry {
 }
 
 export interface SearchResult {
-  kind: 'spell' | 'item' | 'feat' | 'classFeature' | 'condition' | 'equipment' | 'raw'
+  kind: 'spell' | 'item' | 'feat' | 'classFeature' | 'speciesTrait' | 'condition' | 'equipment' | 'raw'
   uid: string
   title: string
   en?: string
@@ -248,6 +250,7 @@ export interface SearchCounts {
   item: number
   feat: number
   classFeature: number
+  speciesTrait: number
   condition: number
   equipment: number
   raw: number

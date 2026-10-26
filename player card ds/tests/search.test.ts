@@ -42,4 +42,32 @@ describe('规则库检索', () => {
     expect(filtered.results.map((r: any) => r.title)).toEqual(expect.arrayContaining(['圣疗', '施法', '武器精通']))
     expect(filtered.results.every((r: any) => r.meta.className === '圣武士' && r.meta.level === 1)).toBe(true)
   })
+
+  it('种族特性支持中英文检索和种族筛选', () => {
+    const cn = searchAll('天启', { type: 'speciesTrait', limit: 5 })
+    expect(cn.total).toBe(1)
+    expect(cn.results[0].title).toBe('天启')
+    expect(cn.results[0].kind).toBe('speciesTrait')
+    expect(cn.results[0].meta.speciesName).toBe('阿斯莫')
+
+    const en = searchAll('Celestial Revelation', { type: 'speciesTrait', limit: 5 })
+    expect(en.results[0].uid).toBe(cn.results[0].uid)
+
+    const species = searchAll('', { type: 'speciesTrait', species: '阿斯莫', limit: 20 })
+    expect(species.total).toBe(5)
+    expect(species.results.every((r: any) => r.meta.speciesName === '阿斯莫')).toBe(true)
+    expect(species.results.map((r: any) => r.title)).toEqual(expect.arrayContaining(['天界抗性', '黑暗视觉', '治愈之手', '光辉掌者', '天启']))
+  })
+
+  it('全部检索可命中独立种族特性且同名黑暗视觉保留种族来源', () => {
+    const all = searchAll('天启', { type: 'all', limit: 5 })
+    expect(all.results[0].kind).toBe('speciesTrait')
+    expect(all.results[0].entry?.speciesName).toBe('阿斯莫')
+
+    const darkvision = searchAll('黑暗视觉', { type: 'speciesTrait', limit: 20 })
+    const exact = darkvision.results.filter((r: any) => r.title === '黑暗视觉')
+    expect(exact).toHaveLength(7)
+    expect(new Set(exact.map((r: any) => r.meta.speciesName)).size).toBe(7)
+    expect(exact.every((r: any) => r.kind === 'speciesTrait')).toBe(true)
+  })
 })

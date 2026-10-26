@@ -88,4 +88,42 @@ describe('规则库解析', () => {
     expect(all.every((e: any) => !/^\d+\s*级/.test(e.name))).toBe(true)
     expect(all.every((e: any) => !/\b1st\s+\+\d/.test(e.description))).toBe(true)
   })
+
+  it('完整解析十个种族的 38 条特性', () => {
+    const traits = data.entries.filter((e: any) => e.type === 'speciesTrait')
+    expect(data.counts.speciesTraits).toBe(38)
+    expect(traits).toHaveLength(38)
+    expect(Object.keys(data.speciesTraits)).toHaveLength(10)
+    expect(Object.values(data.speciesTraits).every((count) => Number(count) > 0)).toBe(true)
+    expect(data.missing.speciesTraits).toBeUndefined()
+    expect(traits.every((e: any) => e.description.length > 0)).toBe(true)
+    expect(traits.filter((e: any) => e.name === '黑暗视觉')).toHaveLength(7)
+    expect(new Set(traits.map((e: any) => e.uid)).size).toBe(traits.length)
+  })
+
+  it('阿斯莫特性独立成条且天启保留全部变身选项', () => {
+    const traits = data.entries.filter((e: any) => e.type === 'speciesTrait' && e.speciesName === '阿斯莫')
+    expect(traits.map((e: any) => e.name)).toEqual(['天界抗性', '黑暗视觉', '治愈之手', '光辉掌者', '天启'])
+    const revelation = traits.find((e: any) => e.name === '天启')
+    expect(revelation.en).toBe('Celestial Revelation')
+    expect(revelation.level).toBe(3)
+    expect(revelation.description).toContain('天堂飞翼Heavenly Wings')
+    expect(revelation.description).toContain('内耀辉光Inner Radiance')
+    expect(revelation.description).toContain('死灵环绕Necrotic Shroud')
+    expect(revelation.description).toContain('持续至你的下一回合结束')
+    expect(revelation.description).not.toContain('龙裔Dragonborn')
+  })
+
+  it('种族特性边界保留父特性选项并识别获得等级', () => {
+    const bySpecies = (speciesName: string, name: string) =>
+      data.entries.find((e: any) => e.type === 'speciesTrait' && e.speciesName === speciesName && e.name === name) as any
+    expect(bySpecies('龙裔', '龙族飞翼').level).toBe(5)
+    expect(bySpecies('歌利亚', '大型形态').level).toBe(5)
+    expect(bySpecies('精灵', '精灵血系').level).toBe(1)
+    expect(bySpecies('精灵', '精灵血系').description).toContain('木精灵')
+    expect(bySpecies('侏儒', '侏儒血系').description).toContain('森林侏儒Forest Gnome')
+    expect(bySpecies('侏儒', '侏儒血系').description).toContain('岩石侏儒Rock Gnome')
+    expect(bySpecies('侏儒', '森林侏儒')).toBeUndefined()
+    expect(bySpecies('提夫林', '邪魔遗赠').description).toContain('衰弱射线Ray of Enfeeblement')
+  })
 })

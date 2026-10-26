@@ -3,7 +3,7 @@ import fs from 'node:fs'
 import { getCompendium } from './compendium.mjs'
 import { fileInfo, getDatabaseDir, listMdFiles, readMd } from './db.mjs'
 
-const TYPE_ORDER = { spell: 0, item: 1, feat: 2, classFeature: 3, condition: 4, equipment: 5, raw: 6 }
+const TYPE_ORDER = { spell: 0, item: 1, feat: 2, classFeature: 3, speciesTrait: 4, condition: 5, equipment: 6, raw: 7 }
 const rawCache = new Map()
 
 function norm(s) {
@@ -61,6 +61,7 @@ export function subtitleFor(e) {
   if (e.type === 'item') return `${e.itemType}${e.subtype ? `（${e.subtype}）` : ''} · ${e.rarity}${e.attunement ? ' · 需同调' : ''}`
   if (e.type === 'feat') return `专长${e.prerequisite ? ` · 先决：${e.prerequisite}` : ''}`
   if (e.type === 'classFeature') return `职业特性 · ${e.className || '未知职业'} · ${e.level ?? '?'}级`
+  if (e.type === 'speciesTrait') return `种族特性 · ${e.speciesName || '未知种族'} · ${e.level ?? 1}级`
   if (e.type === 'condition') return '状态'
   if (e.type === 'equipment') {
     if (e.kind === 'weapon') return `武器 · ${e.damage || '—'}${e.damageType}${e.properties?.length ? ` · ${e.properties.join('/')}` : ''}`
@@ -80,6 +81,8 @@ function entryHaystack(e) {
     e.rarity,
     e.prerequisite,
     e.className,
+    e.speciesName,
+    e.speciesEn,
     e.classes?.join(' '),
     e.description,
     e.higherLevels,
@@ -125,6 +128,7 @@ function entryMatchesFilters(e, opts) {
     if (e.type !== 'classFeature' || String(e.level) !== String(opts.featureLevel)) return false
   }
   if (opts.featureClass && (e.type !== 'classFeature' || e.className !== opts.featureClass)) return false
+  if (opts.species && (e.type !== 'speciesTrait' || e.speciesName !== opts.species)) return false
   if (opts.rarity && (e.type !== 'item' || e.rarity !== opts.rarity)) return false
   if (opts.kind) {
     if (e.type === 'equipment') {
@@ -168,6 +172,8 @@ export function searchStructured(q, opts = {}) {
       school: e.school,
       classes: e.classes,
       className: e.className,
+      speciesName: e.speciesName,
+      speciesEn: e.speciesEn,
       ritual: e.ritual,
       concentration: e.concentration,
       rarity: e.rarity,
@@ -328,6 +334,7 @@ export function compendiumCounts() {
     item: c.items || 0,
     feat: c.feats || 0,
     classFeature: c.classFeatures || 0,
+    speciesTrait: c.speciesTraits || 0,
     condition: c.conditions || 0,
     equipment: (c.armor || 0) + (c.shields || 0) + (c.weapons || 0),
     raw: listMdFiles().length,

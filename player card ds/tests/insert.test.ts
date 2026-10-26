@@ -70,4 +70,59 @@ describe('规则库条目加入角色卡', () => {
     expect(res.changed).toBe(false)
     expect(res.character.features).toHaveLength(1)
   })
+
+  it('种族特性加入对应来源、去重并可补全空条目', () => {
+    const revelation: CompendiumEntry = {
+      uid: 'speciesTrait-test-revelation',
+      type: 'speciesTrait',
+      name: '天启',
+      en: 'Celestial Revelation',
+      speciesName: '阿斯莫',
+      speciesEn: 'Aasimar',
+      level: 3,
+      book: '玩家手册',
+      chapter: '第4章角色起源',
+      page: 113,
+      description: '完整天启规则，包含天堂飞翼、内耀辉光与死灵环绕。',
+    }
+    const c = base()
+    c.features = []
+    const inserted = insertEntry(c, revelation)
+    expect(inserted.changed).toBe(true)
+    expect(inserted.character.features).toHaveLength(1)
+    expect(inserted.character.features[0]).toMatchObject({ name: '天启', source: '阿斯莫', level: 3, description: revelation.description })
+
+    const duplicate = insertEntry(inserted.character, revelation)
+    expect(duplicate.changed).toBe(false)
+    expect(duplicate.character.features).toHaveLength(1)
+
+    const incomplete = base()
+    incomplete.features = [{ id: 'blank-revelation', name: '天启', source: '阿斯莫', description: '', auto: true }]
+    const completed = insertEntry(incomplete, revelation)
+    expect(completed.changed).toBe(true)
+    expect(completed.character.features).toHaveLength(1)
+    expect(completed.character.features[0].description).toBe(revelation.description)
+    expect(completed.character.features[0].auto).toBe(false)
+  })
+
+  it('不同种族的同名特性可以同时加入', () => {
+    const darkvision = (speciesName: string): CompendiumEntry => ({
+      uid: `speciesTrait-test-darkvision-${speciesName}`,
+      type: 'speciesTrait',
+      name: '黑暗视觉',
+      en: 'Darkvision',
+      speciesName,
+      level: 1,
+      book: '玩家手册',
+      chapter: '第4章角色起源',
+      page: 113,
+      description: `${speciesName}的黑暗视觉。`,
+    })
+    const c = base()
+    c.features = []
+    const aasimar = insertEntry(c, darkvision('阿斯莫'))
+    const dwarf = insertEntry(aasimar.character, darkvision('矮人'))
+    expect(dwarf.changed).toBe(true)
+    expect(dwarf.character.features.map((f) => f.source)).toEqual(['阿斯莫', '矮人'])
+  })
 })

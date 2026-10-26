@@ -1,6 +1,6 @@
 import type { Character, CompendiumEntry } from '@/types'
 import { attackFromItem, maxSpellLevel, totalLevel, uid } from '@/lib/calc'
-import { classFeatureFromEntry, featureFromEntry, itemFromEntry, spellFromEntry } from '@/lib/convert'
+import { classFeatureFromEntry, featureFromEntry, itemFromEntry, speciesFeatureFromEntry, spellFromEntry } from '@/lib/convert'
 
 export interface InsertResult {
   character: Character
@@ -75,6 +75,24 @@ export function insertEntry(c: Character, e: CompendiumEntry): InsertResult {
     }
     next.features.push(classFeatureFromEntry(e))
     return { character: next, changed: true, message: `已加入职业特性「${e.name}」（${source}）`, tone: 'success' }
+  }
+
+  if (e.type === 'speciesTrait') {
+    const source = e.speciesName || '种族特性'
+    const existing = next.features.find((f) => f.source === source && featureBaseName(f.name) === featureBaseName(e.name))
+    if (existing) {
+      if (existing.auto || !existing.description) {
+        existing.name = e.name
+        existing.level = existing.level ?? e.level ?? 1
+        existing.description = e.description || existing.description
+        existing.searchName = e.name
+        existing.auto = false
+        return { character: next, changed: true, message: `已补全种族特性「${e.name}」`, tone: 'success' }
+      }
+      return { character: c, changed: false, message: `种族特性「${e.name}」已存在`, tone: 'info' }
+    }
+    next.features.push(speciesFeatureFromEntry(e))
+    return { character: next, changed: true, message: `已加入种族特性「${e.name}」（${source}）`, tone: 'success' }
   }
 
   if (e.type === 'condition') {

@@ -26,7 +26,7 @@ function emptyCompendium(dbDir, error) {
     version: 1,
     builtAt: null,
     source: { dir: dbDir, hash: '', files: [] },
-    counts: { spells: 0, items: 0, feats: 0, classFeatures: 0, conditions: 0, armor: 0, shields: 0, weapons: 0, total: 0 },
+    counts: { spells: 0, items: 0, feats: 0, classFeatures: 0, speciesTraits: 0, conditions: 0, armor: 0, shields: 0, weapons: 0, total: 0 },
     entries: [],
     warnings: [error],
     missing: {},
