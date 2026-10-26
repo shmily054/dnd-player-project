@@ -22,8 +22,8 @@ describe('规则库检索', () => {
   it('状态与专长可检索', () => {
     const cond = searchAll('目盲', { type: 'condition', limit: 3 })
     expect(cond.results[0].title).toBe('目盲')
-    const feat = searchAll('警觉', { type: 'feat', limit: 3 })
-    expect(feat.results[0].title).toBe('警觉')
+    const feat = searchAll('警戒', { type: 'feat', limit: 3 })
+    expect(feat.results[0].title).toBe('警戒')
   })
 
   it('职业特性可检索并按职业与等级筛选', () => {
@@ -38,8 +38,8 @@ describe('规则库检索', () => {
       featureLevel: '1',
       limit: 100,
     })
-    expect(filtered.total).toBe(2)
-    expect(filtered.results.map((r: any) => r.title)).toEqual(expect.arrayContaining(['神圣感知', '圣疗']))
+    expect(filtered.total).toBe(3)
+    expect(filtered.results.map((r: any) => r.title)).toEqual(expect.arrayContaining(['圣疗', '施法', '武器精通']))
     expect(filtered.results.every((r: any) => r.meta.className === '圣武士' && r.meta.level === 1)).toBe(true)
   })
 })

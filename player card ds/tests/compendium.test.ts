@@ -10,21 +10,21 @@ const by = (type: string, name: string) => data.entries.find((e: any) => e.type 
 
 describe('规则库解析', () => {
   it('条目数量达到预期', () => {
-    expect(data.counts.spells).toBe(355)
+    expect(data.counts.spells).toBe(391)
     expect(data.counts.items).toBe(243)
-    expect(data.counts.feats).toBe(42)
-    expect(data.counts.classFeatures).toBe(106)
+    expect(data.counts.feats).toBe(75)
+    expect(data.counts.classFeatures).toBe(174)
     expect(data.counts.conditions).toBe(15)
     expect(data.counts.armor).toBe(12)
     expect(data.counts.shields).toBe(1)
-    expect(data.counts.weapons).toBe(37)
+    expect(data.counts.weapons).toBe(38)
   })
 
   it('法术关键字段', () => {
     const fireball = by('spell', '火球术') as any
     expect(fireball.level).toBe(3)
     expect(fireball.school).toBe('塑能')
-    expect(fireball.range).toBe('150尺')
+    expect(fireball.range).toBe('150 尺')
     expect(fireball.classes).toContain('法师')
     expect(fireball.classes).toContain('术士')
     expect(fireball.description).toContain('8d6')
@@ -40,8 +40,8 @@ describe('规则库解析', () => {
   })
 
   it('专长、状态与装备', () => {
-    const alert = by('feat', '警觉') as any
-    expect(alert.description).toContain('先攻获得+5')
+    const alert = by('feat', '警戒') as any
+    expect(alert.description).toContain('先攻熟练')
     expect(by('condition', '昏迷')).toBeTruthy()
     expect(by('condition', '失能')).toBeTruthy()
 
@@ -75,16 +75,17 @@ describe('规则库解析', () => {
     expect(layOnHands.description).toContain('治疗能量池')
     expect(layOnHands.description).toContain('×5')
 
-    const divineSmite = feature('圣武士', '至圣斩')
-    expect(divineSmite.level).toBe(2)
-    expect(divineSmite.description).toContain('光耀伤害')
+    const paladinSmite = feature('圣武士', '圣武斩')
+    expect(paladinSmite.level).toBe(2)
+    expect(paladinSmite.description).toContain('至圣斩')
 
     expect(feature('圣武士', '额外攻击').level).toBe(5)
+    expect(feature('圣武士', '灵光增效').level).toBe(18)
     expect(feature('圣武士', '灵光增效').description).toContain('守护灵光')
 
     const all = data.entries.filter((e: any) => e.type === 'classFeature')
     expect(all.every((e: any) => e.description.length > 0)).toBe(true)
-    expect(all.some((e: any) => e.name === '属性值提升' || e.name === '圣誓特性')).toBe(false)
+    expect(all.every((e: any) => !/^\d+\s*级/.test(e.name))).toBe(true)
     expect(all.every((e: any) => !/\b1st\s+\+\d/.test(e.description))).toBe(true)
   })
 })

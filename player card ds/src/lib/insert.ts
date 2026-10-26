@@ -14,6 +14,8 @@ function primaryClass(c: Character): string {
   return sorted[0]?.name || ''
 }
 
+const CLASS_ALIASES: Record<string, string> = { 邪术师: '魔契师', 魔契师: '邪术师' }
+
 function featureBaseName(name: string): string {
   return String(name || '').replace(/\s*[（(].*$/, '').trim()
 }
@@ -28,7 +30,7 @@ export function insertEntry(c: Character, e: CompendiumEntry): InsertResult {
     next.spellcasting.spells.push(spell)
     const max = maxSpellLevel(next)
     const cls = primaryClass(c)
-    const classHit = !e.classes?.length || !cls || e.classes.includes(cls)
+    const classHit = !e.classes?.length || !cls || e.classes.includes(cls) || e.classes.includes(CLASS_ALIASES[cls])
     if (e.level && e.level > max) {
       return {
         character: next,

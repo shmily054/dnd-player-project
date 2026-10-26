@@ -14,7 +14,7 @@ const TYPE_LABEL: Record<string, string> = {
 const TYPE_TONE: Record<string, 'gold' | 'green' | 'blue' | 'red' | 'default'> = {
   spell: 'blue', item: 'gold', feat: 'green', classFeature: 'green', condition: 'red', equipment: 'default', raw: 'default',
 }
-const CASTER_CLASSES = ['吟游诗人', '牧师', '德鲁伊', '圣武士', '游侠', '术士', '邪术师', '法师']
+const CASTER_CLASSES = ['吟游诗人', '牧师', '德鲁伊', '圣武士', '游侠', '术士', '邪术师', '魔契师', '法师']
 const ITEM_KINDS = ['武器', '护甲', '盾牌', '奇物', '戒指', '权杖', '法杖', '魔杖', '药水', '卷轴']
 
 export function CompendiumExplorer({
@@ -109,7 +109,7 @@ export function CompendiumExplorer({
   const showRarity = type === 'item' || type === 'all'
   const showKind = type === 'equipment' || type === 'item'
   const classFilterKey = isClassFeature ? 'featureClass' : 'class'
-  const classOptions = isClassFeature ? CLASS_NAMES : CASTER_CLASSES
+  const classOptions = isClassFeature ? [...CLASS_NAMES, '魔契师'] : CASTER_CLASSES
   const hasFilters = Object.values(filters).some(Boolean)
 
   return (

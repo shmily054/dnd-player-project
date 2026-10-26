@@ -26,6 +26,7 @@ const CONDITION_NAMES = [
   ['魅惑', 'Charmed'],
   ['耳聋', 'Deafened'],
   ['恐慌', 'Frightened'],
+  ['受擒', 'Grappled'],
   ['擒抱', 'Grappled'],
   ['失能', 'Incapacitated'],
   ['隐形', 'Invisible'],
@@ -246,7 +247,7 @@ function extractMetaFields(lines) {
       fields[m[1]] = cleanInline(m[2])
       continue
     }
-    if (/^升环施法效应/.test(line)) {
+    if (/^升环施法/.test(line)) {
       higher = true
       body.push(line)
       continue
@@ -256,7 +257,8 @@ function extractMetaFields(lines) {
   }
   let text = cleanBodyLines(body)
   let high = ''
-  const hi = text.indexOf('升环施法效应')
+  const higherMatch = text.match(/升环施法(?:效应)?/)
+  const hi = higherMatch ? higherMatch.index : -1
   if (hi >= 0) {
     high = text.slice(hi).trim()
     text = text.slice(0, hi).trim()
@@ -459,12 +461,61 @@ function escapeRe(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
 }
 
+function parseFeats2024(lines, pages, book, chapter, sec, stop) {
+  const categoryRe = /^(起源专长|通用专长|战斗风格专长|传奇恩惠专长)/
+  const starts = []
+  for (let i = Math.max(0, sec); i < stop; i++) {
+    const t = lines[i].trim()
+    if (!t || t.length > 90 || /^#{1,6}\s/.test(t)) continue
+    let j = i + 1
+    while (j < stop && !lines[j].trim()) j++
+    if (j >= stop) continue
+    const next = lines[j].trim()
+    if (!categoryRe.test(next)) continue
+    const { name, en } = splitName(t)
+    if (!name || !en || !isCjk(name)) continue
+    const pre = next.match(/先决\s*[:：]\s*([^）)]+)/)
+    starts.push({ index: i, name, en, prerequisite: pre ? pre[1].trim() : '' })
+  }
+  const entries = []
+  for (let k = 0; k < starts.length; k++) {
+    const f = starts[k]
+    const end = k + 1 < starts.length ? starts[k + 1].index : stop
+    const body = []
+    let skippedCategory = false
+    for (const raw of lines.slice(f.index + 1, end)) {
+      const t = raw.trim()
+      if (!skippedCategory && categoryRe.test(t)) {
+        skippedCategory = true
+        continue
+      }
+      body.push(raw)
+    }
+    const page = pages[f.index] ?? null
+    entries.push({
+      uid: makeUid('feat', f.name, page, f.en),
+      type: 'feat',
+      name: f.name,
+      en: f.en,
+      prerequisite: f.prerequisite,
+      description: cleanBodyLines(body),
+      page,
+      book,
+      chapter,
+    })
+  }
+  return { entries, found: starts.length, is2024: true }
+}
+
 function parseFeats(file, dbDir) {
   const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
   const pages = linePageMap(lines)
   const { book, chapter } = bookInfo(file, dbDir)
   const sec = findHeadingIndex(lines, /^##\s*专长/)
   const stop = sec < 0 ? lines.length : findHeadingIndex(lines, /^##\s+/, sec + 1) < 0 ? lines.length : findHeadingIndex(lines, /^##\s+/, sec + 1)
+  if (sec >= 0 && lines.slice(sec, stop).some((line) => /^(?:起源专长|通用专长|战斗风格专长|传奇恩惠专长)/.test(line.trim()))) {
+    return parseFeats2024(lines, pages, book, chapter, sec, stop)
+  }
   const found = []
   for (const en of FEAT_NAMES) {
     const re = new RegExp(`^(.+?)\\s*${escapeRe(en)}\\s*$`, 'i')
@@ -578,6 +629,56 @@ function cleanClassFeatureBody(lines, featureName = '') {
   return kept.slice(start).join('\n').replace(/\n{3,}/g, '\n\n').trim()
 }
 
+function parseClassFeatures2024(lines, pages, book, chapter) {
+  const entries = []
+  const classStarts = []
+  for (let i = 0; i < lines.length; i++) {
+    const t = lines[i].trim()
+    if (/^##\s+/.test(t) && !/^###/.test(t)) {
+      const name = t.replace(/^##\s+/, '').trim()
+      if (name && !/^(第|附录)/.test(name)) classStarts.push({ name, index: i })
+    }
+  }
+  for (let ci = 0; ci < classStarts.length; ci++) {
+    const cls = classStarts[ci]
+    const sectionEnd = ci + 1 < classStarts.length ? classStarts[ci + 1].index : lines.length
+    let coreEnd = sectionEnd
+    for (let i = cls.index + 1; i < sectionEnd; i++) {
+      if (/^###\s+/.test(lines[i].trim())) {
+        coreEnd = i
+        break
+      }
+    }
+    const starts = []
+    for (let i = cls.index + 1; i < coreEnd; i++) {
+      const t = lines[i].trim()
+      const m = t.match(/^(\d+)\s*级[：:]\s*(.+)$/)
+      if (!m || t.length > 100) continue
+      const { name, en } = splitName(m[2].trim())
+      if (!name || !isCjk(name)) continue
+      starts.push({ index: i, level: Number(m[1]), name, en })
+    }
+    for (let k = 0; k < starts.length; k++) {
+      const f = starts[k]
+      const end = k + 1 < starts.length ? starts[k + 1].index : coreEnd
+      const page = pages[f.index] ?? null
+      entries.push({
+        uid: makeUid('classFeature', `${cls.name}|${f.name}`, page, f.en),
+        type: 'classFeature',
+        name: f.name,
+        en: f.en,
+        className: cls.name,
+        level: f.level,
+        description: cleanClassFeatureBody(lines.slice(f.index + 1, end), f.name),
+        page,
+        book,
+        chapter,
+      })
+    }
+  }
+  return { entries, missing: [] }
+}
+
 function parseClassFeatures(file, dbDir) {
   const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
   const pages = linePageMap(lines)
@@ -585,6 +686,10 @@ function parseClassFeatures(file, dbDir) {
   const classData = loadClassData()
   const entries = []
   const missing = []
+
+  if (lines.some((line) => /^\d+\s*级[：:]/.test(line.trim()))) {
+    return parseClassFeatures2024(lines, pages, book, chapter)
+  }
 
   for (const cls of classData.classes || []) {
     const start = lines.findIndex((line) => line.trim() === `## ${cls.name}`)
@@ -902,7 +1007,7 @@ function parseEquipment(file, dbDir) {
       const meta = weaponMeta(en)
       const prop = propertyRows[k]
       const propText = prop ? prop.text : ''
-      const rangeMatch = propText.match(/射程([^\s,，)）]+)/)
+      const rangeMatch = propText.match(/射程([^\s,，；;()（）]+)/)
       const versatileMatch = propText.match(/两用\((\d+d\d+)\)/)
       const properties = PROPS.filter((p) => propText.includes(p) && p !== '射程')
       let weight = prop ? (prop.weight === '—' ? 0 : prop.weight === '1/4' ? 0.25 : Number(prop.weight)) : (meta.weight ?? 0)
@@ -948,14 +1053,15 @@ export function buildCompendium(dbDir) {
   if (files.length === 0) throw new Error(`规则库目录中没有 Markdown 文件：${db}`)
   const warnings = []
   const byBase = (name) => files.find((f) => f.endsWith(name)) || ''
+  const byKeyword = (...needles) => files.find((f) => needles.every((n) => f.includes(n))) || ''
   const report = { counts: {}, warnings, missing: {} }
 
-  const spellFile = byBase(path.join('player handbook', '11-第11章法术.md')) || files.find((f) => f.includes('第11章法术'))
-  const featFile = byBase(path.join('player handbook', '06-第6章自定义选项.md')) || files.find((f) => f.includes('第6章自定义选项'))
-  const conditionFile = byBase(path.join('player handbook', '12-附录A状态.md')) || files.find((f) => f.includes('附录A状态'))
-  const itemFile = byBase(path.join('dungeon master guidance', '07-第7章宝藏.md')) || files.find((f) => f.includes('第7章宝藏'))
-  const equipmentFile = byBase(path.join('player handbook', '05-第5章装备.md')) || files.find((f) => f.includes('第5章装备'))
-  const classFile = byBase(path.join('player handbook', '03-第3章职业.md')) || files.find((f) => f.includes('第3章职业'))
+  const spellFile = byBase(path.join('player handbook', '11-第11章法术.md')) || byKeyword('第11章法术') || byKeyword('第7章法术') || byKeyword('法术')
+  const featFile = byBase(path.join('player handbook', '06-第6章自定义选项.md')) || byKeyword('第6章自定义选项') || byKeyword('第5章专长') || byKeyword('专长')
+  const conditionFile = byBase(path.join('player handbook', '12-附录A状态.md')) || byKeyword('附录A状态') || byKeyword('附录C术语汇编') || byKeyword('术语汇编')
+  const itemFile = byBase(path.join('dungeon master guidance', '07-第7章宝藏.md')) || byKeyword('第7章宝藏')
+  const equipmentFile = byBase(path.join('player handbook', '05-第5章装备.md')) || byKeyword('第5章装备') || byKeyword('第6章装备') || byKeyword('装备')
+  const classFile = byBase(path.join('player handbook', '03-第3章职业.md')) || byKeyword('第3章职业') || byKeyword('第3章角色职业') || byKeyword('角色职业')
 
   const spells = spellFile ? parseSpells(spellFile, db) : []
   const feats = featFile ? parseFeats(featFile, db) : { entries: [], found: 0 }
@@ -964,16 +1070,20 @@ export function buildCompendium(dbDir) {
   const equipment = equipmentFile ? parseEquipment(equipmentFile, db) : []
   const classFeatures = classFile ? parseClassFeatures(classFile, db) : { entries: [], missing: [] }
 
-  if (!spellFile) warnings.push('未找到第11章法术文件')
-  if (!featFile) warnings.push('未找到第6章自定义选项文件')
-  if (!conditionFile) warnings.push('未找到附录A状态文件')
+  if (!spellFile) warnings.push('未找到法术章节文件')
+  if (!featFile) warnings.push('未找到专长章节文件')
+  if (!conditionFile) warnings.push('未找到状态/术语章节文件')
   if (!itemFile) warnings.push('未找到第7章宝藏文件')
-  if (!equipmentFile) warnings.push('未找到第5章装备文件')
-  if (!classFile) warnings.push('未找到第3章职业文件')
+  if (!equipmentFile) warnings.push('未找到装备章节文件')
+  if (!classFile) warnings.push('未找到职业章节文件')
 
   const spellMissingClasses = spells.filter((s) => s.classes.length === 0).map((s) => s.name)
-  const missingFeats = FEAT_NAMES.filter((en) => !feats.entries.some((f) => f.en === en))
-  const missingConditions = CONDITION_NAMES.filter(([cn]) => !conditions.some((c) => c.name === cn)).map(([cn]) => cn)
+  const missingFeats = feats.is2024 ? [] : FEAT_NAMES.filter((en) => !feats.entries.some((f) => f.en === en))
+  const conditionNames = new Set(conditions.map((c) => c.name))
+  const missingConditions = CONDITION_NAMES
+    .filter(([cn]) => !conditionNames.has(cn))
+    .filter(([cn]) => !((cn === '受擒' && conditionNames.has('擒抱')) || (cn === '擒抱' && conditionNames.has('受擒'))))
+    .map(([cn]) => cn)
   if (spellMissingClasses.length) report.missing.spellsWithoutClass = spellMissingClasses.slice(0, 80)
   if (missingFeats.length) report.missing.feats = missingFeats
   if (missingConditions.length) report.missing.conditions = missingConditions
