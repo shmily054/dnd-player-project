@@ -59,7 +59,7 @@ export function CombatPanel({ character, patch }: { character: Character; patch:
               className="hp-max-input"
               value={character.hp.max}
               min={1}
-              max={30}
+              max={9999}
               onChange={(v) => patch((c) => ({ ...c, hp: { ...c.hp, max: v } }))}
               title="最大 HP"
             />
