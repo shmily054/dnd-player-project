@@ -86,7 +86,7 @@ export function FeaturesPanel({
                   <div className="min-w-0">
                     <span className="f-name">{f.name}</span>
                     <span className="f-source">
-                      {f.uses ? ` · ${f.uses.infinite ? '无限' : `${f.uses.used}/${f.uses.total}`}（${RESET_LABELS[f.uses.reset]}）` : ''}
+                      {f.uses ? ` · ${f.uses.infinite ? '无限' : `${f.uses.total - f.uses.used}/${f.uses.total}`}（${RESET_LABELS[f.uses.reset]}）` : ''}
                       {f.auto ? ' · 自动' : ''}
                     </span>
                   </div>

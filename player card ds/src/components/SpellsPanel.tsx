@@ -138,7 +138,7 @@ export function SpellsPanel({
                     },
                   }))}
                 />
-                <span className="slot-count">{s.used}/{s.total}</span>
+                <span className="slot-count">{s.total - s.used}/{s.total}</span>
                 <NumberField value={s.total} min={0} max={12} onChange={(v) => patch((c) => ({
                   ...c,
                   spellcasting: {
@@ -158,7 +158,7 @@ export function SpellsPanel({
                 tone="slot"
                 onChange={(used) => patch((c) => ({ ...c, spellcasting: { ...c.spellcasting, pactSlots: { ...c.spellcasting.pactSlots!, used } } }))}
               />
-              <span className="slot-count">{character.spellcasting.pactSlots.used}/{character.spellcasting.pactSlots.total}</span>
+              <span className="slot-count">{character.spellcasting.pactSlots.total - character.spellcasting.pactSlots.used}/{character.spellcasting.pactSlots.total}</span>
               <Badge tone="blue">短休恢复</Badge>
             </div>
           )}

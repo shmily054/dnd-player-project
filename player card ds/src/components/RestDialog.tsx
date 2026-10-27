@@ -69,8 +69,8 @@ export function RestDialog({
           <div className="rest-block">
             <h3>还会恢复</h3>
             <ul className="rest-list">
-              {character.resources.filter((r) => r.reset === 'short').map((r) => <li key={r.id}>{r.name}：{r.used}/{r.total}</li>)}
-              {character.spellcasting.pactSlots && <li>契约法术位 {character.spellcasting.pactSlots.used}/{character.spellcasting.pactSlots.total}</li>}
+              {character.resources.filter((r) => r.reset === 'short').map((r) => <li key={r.id}>{r.name}：{r.total - r.used}/{r.total}</li>)}
+              {character.spellcasting.pactSlots && <li>契约法术位 {character.spellcasting.pactSlots.total - character.spellcasting.pactSlots.used}/{character.spellcasting.pactSlots.total}</li>}
               {character.resources.every((r) => r.reset !== 'short') && !character.spellcasting.pactSlots && <li>没有短休恢复的资源</li>}
             </ul>
           </div>

@@ -49,7 +49,7 @@ export function ResourcesPanel({ character, patch }: { character: Character; pat
                   onChange={(used) => update(r.id, { used })}
                 />
               )}
-              <span className="slot-count">{r.infinite ? '∞' : `${r.used}/${r.total}`}</span>
+              <span className="slot-count">{r.infinite ? '∞' : `${r.total - r.used}/${r.total}`}</span>
             </div>
             <div className="r-controls">
               <NumberField value={r.total} min={0} max={200} onChange={(v) => update(r.id, { total: v, used: Math.min(r.used, v), infinite: false })} />
