@@ -94,7 +94,7 @@ export function classFeatureFromEntry(e: CompendiumEntry): Feature {
   return {
     id: uid('feat'),
     name: e.name,
-    source: e.className || '职业特性',
+    source: e.subclass ? `${e.subclassLabel || '子职业'}：${e.subclass}` : (e.className || '职业特性'),
     level: e.level,
     description: e.description || '',
     searchName: e.name,
@@ -124,7 +124,11 @@ export function entrySubtitle(e: CompendiumEntry): string {
   }
   if (e.type === 'item') return `${e.itemType || ''}${e.subtype ? `（${e.subtype}）` : ''} · ${e.rarity || ''}${e.attunement ? ' · 需同调' : ''}`
   if (e.type === 'feat') return `专长${e.prerequisite ? ` · 先决：${e.prerequisite}` : ''}`
-  if (e.type === 'classFeature') return `职业特性 · ${e.className || '未知职业'} · ${e.level ?? '?'}级`
+  if (e.type === 'classFeature') {
+    if (e.featureKind === 'subclass') return `${e.subclassLabel || '子职业'} · ${e.className || '未知职业'} · ${e.level ?? '?'} 级可选`
+    if (e.subclass) return `${e.subclassLabel || '子职业'}：${e.subclass} · ${e.level ?? '?'}级`
+    return `职业特性 · ${e.className || '未知职业'} · ${e.level ?? '?'}级`
+  }
   if (e.type === 'speciesTrait') return `种族特性 · ${e.speciesName || '未知种族'} · ${e.level ?? 1}级`
   if (e.type === 'condition') return '状态'
   if (e.type === 'equipment') {

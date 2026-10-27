@@ -7,6 +7,10 @@ import { maxSpellLevel, totalLevel } from '@/lib/calc'
 import { entrySubtitle, spellLevelLabel } from '@/lib/convert'
 import { Highlight } from '@/components/Highlight'
 import { Badge, Btn, Empty, Select, TextInput } from '@/components/ui'
+import subclassData from '@shared/subclasses.json'
+
+interface SubclassDef { className: string; label: string; level: number; name: string; en?: string }
+const SUBCLASSES = ((subclassData as unknown as { subclasses: SubclassDef[] }).subclasses || [])
 
 const TYPE_LABEL: Record<string, string> = {
   all: '全部', spell: '法术', item: '魔法物品', feat: '专长', classFeature: '职业特性', speciesTrait: '种族特性', condition: '状态', equipment: '装备', raw: '规则全文',
@@ -40,6 +44,7 @@ export function CompendiumExplorer({
   const [error, setError] = useState<string | null>(null)
   const [selected, setSelected] = useState<SearchResult | null>(null)
   const [limit, setLimit] = useState(40)
+  const [fallback, setFallback] = useState(false)
   const reqId = useRef(0)
   const inputRef = useRef<HTMLInputElement>(null)
 
@@ -68,6 +73,7 @@ export function CompendiumExplorer({
       setResults(res.results)
       setCounts(res.counts as unknown as Record<string, number>)
       setTotal(res.total)
+      setFallback(Boolean(res.fallback))
       setSelected((prev) => {
         if (prev) {
           const same = res.results.find((r) => r.uid === prev.uid)
@@ -81,6 +87,7 @@ export function CompendiumExplorer({
       setError(String((e as Error).message || e))
       setResults([])
       setSelected(null)
+      setFallback(false)
     } finally {
       if (id === reqId.current) setLoading(false)
     }
@@ -111,6 +118,13 @@ export function CompendiumExplorer({
   const showKind = type === 'equipment' || type === 'item'
   const classFilterKey = isClassFeature ? 'featureClass' : 'class'
   const classOptions = isClassFeature ? [...CLASS_NAMES, '魔契师'] : CASTER_CLASSES
+  const subclassOptions = useMemo(() => {
+    const list = filters.featureClass ? SUBCLASSES.filter((s) => s.className === filters.featureClass) : SUBCLASSES
+    return list.map((s) => ({
+      value: s.name,
+      label: filters.featureClass ? `${s.label}·${s.name}` : `${s.className}·${s.name}`,
+    }))
+  }, [filters.featureClass])
   const hasFilters = Object.values(filters).some(Boolean)
 
   return (
@@ -170,9 +184,20 @@ export function CompendiumExplorer({
         {showClass && (
           <Select
             value={filters[classFilterKey] || ''}
-            onChange={(v) => setFilter(classFilterKey, v)}
+            onChange={(v) => {
+              setFilters((f) => ({ ...f, [classFilterKey]: v, ...(isClassFeature ? { subclass: '' } : {}) }))
+              setLimit(40)
+            }}
             placeholder="所有职业"
             options={classOptions.map((c) => ({ value: c, label: c }))}
+          />
+        )}
+        {isClassFeature && (
+          <Select
+            value={filters.subclass || ''}
+            onChange={(v) => setFilter('subclass', v)}
+            placeholder="所有子职业"
+            options={subclassOptions}
           />
         )}
         {type === 'speciesTrait' && (
@@ -223,6 +248,11 @@ export function CompendiumExplorer({
       </div>
 
       {error && <div className="hint warn-text">{error}</div>}
+      {fallback && !loading && (
+        <div className="hint" style={{ marginBottom: 8 }}>
+          {TYPE_LABEL[type] || type}索引中没有匹配的结构化条目，以下为规则全文中找到的段落（可能尚未结构化，仅供查阅）。
+        </div>
+      )}
 
       <div className="search-layout">
         <div className="result-list">
@@ -279,7 +309,11 @@ function ResultDetail({
   const isSpell = e?.type === 'spell'
   const charClass = character ? [...character.classes].sort((a, b) => b.level - a.level)[0]?.name : ''
   const classHit = !isSpell || !e?.classes?.length || !charClass || e.classes.includes(charClass)
-  const featureClassHit = e?.type !== 'classFeature' || !character || !e?.className || character.classes.some((c) => c.name === e.className)
+  const featureClassEntry = e?.type === 'classFeature' && e?.className
+    ? character?.classes.find((c) => c.name === e.className)
+    : undefined
+  const featureClassHit = e?.type !== 'classFeature' || !character || !e?.className
+    || (!!featureClassEntry && (!e.subclass || !featureClassEntry.subclass || featureClassEntry.subclass === e.subclass))
   const tooHigh = isSpell && character && (e.level || 0) > maxSpellLevel(character) && (e.level || 0) > 0
   const insertLabel = e?.type === 'spell' ? '加入法术'
     : e?.type === 'feat' ? '加入特性'
@@ -302,7 +336,15 @@ function ResultDetail({
           {e.type === 'equipment' && e.kind === 'shield' ? <Badge>AC +{e.ac?.acBonus ?? 2}</Badge> : null}
           {e.type === 'equipment' && e.weight ? <Badge>{e.weight} 磅</Badge> : null}
           {e.type === 'feat' && e.prerequisite ? <Badge tone="gold">先决：{e.prerequisite}</Badge> : null}
-          {e.type === 'classFeature' ? <><Badge tone="green">{e.className || '职业特性'}</Badge><Badge>{e.level ?? '?'}级</Badge></> : null}
+          {e.type === 'classFeature' ? (
+            <>
+              <Badge tone="green">{e.className || '职业特性'}</Badge>
+              {e.subclass ? <Badge tone="gold">{e.subclassLabel || '子职业'}：{e.subclass}</Badge> : null}
+              {e.featureKind === 'subclass'
+                ? <Badge>{e.level ?? 3} 级可选</Badge>
+                : <Badge>{e.level ?? '?'}级</Badge>}
+            </>
+          ) : null}
           {e.type === 'speciesTrait' ? <><Badge tone="green">{e.speciesName || '种族特性'}</Badge><Badge>{e.level ?? 1}级</Badge></> : null}
         </div>
       )}
@@ -339,7 +381,9 @@ function ResultDetail({
       )}
       {e?.type === 'classFeature' && character && !featureClassHit && (
         <div className="hint" style={{ marginTop: 6 }}>
-          当前角色没有{e.className}等级，仍可作为自定义特性加入。
+          {featureClassEntry
+            ? `${e.subclassLabel || '子职业'}：${e.subclass} 与当前角色的${e.className}子职业不一致，仍可作为自定义特性加入。`
+            : `当前角色没有${e.className}等级，仍可作为自定义特性加入。`}
         </div>
       )}
       <div className="insert-bar">

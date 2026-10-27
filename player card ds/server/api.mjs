@@ -70,7 +70,7 @@ function searchOptions(url) {
     limit: p.get('limit') || 30,
     offset: p.get('offset') || 0,
   }
-  for (const key of ['level', 'school', 'class', 'featureLevel', 'featureClass', 'species', 'rarity', 'kind', 'book', 'chapter']) {
+  for (const key of ['level', 'school', 'class', 'featureLevel', 'featureClass', 'subclass', 'species', 'rarity', 'kind', 'book', 'chapter']) {
     const v = p.get(key)
     if (v !== null && v !== '') opts[key] = v
   }

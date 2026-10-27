@@ -13,7 +13,9 @@ describe('规则库解析', () => {
     expect(data.counts.spells).toBe(391)
     expect(data.counts.items).toBe(243)
     expect(data.counts.feats).toBe(75)
-    expect(data.counts.classFeatures).toBe(174)
+    expect(data.counts.classFeatures).toBe(465)
+    expect(data.counts.subclasses).toBe(48)
+    expect(data.counts.subclassFeatures).toBe(241)
     expect(data.counts.conditions).toBe(15)
     expect(data.counts.armor).toBe(12)
     expect(data.counts.shields).toBe(1)
@@ -87,6 +89,31 @@ describe('规则库解析', () => {
     expect(all.every((e: any) => e.description.length > 0)).toBe(true)
     expect(all.every((e: any) => !/^\d+\s*级/.test(e.name))).toBe(true)
     expect(all.every((e: any) => !/\b1st\s+\+\d/.test(e.description))).toBe(true)
+  })
+
+  it('子职业与子职特性逐条索引（奉献之誓）', () => {
+    const oath = data.entries.find(
+      (e: any) => e.type === 'classFeature' && e.featureKind === 'subclass' && e.className === '圣武士' && e.subclass === '奉献之誓',
+    ) as any
+    expect(oath).toBeTruthy()
+    expect(oath.subclassLabel).toBe('神圣誓言')
+    expect(oath.level).toBe(3)
+
+    const feature = (name: string) =>
+      data.entries.find((e: any) => e.type === 'classFeature' && e.subclass === '奉献之誓' && e.name === name) as any
+    const smite = feature('圣洁武器')
+    expect(smite.level).toBe(3)
+    expect(smite.className).toBe('圣武士')
+    expect(smite.description).toContain('引导神力')
+    expect(smite.description).not.toMatch(/^###/m)
+    expect(feature('奉献灵光').level).toBe(7)
+    expect(feature('卫护斩').level).toBe(15)
+    expect(feature('至圣光轮').level).toBe(20)
+
+    const spells = feature('奉献之誓法术')
+    expect(spells.level).toBe(3)
+    expect(spells.spellsByLevel['3']).toEqual(expect.arrayContaining(['防护善恶Protection from Evil and Good', '虔诚护盾Shield of Faith']))
+    expect(spells.spellsByLevel['17']).toEqual(expect.arrayContaining(['通神术Commune', '焰击术Flame Strike']))
   })
 
   it('完整解析十个种族的 38 条特性', () => {

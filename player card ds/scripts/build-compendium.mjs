@@ -20,6 +20,9 @@ import { fileURLToPath } from 'node:url'
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
+// 解析器版本：参与 sourceHash，解析逻辑升级后旧缓存会自动失效重建
+export const PARSER_VERSION = 2
+
 const RARITIES = ['普通', '非普通', '珍稀', '极珍稀', '传说', '神器']
 const ITEM_TYPES = ['武器', '护甲', '盾牌', '奇物', '戒指', '权杖', '法杖', '魔杖', '药水', '卷轴', '弹药', '圣物', '载具', '工具', '其他']
 const CONDITION_NAMES = [
@@ -630,8 +633,256 @@ function cleanClassFeatureBody(lines, featureName = '') {
   return kept.slice(start).join('\n').replace(/\n{3,}/g, '\n\n').trim()
 }
 
-function parseClassFeatures2024(lines, pages, book, chapter) {
+function loadSubclassData() {
+  try {
+    const raw = JSON.parse(fs.readFileSync(path.join(ROOT, 'shared', 'subclasses.json'), 'utf8'))
+    return Array.isArray(raw.subclasses) ? raw.subclasses : []
+  } catch {
+    return []
+  }
+}
+
+function findSubclassDef(registry, className, name, en) {
+  const key = normName(name)
+  return (
+    registry.find((r) => r.className === className && normName(r.name) === key) ||
+    registry.find((r) => r.className === className && en && normName(r.en) === normName(en)) ||
+    registry.find(
+      (r) => r.className === className && (normName(r.name).includes(key) || key.includes(normName(r.name))),
+    ) ||
+    null
+  )
+}
+
+function stripPageMarker(line) {
+  return String(line || '').replace(/\{\{p\.\d+\}\}/g, '').trim()
+}
+
+// 「3 级：圣洁武器Sacred Weapon」这样的子职业特性行
+function matchSubclassFeatureLine(t) {
+  const m = t.match(/^(\d{1,2})\s*级[：:]\s*(.+)$/)
+  if (!m || t.length > 100) return null
+  const { name, en } = splitName(m[2].trim())
+  if (!name || !isCjk(name)) return null
+  return { level: Number(m[1]), name, en }
+}
+
+function cleanSubclassIntro(lines, name, en, limit = 2000) {
+  const target = normName(name)
+  const kept = []
+  for (const raw of lines) {
+    let t = stripPageMarker(raw)
+    if (!t) {
+      if (kept.length && kept[kept.length - 1] !== '') kept.push('')
+      continue
+    }
+    if (/^#{1,6}\s/.test(t)) t = t.replace(/^#{1,6}\s*/, '').trim()
+    if (!t) continue
+    const parsed = splitName(t)
+    // 章节里经常把标题重复一遍（如 5825 行的「奉献之誓Oath of Devotion」）
+    if (normName(parsed.name) === target && (!parsed.en || parsed.en.length <= 60)) continue
+    if (en && parsed.en && normName(parsed.en) === normName(en) && normName(parsed.name) === target) continue
+    kept.push(t)
+  }
+  return kept
+    .join('\n')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+    .slice(0, limit)
+}
+
+// 子职业法术表：返回 { from, to, map: { 3: ['防护善恶Protection…', …] } }
+function parseSubclassSpellTable(lines) {
+  let start = -1
+  for (let i = 0; i < lines.length && i < 12; i++) {
+    const t = stripPageMarker(lines[i])
+    if (!t) continue
+    if (/准备法术\s*$/.test(t) && t.length <= 24) {
+      start = i
+      break
+    }
+  }
+  if (start < 0) return null
+  let level = null
+  let end = start + 1
+  const map = {}
+  for (let i = start + 1; i < lines.length; i++) {
+    const t = stripPageMarker(lines[i])
+    if (!t) {
+      end = i + 1
+      continue
+    }
+    const num = t.match(/^(\d{1,2})$/)
+    if (num) {
+      level = Number(num[1])
+      end = i + 1
+      continue
+    }
+    if (/^[\u4e00-\u9fff]{2,6}等级\s/.test(t)) {
+      end = i + 1
+      continue
+    }
+    if (level === null) break
+    if (/[。；]$/.test(t) && t.length > 24) break
+    const parts = t
+      .split(/[，,]/)
+      .map((s) => s.trim())
+      .filter(Boolean)
+    let ok = 0
+    for (const p of parts) {
+      const { name } = splitName(p)
+      if (!name || !isCjk(name)) continue
+      if (!map[level]) map[level] = []
+      map[level].push(p.replace(/[，,。；]$/, '').trim())
+      ok++
+    }
+    if (!ok) break
+    end = i + 1
+  }
+  return Object.keys(map).length ? { from: start, to: end, map } : null
+}
+
+function formatSpellTable(map) {
+  return Object.keys(map)
+    .map(Number)
+    .sort((a, b) => a - b)
+    .map((lv) => `${lv} 级：${map[lv].join('、')}`)
+    .join('\n')
+}
+
+function subclassFeatureEntry(lines, pages, book, chapter, cls, block, startIdx, endIdx, featureName, featureEn) {
+  const segment = lines.slice(startIdx + 1, endIdx)
+  const page = pages[startIdx] ?? null
+  const level = Number(lines[startIdx].trim().match(/^(\d{1,2})/)[1])
+  const table = parseSubclassSpellTable(segment)
+  let description
+  if (table) {
+    description = [
+      cleanClassFeatureBody(segment.slice(0, table.from), featureName),
+      formatSpellTable(table.map),
+      cleanClassFeatureBody(segment.slice(table.to), featureName),
+    ]
+      .filter(Boolean)
+      .join('\n\n')
+  } else {
+    description = cleanClassFeatureBody(segment, featureName)
+  }
+  return {
+    uid: makeUid('classFeature', `${cls.name}|${block.title}|${featureName}|${level}`, page, featureEn),
+    type: 'classFeature',
+    featureKind: 'feature',
+    name: featureName,
+    en: featureEn,
+    className: cls.name,
+    subclass: block.title,
+    subclassEn: block.en,
+    subclassLabel: block.label,
+    level,
+    description,
+    ...(table ? { spellsByLevel: table.map } : {}),
+    page,
+    book,
+    chapter,
+  }
+}
+
+// 按 ### 子职业标题切块，并修一处原文排版缺陷：
+// 03-第3章 2626 行的「光明领域」标题后面紧跟了「诡术领域」标题（2682 行才是真正的诡术领域），
+// 导致光明领域的正文与特性行被归到诡术领域名下。这里一旦发现块内出现与块名相同的重复标题行，
+// 且上一个子职业块没有任何特性，就把重复标题行之前的内容还给上一个块。
+function buildSubclassBlocks(lines, cls, sectionEnd) {
+  const heads = []
+  for (let i = cls.index + 1; i < sectionEnd; i++) {
+    if (/^###\s+/.test(lines[i].trim())) heads.push(i)
+  }
+  const blocks = heads.map((head, k) => {
+    const titleRaw = lines[head].trim().replace(/^###\s+/, '').trim()
+    const { name, en } = splitName(titleRaw)
+    return { head, start: head + 1, end: k + 1 < heads.length ? heads[k + 1] : sectionEnd, title: name || titleRaw, en }
+  })
+  const countFeatures = (b) => {
+    let n = 0
+    for (let i = b.start; i < b.end; i++) if (matchSubclassFeatureLine(lines[i].trim())) n++
+    return n
+  }
+  for (let k = 0; k < blocks.length; k++) {
+    const b = blocks[k]
+    let dupAt = -1
+    for (let i = b.start; i < b.end; i++) {
+      const t = stripPageMarker(lines[i])
+      if (!t || /^#{1,6}\s/.test(t)) continue
+      const parsed = splitName(t)
+      if (normName(parsed.name) === normName(b.title) && t.length <= 40) {
+        dupAt = i
+        break
+      }
+    }
+    if (dupAt > b.start && k > 0 && countFeatures(blocks[k - 1]) === 0 && countFeatures(b) > 0) {
+      blocks[k - 1].end = dupAt
+      blocks[k - 1].repaired = true
+      b.head = dupAt
+      b.start = dupAt + 1
+      b.repaired = true
+    }
+  }
+  return blocks
+}
+
+function parseSubclassBlock(lines, pages, book, chapter, cls, block, registry) {
   const entries = []
+  const def = findSubclassDef(registry, cls.name, block.title, block.en)
+  const starts = []
+  for (let i = block.start; i < block.end; i++) {
+    const t = lines[i].trim()
+    if (/^#{1,6}\s/.test(t)) continue
+    const f = matchSubclassFeatureLine(t)
+    if (f) starts.push({ index: i, ...f })
+  }
+  const introEnd = starts.length ? starts[0].index : block.end
+  const featureKind = starts.length ? 'subclass' : 'option'
+  const intro = cleanSubclassIntro(
+    lines.slice(block.start, introEnd),
+    block.title,
+    block.en,
+    featureKind === 'subclass' ? 2000 : 8000,
+  )
+  const label = def?.label || '子职业'
+  const level = def?.level ?? (starts.length ? Math.min(...starts.map((s) => s.level)) : null)
+  if (intro || starts.length) {
+    const page = pages[block.head] ?? null
+    entries.push({
+      uid: makeUid('classFeature', `${cls.name}|${block.title}`, page, `subclass|${block.en}`),
+      type: 'classFeature',
+      featureKind,
+      name: block.title,
+      en: block.en,
+      className: cls.name,
+      subclass: block.title,
+      subclassEn: block.en,
+      subclassLabel: label,
+      level,
+      description: intro || `${block.title}子职业。`,
+      page,
+      book,
+      chapter,
+    })
+  }
+  for (let k = 0; k < starts.length; k++) {
+    const f = starts[k]
+    const end = k + 1 < starts.length ? starts[k + 1].index : block.end
+    entries.push(
+      subclassFeatureEntry(lines, pages, book, chapter, cls, { ...block, label }, f.index, end, f.name, f.en),
+    )
+  }
+  return { entries, def, featureCount: starts.length, repaired: Boolean(block.repaired) }
+}
+
+function parseClassFeatures2024(lines, pages, book, chapter) {
+  const registry = loadSubclassData()
+  const entries = []
+  const missing = []
+  const found = new Set()
+  const subclassOptionBlocks = []
   const classStarts = []
   for (let i = 0; i < lines.length; i++) {
     const t = lines[i].trim()
@@ -650,6 +901,7 @@ function parseClassFeatures2024(lines, pages, book, chapter) {
         break
       }
     }
+    // 基础职业特性（子职业标题之前的部分）
     const starts = []
     for (let i = cls.index + 1; i < coreEnd; i++) {
       const t = lines[i].trim()
@@ -664,8 +916,9 @@ function parseClassFeatures2024(lines, pages, book, chapter) {
       const end = k + 1 < starts.length ? starts[k + 1].index : coreEnd
       const page = pages[f.index] ?? null
       entries.push({
-        uid: makeUid('classFeature', `${cls.name}|${f.name}`, page, f.en),
+        uid: makeUid('classFeature', `${cls.name}|${f.name}|${f.level}`, page, f.en),
         type: 'classFeature',
+        featureKind: 'feature',
         name: f.name,
         en: f.en,
         className: cls.name,
@@ -676,11 +929,39 @@ function parseClassFeatures2024(lines, pages, book, chapter) {
         chapter,
       })
     }
+    // 子职业（### 标题之后的部分）
+    const blocks = buildSubclassBlocks(lines, cls, sectionEnd)
+    for (const block of blocks) {
+      const res = parseSubclassBlock(lines, pages, book, chapter, cls, block, registry)
+      entries.push(...res.entries)
+      if (res.def) found.add(`${cls.name}|${res.def.name}`)
+      if (res.def && res.featureCount === 0) {
+        missing.push(`classFeatures: ${cls.name}·${res.def.label}·${res.def.name} 未解析到任何子职业特性`)
+      }
+      if (!res.def && res.featureCount === 0) subclassOptionBlocks.push(`${cls.name}·${block.title}`)
+      if (res.repaired) {
+        // 排版修复成功，不再重复报警
+        const idx = missing.findIndex((m) => m.includes(`${cls.name}·`) && m.includes(block.title))
+        if (idx >= 0) missing.splice(idx, 1)
+      }
+    }
+    for (const def of registry.filter((r) => r.className === cls.name)) {
+      if (!found.has(`${cls.name}|${def.name}`)) {
+        missing.push(`classFeatures: ${cls.name}·${def.label}·${def.name} 未解析到子职业正文`)
+      }
+    }
   }
-  return { entries, missing: [] }
+  const subclassEntries = entries.filter((e) => e.featureKind !== 'feature' || e.subclass)
+  return {
+    entries,
+    missing,
+    optionBlocks: subclassOptionBlocks,
+    subclasses: entries.filter((e) => e.featureKind === 'subclass').length,
+    subclassFeatures: subclassEntries.filter((e) => e.featureKind === 'feature').length,
+  }
 }
 
-function parseClassFeatures(file, dbDir) {
+export function parseClassFeatures(file, dbDir) {
   const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
   const pages = linePageMap(lines)
   const { book, chapter } = bookInfo(file, dbDir)
@@ -1197,6 +1478,8 @@ export function buildCompendium(dbDir) {
     shields: equipment.filter((e) => e.kind === 'shield').length,
     weapons: equipment.filter((e) => e.kind === 'weapon').length,
     classFeatures: classFeatures.entries.length,
+    subclasses: classFeatures.subclasses || 0,
+    subclassFeatures: classFeatures.subclassFeatures || 0,
     speciesTraits: speciesTraits.entries.length,
     total: entries.length,
   }
@@ -1206,7 +1489,7 @@ export function buildCompendium(dbDir) {
     size: fs.statSync(f).size,
     mtimeMs: Math.round(fs.statSync(f).mtimeMs),
   }))
-  report.sourceHash = sha1(report.files.map((f) => `${f.path}:${f.size}:${f.mtimeMs}`).join('|'))
+  report.sourceHash = sha1([`parser:${PARSER_VERSION}`, ...report.files.map((f) => `${f.path}:${f.size}:${f.mtimeMs}`)].join('|'))
 
   return {
     version: 1,

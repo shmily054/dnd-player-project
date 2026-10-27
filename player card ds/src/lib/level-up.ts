@@ -146,14 +146,14 @@ export function applyLevelUp(c: Character, className: string, opts: LevelUpOptio
     summary.push(`获得特性：${fname}`)
   }
   if (opts.subclass && plan.isSubclassLevel) {
-    const fname = `${plan.classDef.subclassLabel}：${opts.subclass}`
-    if (!next.features.some((f) => f.name === fname)) {
+    const source = `${plan.classDef.subclassLabel}：${opts.subclass}`
+    if (!next.features.some((f) => f.source === source && f.name === opts.subclass)) {
       next.features.push({
         id: uid('feat'),
-        name: fname,
-        source: className,
+        name: opts.subclass,
+        source,
         level: plan.newLevel,
-        description: '子职业特性请到规则库检索并添加。',
+        description: '子职业介绍与专属特性请到规则库检索并添加。',
         auto: true,
         searchName: opts.subclass,
       })

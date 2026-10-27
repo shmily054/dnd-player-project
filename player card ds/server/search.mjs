@@ -60,7 +60,13 @@ export function subtitleFor(e) {
   if (e.type === 'spell') return spellLabel(e)
   if (e.type === 'item') return `${e.itemType}${e.subtype ? `（${e.subtype}）` : ''} · ${e.rarity}${e.attunement ? ' · 需同调' : ''}`
   if (e.type === 'feat') return `专长${e.prerequisite ? ` · 先决：${e.prerequisite}` : ''}`
-  if (e.type === 'classFeature') return `职业特性 · ${e.className || '未知职业'} · ${e.level ?? '?'}级`
+  if (e.type === 'classFeature') {
+    if (e.featureKind === 'subclass') {
+      return `${e.subclassLabel || '子职业'} · ${e.className || '未知职业'} · ${e.level ?? '?'}级可选`
+    }
+    if (e.subclass) return `${e.subclassLabel || '子职业'}：${e.subclass} · ${e.level ?? '?'}级`
+    return `职业特性 · ${e.className || '未知职业'} · ${e.level ?? '?'}级`
+  }
   if (e.type === 'speciesTrait') return `种族特性 · ${e.speciesName || '未知种族'} · ${e.level ?? 1}级`
   if (e.type === 'condition') return '状态'
   if (e.type === 'equipment') {
@@ -81,6 +87,9 @@ function entryHaystack(e) {
     e.rarity,
     e.prerequisite,
     e.className,
+    e.subclass,
+    e.subclassEn,
+    e.subclassLabel,
     e.speciesName,
     e.speciesEn,
     e.classes?.join(' '),
@@ -128,6 +137,7 @@ function entryMatchesFilters(e, opts) {
     if (e.type !== 'classFeature' || String(e.level) !== String(opts.featureLevel)) return false
   }
   if (opts.featureClass && (e.type !== 'classFeature' || e.className !== opts.featureClass)) return false
+  if (opts.subclass && (e.type !== 'classFeature' || e.subclass !== opts.subclass)) return false
   if (opts.species && (e.type !== 'speciesTrait' || e.speciesName !== opts.species)) return false
   if (opts.rarity && (e.type !== 'item' || e.rarity !== opts.rarity)) return false
   if (opts.kind) {
@@ -172,6 +182,10 @@ export function searchStructured(q, opts = {}) {
       school: e.school,
       classes: e.classes,
       className: e.className,
+      subclass: e.subclass,
+      subclassEn: e.subclassEn,
+      subclassLabel: e.subclassLabel,
+      featureKind: e.featureKind,
       speciesName: e.speciesName,
       speciesEn: e.speciesEn,
       ritual: e.ritual,
@@ -190,7 +204,14 @@ export function searchStructured(q, opts = {}) {
 
 function looksLikeEntryTitle(line, next) {
   const t = line.trim()
-  if (!t || t.length > 34) return false
+  if (!t) return false
+  // 「3 级：圣洁武器Sacred Weapon」这类职业特性小标题：带等级前缀，必须先于数字开头规则判断
+  const level = t.match(/^(\d{1,2})\s*级[：:]\s*(.+)$/)
+  if (level) {
+    const rest = level[2].trim()
+    return rest.length > 1 && rest.length <= 44 && /[\u4e00-\u9fff]/.test(rest)
+  }
+  if (t.length > 34) return false
   if (!/[\u4e00-\u9fff]/.test(t)) return false
   if (!/[A-Za-z]/.test(t)) return false
   if (/[。！？；，,]$/.test(t)) return false
@@ -198,6 +219,12 @@ function looksLikeEntryTitle(line, next) {
   if (/^(施法时间|施法距离|法术成分|持续时间|先决条件)/.test(t)) return false
   if (!next || next.trim().length < 12) return false
   return true
+}
+
+// 展示用标题：去掉「3 级：」前缀，等级信息由 kind/subtitle 体现
+function rawTitle(t) {
+  const m = t.match(/^\d{1,2}\s*级[：:]\s*(.+)$/)
+  return (m ? m[1] : t).trim()
 }
 
 function splitRawBlocks(text, info) {
@@ -245,11 +272,11 @@ function splitRawBlocks(text, info) {
     }
     if (looksLikeEntryTitle(t, next) && buf.length) {
       flush()
-      title = t
+      title = rawTitle(t)
       continue
     }
     if (looksLikeEntryTitle(t, next) && !buf.length) {
-      title = t
+      title = rawTitle(t)
       continue
     }
     buf.push(t)
@@ -345,17 +372,30 @@ export function searchAll(q, opts = {}) {
   const type = opts.type || 'all'
   const limit = Math.max(1, Math.min(100, Number(opts.limit) || 30))
   const offset = Math.max(0, Number(opts.offset) || 0)
+  const hasQuery = Boolean(String(q || '').trim())
   let structured = []
   let raw = []
+  let fallback = false
   if (type !== 'raw') structured = searchStructured(q, { ...opts, type })
-  if (type === 'raw' || (type === 'all' && String(q || '').trim())) raw = searchRaw(q, opts)
+  if (type === 'raw' || (type === 'all' && hasQuery)) raw = searchRaw(q, opts)
   if (type === 'all') {
-    const structuredNames = getCompendium().entries.map((e) => norm(e.name)).filter(Boolean)
+    // 只丢弃与结构化条目「同名」的原文块。旧规则用前缀匹配，会把标题恰好以条目名开头的整段正文吞掉
+    // （例如以「通神术Commune，焰击术Flame Strike」开头的圣洁武器段落），导致全文都搜不到。
+    // 现在仅当标题是「条目名 + 纯英文」时才视为同一个条目（圣洁武器Sacred Weapon ↔ 圣洁武器）。
+    const structuredNames = [...new Set(getCompendium().entries.map((e) => norm(e.name)).filter(Boolean))]
     raw = raw.filter((r) => {
       const rt = norm(r.title)
-      if (!rt) return true
-      return !structuredNames.some((n) => rt === n || rt.startsWith(n) || n.startsWith(rt))
+      return !structuredNames.some((n) => {
+        if (rt === n) return true
+        if (!rt.startsWith(n)) return false
+        const rest = rt.slice(n.length)
+        return rest.length > 0 && !/[\u3400-\u9fff]/.test(rest) && /[a-z]/.test(rest)
+      })
     })
+  } else if (type !== 'raw' && hasQuery && !offset && !structured.length) {
+    // 该类型索引没有命中时回退到规则原文，避免「全部」搜得到、按类型筛选却一片空白
+    raw = searchRaw(q, { book: opts.book, chapter: opts.chapter })
+    fallback = raw.length > 0
   }
   const combined = type === 'raw' ? raw : [...structured, ...raw]
   combined.sort((a, b) => b.score - a.score || (TYPE_ORDER[a.kind] ?? 9) - (TYPE_ORDER[b.kind] ?? 9) || a.title.localeCompare(b.title, 'zh'))
@@ -363,6 +403,7 @@ export function searchAll(q, opts = {}) {
     results: combined.slice(offset, offset + limit),
     total: combined.length,
     counts: compendiumCounts(),
+    fallback,
     error: getCompendium().error || null,
   }
 }

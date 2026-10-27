@@ -196,6 +196,11 @@ export interface CompendiumEntry {
   description: string
   level?: number
   className?: string
+  subclass?: string
+  subclassEn?: string
+  subclassLabel?: string
+  featureKind?: 'feature' | 'subclass' | 'option'
+  spellsByLevel?: Record<string, string[]>
   speciesName?: string
   speciesEn?: string
   school?: string
@@ -260,6 +265,7 @@ export interface SearchResponse {
   results: SearchResult[]
   total: number
   counts: SearchCounts
+  fallback?: boolean
   error?: string | null
 }
 

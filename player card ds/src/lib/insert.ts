@@ -59,7 +59,7 @@ export function insertEntry(c: Character, e: CompendiumEntry): InsertResult {
   }
 
   if (e.type === 'classFeature') {
-    const source = e.className || '职业特性'
+    const source = e.subclass ? `${e.subclassLabel || '子职业'}：${e.subclass}` : (e.className || '职业特性')
     const baseName = featureBaseName(e.name)
     const existing = next.features.find((f) => f.source === source && featureBaseName(f.name) === baseName)
     if (existing) {

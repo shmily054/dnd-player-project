@@ -1,7 +1,7 @@
 import fs from 'node:fs'
 import path from 'node:path'
 import crypto from 'node:crypto'
-import { writeCompendium } from '../scripts/build-compendium.mjs'
+import { PARSER_VERSION, writeCompendium } from '../scripts/build-compendium.mjs'
 import { DATA_DIR, getDatabaseDir, listMdFiles } from './db.mjs'
 
 const FILE = path.join(DATA_DIR, 'compendium.json')
@@ -18,7 +18,7 @@ export function sourceHash(dbDir) {
     const st = fs.statSync(f)
     return `${path.relative(dbDir, f).replace(/\\/g, '/')}:${st.size}:${Math.round(st.mtimeMs)}`
   })
-  return sha1(parts.join('|'))
+  return sha1([`parser:${PARSER_VERSION}`, ...parts].join('|'))
 }
 
 function emptyCompendium(dbDir, error) {

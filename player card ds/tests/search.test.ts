@@ -43,6 +43,40 @@ describe('规则库检索', () => {
     expect(filtered.results.every((r: any) => r.meta.className === '圣武士' && r.meta.level === 1)).toBe(true)
   })
 
+  it('子职业与子职特性可检索、可按子职业筛选', () => {
+    const oath = searchAll('奉献之誓', { type: 'classFeature', limit: 10 })
+    expect(oath.fallback).toBeFalsy()
+    expect(oath.results[0].title).toBe('奉献之誓')
+    expect(oath.results[0].meta.featureKind).toBe('subclass')
+    expect(oath.results.map((r: any) => r.title)).toEqual(
+      expect.arrayContaining(['奉献之誓', '圣洁武器', '奉献灵光', '卫护斩', '至圣光轮']),
+    )
+
+    const smite = searchAll('圣洁武器', { type: 'classFeature', limit: 5 })
+    expect(smite.total).toBe(1)
+    expect(smite.results[0].title).toBe('圣洁武器')
+    expect(smite.results[0].entry?.subclass).toBe('奉献之誓')
+    expect(smite.results[0].subtitle).toContain('神圣誓言')
+
+    const filtered = searchAll('', { type: 'classFeature', featureClass: '圣武士', subclass: '奉献之誓', limit: 20 })
+    expect(filtered.total).toBe(6)
+    expect(filtered.results.every((r: any) => r.meta.subclass === '奉献之誓')).toBe(true)
+  })
+
+  it('类型页没有结构化命中时回退规则全文', () => {
+    const res = searchAll('先攻熟练', { type: 'classFeature', limit: 5 })
+    expect(res.fallback).toBe(true)
+    expect(res.results.length).toBeGreaterThan(0)
+    expect(res.results.every((r: any) => r.kind === 'raw')).toBe(true)
+  })
+
+  it('全部检索不再丢弃标题被表格行污染的法术段落', () => {
+    const res = searchAll('圣洁武器', { type: 'all', limit: 5 })
+    const classes = res.results.map((r: any) => r.kind)
+    expect(classes).toContain('classFeature')
+    expect(res.results.some((r: any) => r.kind === 'classFeature' && r.title === '圣洁武器')).toBe(true)
+  })
+
   it('种族特性支持中英文检索和种族筛选', () => {
     const cn = searchAll('天启', { type: 'speciesTrait', limit: 5 })
     expect(cn.total).toBe(1)
