@@ -13,10 +13,10 @@ interface SubclassDef { className: string; label: string; level: number; name: s
 const SUBCLASSES = ((subclassData as unknown as { subclasses: SubclassDef[] }).subclasses || [])
 
 const TYPE_LABEL: Record<string, string> = {
-  all: '全部', spell: '法术', item: '魔法物品', feat: '专长', classFeature: '职业特性', speciesTrait: '种族特性', condition: '状态', equipment: '装备', raw: '规则全文',
+  all: '全部', spell: '法术', cantrip: '戏法', item: '魔法物品', feat: '专长', classFeature: '职业特性', speciesTrait: '种族特性', condition: '状态', equipment: '装备', raw: '规则全文',
 }
 const TYPE_TONE: Record<string, 'gold' | 'green' | 'blue' | 'red' | 'default'> = {
-  spell: 'blue', item: 'gold', feat: 'green', classFeature: 'green', speciesTrait: 'green', condition: 'red', equipment: 'default', raw: 'default',
+  spell: 'blue', cantrip: 'blue', item: 'gold', feat: 'green', classFeature: 'green', speciesTrait: 'green', condition: 'red', equipment: 'default', raw: 'default',
 }
 const CASTER_CLASSES = ['吟游诗人', '牧师', '德鲁伊', '圣武士', '游侠', '术士', '邪术师', '魔契师', '法师']
 const SPECIES_NAMES = ['阿斯莫', '龙裔', '矮人', '精灵', '侏儒', '歌利亚', '半身人', '人类', '兽人', '提夫林']
@@ -112,8 +112,8 @@ export function CompendiumExplorer({
 
   const isClassFeature = type === 'classFeature'
   const showLevel = type === 'spell' || type === 'all' || isClassFeature
-  const showSchool = type === 'spell' || type === 'all'
-  const showClass = type === 'spell' || type === 'all' || isClassFeature
+  const showSchool = type === 'spell' || type === 'cantrip' || type === 'all'
+  const showClass = type === 'spell' || type === 'cantrip' || type === 'all' || isClassFeature
   const showRarity = type === 'item' || type === 'all'
   const showKind = type === 'equipment' || type === 'item'
   const classFilterKey = isClassFeature ? 'featureClass' : 'class'
@@ -137,7 +137,7 @@ export function CompendiumExplorer({
             className="input"
             value={q}
             autoFocus={autoFocus}
-            placeholder="搜索法术、物品、专长、职业特性、种族特性、状态、规则原文…  支持中文或英文名"
+            placeholder="搜索法术、戏法、物品、专长、职业特性、种族特性、状态、规则原文…  支持中文或英文名"
             onChange={(e) => { setQ(e.target.value); setLimit(40) }}
             onKeyDown={(e) => {
               if (e.key === 'Enter' && results[0]) {
@@ -168,7 +168,7 @@ export function CompendiumExplorer({
             options={isClassFeature
               ? Array.from({ length: 20 }, (_, i) => ({ value: String(i + 1), label: `${i + 1} 级` }))
               : [
-                { value: '0', label: '戏法' },
+                ...(type === 'all' ? [{ value: '0', label: '戏法' }] : []),
                 ...[1, 2, 3, 4, 5, 6, 7, 8, 9].map((n) => ({ value: String(n), label: `${n} 环` })),
               ]}
           />
@@ -227,7 +227,7 @@ export function CompendiumExplorer({
             }))}
           />
         )}
-        {(type === 'spell' || type === 'all') && (
+        {(type === 'spell' || type === 'cantrip' || type === 'all') && (
           <>
             <button className={`type-tab ${filters.ritual ? 'active' : ''}`} onClick={() => setFilter('ritual', filters.ritual ? '' : '1')}>仪式</button>
             <button className={`type-tab ${filters.concentration ? 'active' : ''}`} onClick={() => setFilter('concentration', filters.concentration ? '' : '1')}>专注</button>
@@ -306,7 +306,7 @@ function ResultDetail({
   if (!result) return <Empty>选择一个条目查看详情。</Empty>
   const e = result.entry
   const canInsert = !!e && !!onInsert
-  const isSpell = e?.type === 'spell'
+  const isSpell = e?.type === 'spell' || e?.type === 'cantrip'
   const charClass = character ? [...character.classes].sort((a, b) => b.level - a.level)[0]?.name : ''
   const classHit = !isSpell || !e?.classes?.length || !charClass || e.classes.includes(charClass)
   const featureClassEntry = e?.type === 'classFeature' && e?.className
@@ -315,7 +315,7 @@ function ResultDetail({
   const featureClassHit = e?.type !== 'classFeature' || !character || !e?.className
     || (!!featureClassEntry && (!e.subclass || !featureClassEntry.subclass || featureClassEntry.subclass === e.subclass))
   const tooHigh = isSpell && character && (e.level || 0) > maxSpellLevel(character) && (e.level || 0) > 0
-  const insertLabel = e?.type === 'spell' ? '加入法术'
+  const insertLabel = e?.type === 'cantrip' ? '加入戏法' : e?.type === 'spell' ? '加入法术'
     : e?.type === 'feat' ? '加入特性'
       : e?.type === 'classFeature' ? '加入职业特性'
         : e?.type === 'speciesTrait' ? '加入种族特性'
@@ -329,7 +329,7 @@ function ResultDetail({
       <div className="detail-sub">{e ? entrySubtitle(e) : result.subtitle}</div>
       {e && (
         <div className="detail-meta">
-          {e.type === 'spell' && e.classes?.length ? e.classes.map((c) => <Badge key={c}>{c}</Badge>) : null}
+          {(e.type === 'spell' || e.type === 'cantrip') && e.classes?.length ? e.classes.map((c) => <Badge key={c}>{c}</Badge>) : null}
           {e.type === 'item' && e.attunement ? <Badge tone="gold">需同调</Badge> : null}
           {e.type === 'equipment' && e.kind === 'weapon' ? <Badge>伤害 {e.damage || '—'} {e.damageType}</Badge> : null}
           {e.type === 'equipment' && e.kind === 'armor' ? <Badge>AC {e.ac?.base}{e.ac?.dexCap ? `（敏捷上限 ${e.ac.dexCap}）` : ''}</Badge> : null}
@@ -348,7 +348,7 @@ function ResultDetail({
           {e.type === 'speciesTrait' ? <><Badge tone="green">{e.speciesName || '种族特性'}</Badge><Badge>{e.level ?? 1}级</Badge></> : null}
         </div>
       )}
-      {e?.type === 'spell' && (
+      {(e?.type === 'spell' || e?.type === 'cantrip') && (
         <div className="spell-cast-meta" style={{ marginTop: 10 }}>
           <div><span>施法时间：</span>{e.castingTime || '—'}</div>
           <div><span>施法距离：</span>{e.range || '—'}</div>

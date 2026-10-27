@@ -21,7 +21,7 @@ import { fileURLToPath } from 'node:url'
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 // 解析器版本：参与 sourceHash，解析逻辑升级后旧缓存会自动失效重建
-export const PARSER_VERSION = 2
+export const PARSER_VERSION = 3
 
 const RARITIES = ['普通', '非普通', '珍稀', '极珍稀', '传说', '神器']
 const ITEM_TYPES = ['武器', '护甲', '盾牌', '奇物', '戒指', '权杖', '法杖', '魔杖', '药水', '卷轴', '弹药', '圣物', '载具', '工具', '其他']
@@ -392,9 +392,11 @@ function parseSpells(file, dbDir) {
       ...(en ? classMap.get(normName(en)) || [] : []),
     ])
     const page = pages[s.start] ?? pages[s.metaIdx] ?? null
+    // 戏法是 0 环但不是法术：单独成类，检索里与法术分开
+    const type = s.meta.level === 0 ? 'cantrip' : 'spell'
     entries.push({
-      uid: makeUid('spell', name, page, en),
-      type: 'spell',
+      uid: makeUid(type, name, page, en),
+      type,
       name,
       en,
       level: s.meta.level,
@@ -1280,8 +1282,10 @@ export function buildCompendium(dbDir) {
   const all = [...spells, ...items, ...feats.entries, ...conditions, ...equipment, ...classFeatures.entries, ...speciesTraits.entries]
   const entries = all.filter((e, i, arr) => arr.findIndex((x) => x.uid === e.uid) === i)
 
+  const cantripCount = spells.filter((s) => s.level === 0).length
   report.counts = {
-    spells: spells.length,
+    spells: spells.length - cantripCount,
+    cantrips: cantripCount,
     items: items.length,
     feats: feats.entries.length,
     conditions: conditions.length,
@@ -1342,7 +1346,7 @@ function main() {
   }
   const samples = ['火球术', '英雄宴', '警报术']
   for (const n of samples) {
-    const e = data.entries.find((x) => x.type === 'spell' && x.name === n)
+    const e = data.entries.find((x) => (x.type === 'spell' || x.type === 'cantrip') && x.name === n)
     if (e) console.log(`[sample] ${n}: ${e.level}环 ${e.school} ${e.classes.join('/')} 仪式=${e.ritual} 专注=${e.concentration}`)
     else console.log(`[sample] 未找到 ${n}`)
   }

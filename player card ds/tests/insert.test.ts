@@ -39,6 +39,27 @@ describe('规则库条目加入角色卡', () => {
     expect(res.character.features[0].description).toContain('治疗能量池')
   })
 
+  it('戏法条目作为 0 环法术加入法术列表', () => {
+    const acid: CompendiumEntry = {
+      uid: 'cantrip-test-acid-splash',
+      type: 'cantrip',
+      name: '酸液飞溅',
+      en: 'Acid Splash',
+      level: 0,
+      school: '塑能',
+      classes: ['术士', '法师'],
+      book: '玩家手册',
+      chapter: '第7章法术',
+      page: 148,
+      description: '测试戏法插入。',
+    }
+    const c = base()
+    c.spellcasting = { ...c.spellcasting, spells: [] }
+    const res = insertEntry(c, acid)
+    expect(res.changed).toBe(true)
+    expect(res.character.spellcasting.spells[0]).toMatchObject({ name: '酸液飞溅', level: 0, source: '圣武士' })
+  })
+
   it('补全自动生成但缺描述的职业特性', () => {
     const c = base()
     c.features = [{

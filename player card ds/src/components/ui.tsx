@@ -1,6 +1,7 @@
 import { createContext, useCallback, useContext, useEffect, useRef, useState } from 'react'
-import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react'
+import type { ButtonHTMLAttributes, InputHTMLAttributes, KeyboardEvent, ReactNode } from 'react'
 import { Check, ChevronDown, X, Minus, Plus } from 'lucide-react'
+import { clampNumber, commitNumberDraft, formatNumberValue, parseNumberDraft } from '@/lib/number'
 
 /* ---------------- Toast ---------------- */
 
@@ -82,7 +83,7 @@ export function Btn({
 /* ---------------- Inputs ---------------- */
 
 export function NumberField({
-  value, onChange, min, max, step = 1, className = '', title,
+  value, onChange, min, max, step = 1, className = '', title, bare = false, blank = 'restore',
 }: {
   value: number
   onChange: (v: number) => void
@@ -91,21 +92,63 @@ export function NumberField({
   step?: number
   className?: string
   title?: string
+  /** 不套用通用 input 样式，用于已有专门样式的输入框（HP、属性、钱币等） */
+  bare?: boolean
+  /** 清空后失焦的策略：restore 恢复原值（默认），zero 归零再受 min/max 约束 */
+  blank?: 'restore' | 'zero'
 }) {
+  // draft 为 null 时显示真实值；聚焦后进入“草稿”模式，允许空串、负号、小数点等中间态
+  const [draft, setDraft] = useState<string | null>(null)
+  const safeValue = Number.isFinite(value) ? value : 0
+  const shown = draft ?? formatNumberValue(safeValue)
+
+  const commit = useCallback((raw: string) => {
+    const next = commitNumberDraft(raw, { min, max, previous: safeValue, blank })
+    setDraft(null)
+    if (next !== safeValue) onChange(next)
+  }, [blank, max, min, onChange, safeValue])
+
+  const handleKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+    const el = e.currentTarget
+    if (e.key === 'Enter') {
+      e.preventDefault()
+      commit(el.value)
+      el.blur()
+    } else if (e.key === 'Escape') {
+      e.preventDefault()
+      setDraft(null)
+    } else if (e.key === 'ArrowUp' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      const base = parseNumberDraft(el.value).value ?? safeValue
+      const next = Math.round(clampNumber(base + (e.key === 'ArrowUp' ? step : -step), min, max) * 1e6) / 1e6
+      setDraft(formatNumberValue(next))
+      onChange(next)
+    }
+  }
+
   return (
     <input
-      type="number"
+      type="text"
+      inputMode="decimal"
+      autoComplete="off"
       title={title}
-      className={`input num ${className}`}
-      value={Number.isFinite(value) ? value : 0}
-      min={min}
-      max={max}
-      step={step}
+      className={bare ? className : `input num ${className}`}
+      value={shown}
+      onFocus={() => setDraft(formatNumberValue(safeValue))}
       onChange={(e) => {
-        const v = e.target.value === '' ? 0 : Number(e.target.value)
-        if (Number.isNaN(v)) return
-        onChange(v)
+        const raw = e.target.value
+        setDraft(raw)
+        // 能解析且在范围内就立即提交，保持属性/HP 等派生值的实时更新
+        const parsed = parseNumberDraft(raw)
+        if (parsed.value !== null
+          && (min === undefined || parsed.value >= min)
+          && (max === undefined || parsed.value <= max)
+          && parsed.value !== safeValue) {
+          onChange(parsed.value)
+        }
       }}
+      onBlur={(e) => commit(e.target.value)}
+      onKeyDown={handleKeyDown}
     />
   )
 }

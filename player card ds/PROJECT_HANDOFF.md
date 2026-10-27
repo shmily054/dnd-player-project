@@ -85,7 +85,7 @@
 
 结构化解析结果（当前生成数据）：
 
-- 法术：391 条。
+- 法术：357 条；戏法（0 环，独立分类）：34 条。
 - 魔法物品：243 条。
 - 专长：75 条。
 - 状态：15 条。
@@ -122,11 +122,13 @@
 
 ### 2.7 测试与验证
 
-- `npm test`：7 个测试文件、50 项测试通过。
+- `npm test`：9 个测试文件、63 项测试通过。
   - `tests/calc.test.ts`：数值、AC、休息、升级。
   - `tests/compendium.test.ts`：解析数量、子职业索引、关键样本、无 Markdown 标题泄漏。
   - `tests/classes.test.ts`：12 职业 × 20 级、2024 资源数值、邪术师契约位。
   - `tests/search.test.ts`：火球排序、英文检索、筛选、子职检索、全文兜底。
+  - `tests/number.test.ts`：数字输入草稿解析与提交（空串、负号、小数、越界收束）。
+  - `tests/number-field.test.tsx`：NumberField 渲染（文本输入、bare 样式、非法值显示 0）。
 - `npm run build` 通过。
 - 浏览器手工验证过：检索插入、长休、4→5 升级、专长选择、新建法师、速查、移动端、深色主题、无控制台错误。
 - 备份恢复与数据库路径更新接口已用 Node 脚本验证。
@@ -393,6 +395,8 @@ player card ds/
 - `tests/compendium.test.ts`：解析数量/关键样本/子职业索引/武器分类/无标题泄漏。
 - `tests/classes.test.ts`：12×20、2024 资源数值、法师/牧师/邪术师施法类型。
 - `tests/search.test.ts`：火球排序、英文名、环位/职业筛选、子职检索、全文兜底。
+- `tests/number.test.ts`：数字输入草稿（空串/负号/小数/越界）与失焦提交策略。
+- `tests/number-field.test.tsx`：NumberField 渲染契约（文本输入承载数字、bare 模式、非法值显示 0）。
 - `tsconfig.json` 只 typecheck `src` 和 `vite.config.ts`；tests 由 Vitest 转译，所以测试里的 `.mjs` 导入不会让 `npm run build` 失败。
 
 ---

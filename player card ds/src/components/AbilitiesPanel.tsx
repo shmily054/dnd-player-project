@@ -48,13 +48,12 @@ export function AbilitiesPanel({ character, patch }: { character: Character; pat
             <div className="ability-card" key={a.key}>
               <div className="ab-name">{a.name} <span style={{ opacity: .55 }}>{a.en}</span></div>
               <div className="ab-score">
-                <input
+                <NumberField
+                  bare
                   value={character.abilities[a.key]}
-                  inputMode="numeric"
-                  onChange={(e) => {
-                    const v = Math.max(1, Math.min(30, Number(e.target.value) || 1))
-                    patch((c) => ({ ...c, abilities: { ...c.abilities, [a.key]: v } }))
-                  }}
+                  min={1}
+                  max={30}
+                  onChange={(v) => patch((c) => ({ ...c, abilities: { ...c.abilities, [a.key]: v } }))}
                 />
               </div>
               <div className="ab-mod">{formatMod(abilityMod(character.abilities[a.key]))}</div>

@@ -52,14 +52,15 @@ export function FeaturesPanel({
       subtitle="按来源分组；可记录使用次数与恢复方式"
       actions={
         <>
-          <Btn size="sm" onClick={() => onOpenSearch('feat')}><BookOpen size={12} /> 检索专长</Btn>
+          <Btn size="sm" onClick={() => onOpenSearch('feat')}><BookOpen size={12} /> 专长</Btn>
           <Btn size="sm" onClick={() => onOpenSearch('classFeature')}><BookOpen size={12} /> 职业特性</Btn>
+          <Btn size="sm" onClick={() => onOpenSearch('speciesTrait')}><BookOpen size={12} /> 种族特性</Btn>
           <Btn size="sm" variant="ghost" onClick={add}><Plus size={12} /> 自定义</Btn>
         </>
       }
     >
       {character.features.length === 0 ? (
-        <Empty>还没有特性。升级时会自动加入职业特性，也可以从规则库检索专长或职业特性。</Empty>
+        <Empty>还没有特性。升级时会自动加入职业特性，也可以从规则库检索专长、职业特性或种族特性。</Empty>
       ) : (
         groups.map(([source, items]) => (
           <div className="feature-group" key={source}>

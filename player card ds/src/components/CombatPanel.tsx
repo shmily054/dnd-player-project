@@ -44,19 +44,23 @@ export function CombatPanel({ character, patch }: { character: Character; patch:
       <div className="hp-panel">
         <div>
           <div className="hp-big">
-            <input
+            <NumberField
+              bare
               className="hp-current-input"
               value={character.hp.current}
-              inputMode="numeric"
-              onChange={(e) => patch((c) => ({ ...c, hp: { ...c.hp, current: Math.max(0, Math.min(c.hp.max, Number(e.target.value) || 0)) } }))}
+              min={0}
+              max={character.hp.max}
+              onChange={(v) => patch((c) => ({ ...c, hp: { ...c.hp, current: v } }))}
               title="当前 HP"
             />
             <span className="sep">/</span>
-            <input
+            <NumberField
+              bare
               className="hp-max-input"
               value={character.hp.max}
-              inputMode="numeric"
-              onChange={(e) => patch((c) => ({ ...c, hp: { ...c.hp, max: Math.max(1, Number(e.target.value) || 1) } }))}
+              min={1}
+              max={30}
+              onChange={(v) => patch((c) => ({ ...c, hp: { ...c.hp, max: v } }))}
               title="最大 HP"
             />
             <span className="hp-temp-label">临时</span>

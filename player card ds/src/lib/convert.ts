@@ -119,7 +119,7 @@ export function spellLevelLabel(level: number): string {
 }
 
 export function entrySubtitle(e: CompendiumEntry): string {
-  if (e.type === 'spell') {
+  if (e.type === 'spell' || e.type === 'cantrip') {
     return `${spellLevelLabel(e.level ?? 0)} · ${e.school || ''}${e.ritual ? ' · 仪式' : ''}${e.concentration ? ' · 专注' : ''}`
   }
   if (e.type === 'item') return `${e.itemType || ''}${e.subtype ? `（${e.subtype}）` : ''} · ${e.rarity || ''}${e.attunement ? ' · 需同调' : ''}`

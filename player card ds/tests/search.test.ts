@@ -19,6 +19,14 @@ describe('规则库检索', () => {
     expect(res.results.every((r: any) => r.meta.level === 3 && r.meta.classes.includes('法师'))).toBe(true)
   })
 
+  it('戏法与法术的检索分开', () => {
+    const cantrip = searchAll('酸液飞溅', { type: 'cantrip', limit: 5 })
+    expect(cantrip.results[0].title).toBe('酸液飞溅')
+    expect(cantrip.results[0].kind).toBe('cantrip')
+    const spellOnly = searchAll('酸液飞溅', { type: 'spell', limit: 5 })
+    expect(spellOnly.results.some((r: any) => r.kind === 'cantrip')).toBe(false)
+  })
+
   it('状态与专长可检索', () => {
     const cond = searchAll('目盲', { type: 'condition', limit: 3 })
     expect(cond.results[0].title).toBe('目盲')

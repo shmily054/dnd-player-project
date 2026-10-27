@@ -10,7 +10,8 @@ const by = (type: string, name: string) => data.entries.find((e: any) => e.type 
 
 describe('规则库解析', () => {
   it('条目数量达到预期', () => {
-    expect(data.counts.spells).toBe(391)
+    expect(data.counts.spells).toBe(357)
+    expect(data.counts.cantrips).toBe(34)
     expect(data.counts.items).toBe(243)
     expect(data.counts.feats).toBe(75)
     expect(data.counts.classFeatures).toBe(465)
@@ -39,6 +40,13 @@ describe('规则库解析', () => {
     const feast = by('spell', '英雄宴') as any
     expect(feast.level).toBe(6)
     expect(feast.classes).toEqual(expect.arrayContaining(['牧师', '德鲁伊']))
+  })
+
+  it('戏法单独成类，不混在法术里', () => {
+    const acid = by('cantrip', '酸液飞溅') as any
+    expect(acid.level).toBe(0)
+    expect(acid.classes).toEqual(expect.arrayContaining(['术士', '法师']))
+    expect(by('spell', '酸液飞溅')).toBeUndefined()
   })
 
   it('专长、状态与装备', () => {

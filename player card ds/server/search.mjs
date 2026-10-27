@@ -3,7 +3,8 @@ import fs from 'node:fs'
 import { getCompendium } from './compendium.mjs'
 import { fileInfo, getDatabaseDir, listMdFiles, readMd } from './db.mjs'
 
-const TYPE_ORDER = { spell: 0, item: 1, feat: 2, classFeature: 3, speciesTrait: 4, condition: 5, equipment: 6, raw: 7 }
+const TYPE_ORDER = { cantrip: 0, spell: 1, item: 2, feat: 3, classFeature: 4, speciesTrait: 5, condition: 6, equipment: 7, raw: 8 }
+const isSpellEntry = (e) => e.type === 'spell' || e.type === 'cantrip'
 const rawCache = new Map()
 
 function norm(s) {
@@ -52,12 +53,12 @@ function snippetAround(text, toks, radius = 110) {
 }
 
 function spellLabel(e) {
-  const lv = e.level === 0 ? '戏法' : `${e.level}环`
+  const lv = e.type === 'cantrip' || e.level === 0 ? '戏法' : `${e.level}环`
   return `${lv} · ${e.school}${e.ritual ? ' · 仪式' : ''}${e.concentration ? ' · 专注' : ''}`
 }
 
 export function subtitleFor(e) {
-  if (e.type === 'spell') return spellLabel(e)
+  if (isSpellEntry(e)) return spellLabel(e)
   if (e.type === 'item') return `${e.itemType}${e.subtype ? `（${e.subtype}）` : ''} · ${e.rarity}${e.attunement ? ' · 需同调' : ''}`
   if (e.type === 'feat') return `专长${e.prerequisite ? ` · 先决：${e.prerequisite}` : ''}`
   if (e.type === 'classFeature') {
@@ -127,11 +128,11 @@ function entryMatchesFilters(e, opts) {
   const type = opts.type || 'all'
   if (type !== 'all' && type !== 'raw' && e.type !== type) return false
   if (opts.level !== undefined && opts.level !== '' && String(opts.level) !== 'null') {
-    if (e.type !== 'spell' || String(e.level) !== String(opts.level)) return false
+    if (!isSpellEntry(e) || String(e.level) !== String(opts.level)) return false
   }
-  if (opts.school && (e.type !== 'spell' || e.school !== opts.school)) return false
+  if (opts.school && (!isSpellEntry(e) || e.school !== opts.school)) return false
   if (opts.class) {
-    if (e.type !== 'spell' || !(e.classes || []).includes(opts.class)) return false
+    if (!isSpellEntry(e) || !(e.classes || []).includes(opts.class)) return false
   }
   if (opts.featureLevel !== undefined && opts.featureLevel !== '' && String(opts.featureLevel) !== 'null') {
     if (e.type !== 'classFeature' || String(e.level) !== String(opts.featureLevel)) return false
@@ -151,10 +152,10 @@ function entryMatchesFilters(e, opts) {
   }
   if (opts.book && e.book !== opts.book) return false
   if (opts.ritual === '1' || opts.ritual === true) {
-    if (e.type !== 'spell' || !e.ritual) return false
+    if (!isSpellEntry(e) || !e.ritual) return false
   }
   if (opts.concentration === '1' || opts.concentration === true) {
-    if (e.type !== 'spell' || !e.concentration) return false
+    if (!isSpellEntry(e) || !e.concentration) return false
   }
   return true
 }
@@ -358,6 +359,7 @@ export function compendiumCounts() {
   return {
     all: data.entries.length,
     spell: c.spells || 0,
+    cantrip: c.cantrips || 0,
     item: c.items || 0,
     feat: c.feats || 0,
     classFeature: c.classFeatures || 0,

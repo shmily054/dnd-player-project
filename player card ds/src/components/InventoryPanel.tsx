@@ -115,10 +115,12 @@ export function InventoryPanel({
           {COINS.map((c) => (
             <label className="coin" key={c.key} title={c.name}>
               <span>{c.label}</span>
-              <input
+              <NumberField
+                bare
                 value={character.currency[c.key]}
-                inputMode="numeric"
-                onChange={(e) => patch((cur) => ({ ...cur, currency: { ...cur.currency, [c.key]: Math.max(0, Number(e.target.value) || 0) } }))}
+                min={0}
+                max={9999999}
+                onChange={(v) => patch((cur) => ({ ...cur, currency: { ...cur.currency, [c.key]: v } }))}
               />
             </label>
           ))}

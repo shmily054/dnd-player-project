@@ -22,7 +22,7 @@ function featureBaseName(name: string): string {
 
 export function insertEntry(c: Character, e: CompendiumEntry): InsertResult {
   const next: Character = JSON.parse(JSON.stringify(c))
-  if (e.type === 'spell') {
+  if (e.type === 'spell' || e.type === 'cantrip') {
     if (next.spellcasting.spells.some((s) => s.name === e.name)) {
       return { character: c, changed: false, message: `「${e.name}」已在法术列表中`, tone: 'info' }
     }

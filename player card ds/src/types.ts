@@ -187,7 +187,7 @@ export interface CharacterSummary {
 
 export interface CompendiumEntry {
   uid: string
-  type: 'spell' | 'item' | 'feat' | 'classFeature' | 'speciesTrait' | 'condition' | 'equipment'
+  type: 'spell' | 'cantrip' | 'item' | 'feat' | 'classFeature' | 'speciesTrait' | 'condition' | 'equipment'
   name: string
   en?: string
   book: string
@@ -234,7 +234,7 @@ export interface CompendiumEntry {
 }
 
 export interface SearchResult {
-  kind: 'spell' | 'item' | 'feat' | 'classFeature' | 'speciesTrait' | 'condition' | 'equipment' | 'raw'
+  kind: 'spell' | 'cantrip' | 'item' | 'feat' | 'classFeature' | 'speciesTrait' | 'condition' | 'equipment' | 'raw'
   uid: string
   title: string
   en?: string
@@ -252,6 +252,7 @@ export interface SearchResult {
 export interface SearchCounts {
   all: number
   spell: number
+  cantrip: number
   item: number
   feat: number
   classFeature: number
