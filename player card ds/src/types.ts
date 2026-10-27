@@ -337,6 +337,31 @@ export interface ClassDataFile {
   warnings: string[]
 }
 
+/** 子职业在某一等级获得的特性（来自 2024 规则库索引） */
+export interface SubclassFeatureRef {
+  level: number
+  name: string
+  en?: string
+}
+
+export interface SubclassGrowth {
+  en: string
+  features: SubclassFeatureRef[]
+}
+
+export interface ClassSubclassGrowth {
+  label: string
+  subclasses: Record<string, SubclassGrowth>
+}
+
+export interface SubclassFeatureFile {
+  version: number
+  generatedAt: string
+  source: string
+  classes: Record<string, ClassSubclassGrowth>
+  missing: string[]
+}
+
 export interface QuickRule {
   id: string
   title: string

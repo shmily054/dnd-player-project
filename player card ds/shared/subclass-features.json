@@ -1,0 +1,1514 @@
+{
+  "version": 1,
+  "parserVersion": 2,
+  "generatedAt": "2026-10-27T04:47:10.430Z",
+  "source": "玩家手册 2024",
+  "classes": {
+    "野蛮人": {
+      "label": "原初道途",
+      "subclasses": {
+        "狂战士道途": {
+          "en": "Path of the Berserker",
+          "features": [
+            {
+              "level": 3,
+              "name": "狂怒",
+              "en": "Frenzy"
+            },
+            {
+              "level": 6,
+              "name": "无我狂暴",
+              "en": "Mindless Rage"
+            },
+            {
+              "level": 10,
+              "name": "报偿",
+              "en": "Retaliation"
+            },
+            {
+              "level": 14,
+              "name": "威慑之姿",
+              "en": "Intimidating Presence"
+            }
+          ]
+        },
+        "兽心道途": {
+          "en": "Path of Wild Heart",
+          "features": [
+            {
+              "level": 3,
+              "name": "动物语者",
+              "en": "Animal Speaker"
+            },
+            {
+              "level": 3,
+              "name": "兽性狂暴",
+              "en": "Rage of the Wilds"
+            },
+            {
+              "level": 6,
+              "name": "兽之形貌",
+              "en": "Aspect of the Wilds"
+            },
+            {
+              "level": 10,
+              "name": "自然语者",
+              "en": "Nature Speaker"
+            },
+            {
+              "level": 14,
+              "name": "兽力威能",
+              "en": "Power of the Wilds"
+            }
+          ]
+        },
+        "世界树道途": {
+          "en": "Path of the World Tree",
+          "features": [
+            {
+              "level": 3,
+              "name": "圣树活力",
+              "en": "Vitality of theTree"
+            },
+            {
+              "level": 6,
+              "name": "灵树枝杈",
+              "en": "Branches of the Tree"
+            },
+            {
+              "level": 10,
+              "name": "根击千钧",
+              "en": "Battering Roots"
+            },
+            {
+              "level": 14,
+              "name": "世界树之奇旅",
+              "en": "Travel along the Tree"
+            }
+          ]
+        },
+        "狂热者道途": {
+          "en": "Path of the Zealot",
+          "features": [
+            {
+              "level": 3,
+              "name": "神性之怒",
+              "en": "Divine Fury"
+            },
+            {
+              "level": 3,
+              "name": "神之勇者",
+              "en": "Warrior of the Gods"
+            },
+            {
+              "level": 6,
+              "name": "专心炽志",
+              "en": "Fanatical Focus"
+            },
+            {
+              "level": 10,
+              "name": "狂热威仪",
+              "en": "Zealous Presence"
+            },
+            {
+              "level": 14,
+              "name": "神之狂暴",
+              "en": "Rage of the Gods"
+            }
+          ]
+        }
+      }
+    },
+    "吟游诗人": {
+      "label": "吟游诗人学院",
+      "subclasses": {
+        "勇气学院": {
+          "en": "College of Valor",
+          "features": [
+            {
+              "level": 3,
+              "name": "战斗激励",
+              "en": "Combat Inspiration"
+            },
+            {
+              "level": 3,
+              "name": "战争训练",
+              "en": "Martial Training"
+            },
+            {
+              "level": 6,
+              "name": "额外攻击",
+              "en": "Extra Attack"
+            },
+            {
+              "level": 14,
+              "name": "战斗魔法",
+              "en": "Battle Magic"
+            }
+          ]
+        },
+        "舞蹈学院": {
+          "en": "College of Dance",
+          "features": [
+            {
+              "level": 3,
+              "name": "炫目舞步",
+              "en": "Dazzling Footwork"
+            },
+            {
+              "level": 6,
+              "name": "鼓舞之移",
+              "en": "Inspring Movement"
+            },
+            {
+              "level": 6,
+              "name": "协同舞步",
+              "en": "Tandem Footwork"
+            },
+            {
+              "level": 14,
+              "name": "引导闪避",
+              "en": "Leading Evasion"
+            }
+          ]
+        },
+        "逸闻学院": {
+          "en": "College of Lore",
+          "features": [
+            {
+              "level": 3,
+              "name": "附赠熟练",
+              "en": "Bonus Proficiencies"
+            },
+            {
+              "level": 3,
+              "name": "语出惊人",
+              "en": "Cutting Words"
+            },
+            {
+              "level": 6,
+              "name": "魔法探秘",
+              "en": "Magical Discoveries"
+            },
+            {
+              "level": 14,
+              "name": "超凡技艺",
+              "en": "Peerless Skill"
+            }
+          ]
+        },
+        "魅心学院": {
+          "en": "College of Glamour",
+          "features": [
+            {
+              "level": 3,
+              "name": "惑心魔法",
+              "en": "Beguiling Magic"
+            },
+            {
+              "level": 3,
+              "name": "灵感织衣",
+              "en": "Mantle of Insipration"
+            },
+            {
+              "level": 6,
+              "name": "威仪作锦",
+              "en": "Mantle of Majesty"
+            },
+            {
+              "level": 14,
+              "name": "不破威仪",
+              "en": "Unbreakable Majesty"
+            }
+          ]
+        }
+      }
+    },
+    "牧师": {
+      "label": "神圣领域",
+      "subclasses": {
+        "生命领域": {
+          "en": "Life Domain",
+          "features": [
+            {
+              "level": 3,
+              "name": "生命领域法术",
+              "en": "Life Domain Spells"
+            },
+            {
+              "level": 3,
+              "name": "生命门徒",
+              "en": "Disciple of Life"
+            },
+            {
+              "level": 3,
+              "name": "维持生命",
+              "en": "Preserve Life"
+            },
+            {
+              "level": 6,
+              "name": "神祝医者",
+              "en": "Blessed Healer"
+            },
+            {
+              "level": 17,
+              "name": "极效治疗",
+              "en": "Supreme Healing"
+            }
+          ]
+        },
+        "光明领域": {
+          "en": "Light Domain",
+          "features": [
+            {
+              "level": 3,
+              "name": "光明领域法术",
+              "en": "Light Domain Spells"
+            },
+            {
+              "level": 3,
+              "name": "黎明曙光",
+              "en": "Radiance of the Dawn"
+            },
+            {
+              "level": 3,
+              "name": "守御之光",
+              "en": "Warding Flare"
+            },
+            {
+              "level": 6,
+              "name": "精通守御之光",
+              "en": "Improved Warding Flare"
+            },
+            {
+              "level": 17,
+              "name": "光冕",
+              "en": "Corona of Light"
+            }
+          ]
+        },
+        "诡术领域": {
+          "en": "Trickery Domain",
+          "features": [
+            {
+              "level": 3,
+              "name": "诡术领域法术",
+              "en": "Trickery Domain Spells"
+            },
+            {
+              "level": 3,
+              "name": "诡术祝福",
+              "en": "Blessing of the Trickster"
+            },
+            {
+              "level": 3,
+              "name": "召现分身",
+              "en": "Invoke Duplicity"
+            },
+            {
+              "level": 6,
+              "name": "诡诈换位",
+              "en": "Trickster's Transposition"
+            },
+            {
+              "level": 17,
+              "name": "精通分身",
+              "en": "Improved Duplicity"
+            }
+          ]
+        },
+        "战争领域": {
+          "en": "War Domain",
+          "features": [
+            {
+              "level": 3,
+              "name": "导引打击",
+              "en": "Guided Strike"
+            },
+            {
+              "level": 3,
+              "name": "战争祭司",
+              "en": "War Priest"
+            },
+            {
+              "level": 3,
+              "name": "战争领域法术",
+              "en": "War Domain Spells"
+            },
+            {
+              "level": 6,
+              "name": "战神祝福",
+              "en": "War God's Blessing"
+            },
+            {
+              "level": 17,
+              "name": "战争化身",
+              "en": "Avatar of Battle"
+            }
+          ]
+        }
+      }
+    },
+    "德鲁伊": {
+      "label": "德鲁伊结社",
+      "subclasses": {
+        "大地结社": {
+          "en": "Circle of the Land",
+          "features": [
+            {
+              "level": 3,
+              "name": "大地结社法术",
+              "en": "Circle of the Land Spells"
+            },
+            {
+              "level": 3,
+              "name": "大地之援",
+              "en": "Land's Aid"
+            },
+            {
+              "level": 6,
+              "name": "自然恢复",
+              "en": "Natural Recovery"
+            },
+            {
+              "level": 10,
+              "name": "自然守御",
+              "en": "Nature's Ward"
+            },
+            {
+              "level": 14,
+              "name": "自然庇护",
+              "en": "Nature's Sanctuary"
+            }
+          ]
+        },
+        "月亮结社": {
+          "en": "Circle of the Moon",
+          "features": [
+            {
+              "level": 3,
+              "name": "结社形态",
+              "en": "Circle Forms"
+            },
+            {
+              "level": 3,
+              "name": "月亮结社法术",
+              "en": "Circle of the Moon Spells"
+            },
+            {
+              "level": 6,
+              "name": "进阶结社形态",
+              "en": "Improved Circle Forms"
+            },
+            {
+              "level": 10,
+              "name": "月光飞步",
+              "en": "Moonlight Step"
+            },
+            {
+              "level": 14,
+              "name": "月辉形态",
+              "en": "Lunar Form"
+            }
+          ]
+        },
+        "海洋结社": {
+          "en": "Circle of the Sea",
+          "features": [
+            {
+              "level": 3,
+              "name": "海洋结社法术",
+              "en": "Circle of the Sea Spells"
+            },
+            {
+              "level": 3,
+              "name": "瀚海之怒",
+              "en": "Wrath of the Sea"
+            },
+            {
+              "level": 6,
+              "name": "水生亲和",
+              "en": "Aquatic Affinity"
+            },
+            {
+              "level": 10,
+              "name": "风暴降生",
+              "en": "Stormborn"
+            },
+            {
+              "level": 14,
+              "name": "大洋慨赠",
+              "en": "Oceanic Gift"
+            }
+          ]
+        },
+        "星辰结社": {
+          "en": "Circle of the Stars",
+          "features": [
+            {
+              "level": 3,
+              "name": "星图",
+              "en": "Star Map"
+            },
+            {
+              "level": 3,
+              "name": "星耀形态",
+              "en": "Starry Form"
+            },
+            {
+              "level": 6,
+              "name": "宇宙预兆",
+              "en": "Cosmic Omen"
+            },
+            {
+              "level": 10,
+              "name": "闪烁星座",
+              "en": "Twinkling Constellations"
+            },
+            {
+              "level": 14,
+              "name": "灿若繁星",
+              "en": "Full of Stars"
+            }
+          ]
+        }
+      }
+    },
+    "战士": {
+      "label": "武术范型",
+      "subclasses": {
+        "战斗大师": {
+          "en": "Battle Master",
+          "features": [
+            {
+              "level": 3,
+              "name": "战争学者",
+              "en": "Student of War"
+            },
+            {
+              "level": 3,
+              "name": "卓越战技",
+              "en": "Combat Superiority"
+            },
+            {
+              "level": 7,
+              "name": "料敌机先",
+              "en": "Know Your Enemy"
+            },
+            {
+              "level": 10,
+              "name": "精通战技",
+              "en": "Improved Combat Superiority"
+            },
+            {
+              "level": 15,
+              "name": "坚韧",
+              "en": "Relentless"
+            },
+            {
+              "level": 18,
+              "name": "究极战技",
+              "en": "Ultimate Combat Superiority"
+            }
+          ]
+        },
+        "勇士": {
+          "en": "Champion",
+          "features": [
+            {
+              "level": 3,
+              "name": "精通重击",
+              "en": "Improved Critical"
+            },
+            {
+              "level": 3,
+              "name": "运动健将",
+              "en": "Remarkable Athlete"
+            },
+            {
+              "level": 7,
+              "name": "额外战斗风格",
+              "en": "Additional Fighting Style"
+            },
+            {
+              "level": 10,
+              "name": "勇战英豪",
+              "en": "Heroic Warrior"
+            },
+            {
+              "level": 15,
+              "name": "高效重击",
+              "en": "Superior Critical"
+            },
+            {
+              "level": 18,
+              "name": "百折不挠",
+              "en": "Survivor"
+            }
+          ]
+        },
+        "奥法骑士": {
+          "en": "Eldritch Knight",
+          "features": [
+            {
+              "level": 3,
+              "name": "施法",
+              "en": "Spellcasting"
+            },
+            {
+              "level": 3,
+              "name": "战争联结",
+              "en": "War Bond"
+            },
+            {
+              "level": 7,
+              "name": "战争魔法",
+              "en": "War Magic"
+            },
+            {
+              "level": 10,
+              "name": "奥法打击",
+              "en": "Eldritch Strike"
+            },
+            {
+              "level": 15,
+              "name": "奥能冲锋",
+              "en": "Arcane Charge"
+            },
+            {
+              "level": 18,
+              "name": "精通战争魔法",
+              "en": "Improved War Magic"
+            }
+          ]
+        },
+        "灵能武士": {
+          "en": "Psi Warrior",
+          "features": [
+            {
+              "level": 3,
+              "name": "灵能力量",
+              "en": "Psionic Power"
+            },
+            {
+              "level": 7,
+              "name": "念力精通",
+              "en": "Telekinetic Adept"
+            },
+            {
+              "level": 10,
+              "name": "意念守护",
+              "en": "Guarded Mind"
+            },
+            {
+              "level": 15,
+              "name": "力场壁垒",
+              "en": "Bulwark of Force"
+            },
+            {
+              "level": 18,
+              "name": "念力宗师",
+              "en": "Telekinetic Master"
+            }
+          ]
+        }
+      }
+    },
+    "武僧": {
+      "label": "武僧宗派",
+      "subclasses": {
+        "命流武者": {
+          "en": "Warrior of Mercy",
+          "features": [
+            {
+              "level": 3,
+              "name": "操命本事",
+              "en": "Implements of Mercy"
+            },
+            {
+              "level": 3,
+              "name": "夺命之手",
+              "en": "Hand of Harm"
+            },
+            {
+              "level": 3,
+              "name": "予命之手",
+              "en": "Hand of Healing"
+            },
+            {
+              "level": 6,
+              "name": "生死之触",
+              "en": "Physician's Touch"
+            },
+            {
+              "level": 11,
+              "name": "生杀予夺",
+              "en": "Flurry of Healing and Harm"
+            },
+            {
+              "level": 17,
+              "name": "命极之手",
+              "en": "Hand of Ultimate Mercy"
+            }
+          ]
+        },
+        "暗影武者": {
+          "en": "Warrior of Shadow",
+          "features": [
+            {
+              "level": 3,
+              "name": "暗影技艺",
+              "en": "Shadow Arts"
+            },
+            {
+              "level": 6,
+              "name": "暗影步",
+              "en": "Shadow Step"
+            },
+            {
+              "level": 11,
+              "name": "无影步",
+              "en": "Improved Shadow Step"
+            },
+            {
+              "level": 17,
+              "name": "幽影斗篷",
+              "en": "Cloak of Shadows"
+            }
+          ]
+        },
+        "四象武者": {
+          "en": "Warrior of the Elements",
+          "features": [
+            {
+              "level": 3,
+              "name": "元素同调",
+              "en": "Elemental Attunement"
+            },
+            {
+              "level": 3,
+              "name": "掌控元素",
+              "en": "Manipulate Elements"
+            },
+            {
+              "level": 6,
+              "name": "元素爆破拳",
+              "en": "Elemental Burst"
+            },
+            {
+              "level": 11,
+              "name": "四象遁术",
+              "en": "Stride of the Elements"
+            },
+            {
+              "level": 17,
+              "name": "四象神通",
+              "en": "Elemental Epitome"
+            }
+          ]
+        },
+        "散打武者": {
+          "en": "Warrior of the Open Hand",
+          "features": [
+            {
+              "level": 3,
+              "name": "散打技巧",
+              "en": "Open Hand Technique"
+            },
+            {
+              "level": 6,
+              "name": "混元体",
+              "en": "Wholeness of Body"
+            },
+            {
+              "level": 11,
+              "name": "流星步",
+              "en": "Fleet Step"
+            },
+            {
+              "level": 17,
+              "name": "渗透劲",
+              "en": "Quivering Palm"
+            }
+          ]
+        }
+      }
+    },
+    "圣武士": {
+      "label": "神圣誓言",
+      "subclasses": {
+        "奉献之誓": {
+          "en": "Oath of Devotion",
+          "features": [
+            {
+              "level": 3,
+              "name": "奉献之誓法术",
+              "en": "Oath of Devotion Spells"
+            },
+            {
+              "level": 3,
+              "name": "圣洁武器",
+              "en": "Sacred Weapon"
+            },
+            {
+              "level": 7,
+              "name": "奉献灵光",
+              "en": "Aura of Devotion"
+            },
+            {
+              "level": 15,
+              "name": "卫护斩",
+              "en": "Smite of Protection"
+            },
+            {
+              "level": 20,
+              "name": "至圣光轮",
+              "en": "Holy Nimbus"
+            }
+          ]
+        },
+        "荣耀之誓": {
+          "en": "Oath of Glory",
+          "features": [
+            {
+              "level": 3,
+              "name": "鼓舞斩",
+              "en": "Inspiring Smite"
+            },
+            {
+              "level": 3,
+              "name": "绝伦健将",
+              "en": "Peerless Athlete"
+            },
+            {
+              "level": 3,
+              "name": "荣耀之誓法术",
+              "en": "Oath of Glory Spells"
+            },
+            {
+              "level": 7,
+              "name": "迅捷灵光",
+              "en": "Aura of Alacrity"
+            },
+            {
+              "level": 15,
+              "name": "辉煌防御",
+              "en": "Glorious Defense"
+            },
+            {
+              "level": 20,
+              "name": "现世传说",
+              "en": "Living Legend"
+            }
+          ]
+        },
+        "古贤之誓": {
+          "en": "Oath of the Ancients",
+          "features": [
+            {
+              "level": 3,
+              "name": "古贤之誓法术",
+              "en": "Oath of the Ancients Spells"
+            },
+            {
+              "level": 3,
+              "name": "自然之怒",
+              "en": "Nature's Wrath"
+            },
+            {
+              "level": 7,
+              "name": "守御灵光",
+              "en": "Aura of Warding"
+            },
+            {
+              "level": 15,
+              "name": "不灭哨卫",
+              "en": "Undying Sentinel"
+            },
+            {
+              "level": 20,
+              "name": "上古斗士",
+              "en": "Elder Champion"
+            }
+          ]
+        },
+        "复仇之誓": {
+          "en": "Oath of Vengeance",
+          "features": [
+            {
+              "level": 3,
+              "name": "仇敌誓言",
+              "en": "Vow of Enmity"
+            },
+            {
+              "level": 3,
+              "name": "复仇之誓法术",
+              "en": "Oath of Vengeance Spells"
+            },
+            {
+              "level": 7,
+              "name": "坚韧复仇",
+              "en": "Relentless Avenger"
+            },
+            {
+              "level": 15,
+              "name": "复仇之魂",
+              "en": "Soul of Vengeance"
+            },
+            {
+              "level": 20,
+              "name": "复仇天使",
+              "en": "Avenging Angel"
+            }
+          ]
+        }
+      }
+    },
+    "游侠": {
+      "label": "游侠范型",
+      "subclasses": {
+        "驯兽师": {
+          "en": "Beast Master",
+          "features": [
+            {
+              "level": 3,
+              "name": "原初行侣",
+              "en": "Primal Companion"
+            },
+            {
+              "level": 7,
+              "name": "特效训练",
+              "en": "Exceptional Training"
+            },
+            {
+              "level": 11,
+              "name": "兽性狂怒",
+              "en": "Bestial Fury"
+            },
+            {
+              "level": 15,
+              "name": "法术共享",
+              "en": "Share Spells"
+            }
+          ]
+        },
+        "妖精漫游者": {
+          "en": "Fey Wanderer",
+          "features": [
+            {
+              "level": 3,
+              "name": "哀惧灵袭",
+              "en": "Dreadful Strikes"
+            },
+            {
+              "level": 3,
+              "name": "妖精漫游者魔法",
+              "en": "Fey Wanderer Magic"
+            },
+            {
+              "level": 3,
+              "name": "妖冶娴都",
+              "en": "Otherworldly Glamour"
+            },
+            {
+              "level": 7,
+              "name": "妖思魅缕",
+              "en": "Beguiling Twist"
+            },
+            {
+              "level": 11,
+              "name": "精宸所与",
+              "en": "Fey Reinforcements"
+            },
+            {
+              "level": 15,
+              "name": "雾行漫游",
+              "en": "Misty Wanderer"
+            }
+          ]
+        },
+        "幽域追猎者": {
+          "en": "Gloom Stalker",
+          "features": [
+            {
+              "level": 3,
+              "name": "恐惧伏击",
+              "en": "Dread Ambusher"
+            },
+            {
+              "level": 3,
+              "name": "阴影视野",
+              "en": "Umbral Sight"
+            },
+            {
+              "level": 3,
+              "name": "幽域追猎者魔法",
+              "en": "Gloom Stalker Magic"
+            },
+            {
+              "level": 7,
+              "name": "钢铁意志",
+              "en": "Iron Mind"
+            },
+            {
+              "level": 11,
+              "name": "追猎如风",
+              "en": "Stalker's Flurry"
+            },
+            {
+              "level": 15,
+              "name": "如影随行",
+              "en": "Shadowy Dodge"
+            }
+          ]
+        },
+        "猎人": {
+          "en": "Hunter",
+          "features": [
+            {
+              "level": 3,
+              "name": "猎人学识",
+              "en": "Hunter's Lore"
+            },
+            {
+              "level": 3,
+              "name": "猎杀技艺",
+              "en": "Hunter's Prey"
+            },
+            {
+              "level": 7,
+              "name": "防守战术",
+              "en": "Defensive Tactics"
+            },
+            {
+              "level": 11,
+              "name": "高阶猎杀技艺",
+              "en": "Superior Hunter's Prey"
+            },
+            {
+              "level": 15,
+              "name": "高阶防守战术",
+              "en": "Superior Hunter's Defense"
+            }
+          ]
+        }
+      }
+    },
+    "游荡者": {
+      "label": "游荡者范型",
+      "subclasses": {
+        "诡术师": {
+          "en": "Arcane Trickster",
+          "features": [
+            {
+              "level": 3,
+              "name": "法师之手诈术",
+              "en": "Mage Hand Legerdemain"
+            },
+            {
+              "level": 3,
+              "name": "施法",
+              "en": "Spellcasting"
+            },
+            {
+              "level": 9,
+              "name": "诡术伏击",
+              "en": "Magical Ambush"
+            },
+            {
+              "level": 13,
+              "name": "万能诡术",
+              "en": "Versatile Trickster"
+            },
+            {
+              "level": 17,
+              "name": "法术窃贼",
+              "en": "Spell Thief"
+            }
+          ]
+        },
+        "刺客": {
+          "en": "Assassin",
+          "features": [
+            {
+              "level": 3,
+              "name": "暗杀",
+              "en": "Assassinate"
+            },
+            {
+              "level": 3,
+              "name": "刺客工具",
+              "en": "Assassin's Tools"
+            },
+            {
+              "level": 9,
+              "name": "专业渗透",
+              "en": "Infiltration Expertise"
+            },
+            {
+              "level": 13,
+              "name": "淬毒武器",
+              "en": "Envenom Weapons"
+            },
+            {
+              "level": 17,
+              "name": "致命袭杀",
+              "en": "Death Strike"
+            }
+          ]
+        },
+        "魂刃": {
+          "en": "Soulknife",
+          "features": [
+            {
+              "level": 3,
+              "name": "灵能力量",
+              "en": "Psionic Power"
+            },
+            {
+              "level": 3,
+              "name": "念刃",
+              "en": "Psychic Blades"
+            },
+            {
+              "level": 9,
+              "name": "灵魂之刃",
+              "en": "Soul Blades"
+            },
+            {
+              "level": 13,
+              "name": "灵能面纱",
+              "en": "Psychic Veil"
+            },
+            {
+              "level": 17,
+              "name": "撕裂心智",
+              "en": "Rend Mind"
+            }
+          ]
+        },
+        "盗贼": {
+          "en": "Thief",
+          "features": [
+            {
+              "level": 3,
+              "name": "快手",
+              "en": "Fast Hands"
+            },
+            {
+              "level": 3,
+              "name": "梁上君子",
+              "en": "Second-Story Work"
+            },
+            {
+              "level": 9,
+              "name": "极效潜行",
+              "en": "Supreme Sneak"
+            },
+            {
+              "level": 13,
+              "name": "使用魔法装置",
+              "en": "Use Magic Device"
+            },
+            {
+              "level": 17,
+              "name": "窃盗本能",
+              "en": "Thief's Reflexes"
+            }
+          ]
+        }
+      }
+    },
+    "术士": {
+      "label": "术法起源",
+      "subclasses": {
+        "畸变术法": {
+          "en": "Aberrant Sorcery",
+          "features": [
+            {
+              "level": 3,
+              "name": "传心谈话",
+              "en": "Telepathic Speech"
+            },
+            {
+              "level": 3,
+              "name": "灵能法术",
+              "en": "Psionic Spells"
+            },
+            {
+              "level": 6,
+              "name": "灵能术法",
+              "en": "Psionic Sorcery"
+            },
+            {
+              "level": 6,
+              "name": "心灵防御",
+              "en": "Psychic Defenses"
+            },
+            {
+              "level": 14,
+              "name": "血肉启示",
+              "en": "Revelation in Flesh"
+            },
+            {
+              "level": 18,
+              "name": "扭曲内爆",
+              "en": "Warping Implosion"
+            }
+          ]
+        },
+        "时械术法": {
+          "en": "Clockwork Sorcery",
+          "features": [
+            {
+              "level": 3,
+              "name": "归复平衡",
+              "en": "Restore Balance"
+            },
+            {
+              "level": 3,
+              "name": "时械法术",
+              "en": "Clockwork Spells"
+            },
+            {
+              "level": 6,
+              "name": "律令之壁",
+              "en": "Bastion of Law"
+            },
+            {
+              "level": 14,
+              "name": "序列意识",
+              "en": "Trance of Order"
+            },
+            {
+              "level": 18,
+              "name": "时械矩阵",
+              "en": "Clockwork Cavalcade"
+            }
+          ]
+        },
+        "龙族术法": {
+          "en": "Draconic Sorcery",
+          "features": [
+            {
+              "level": 3,
+              "name": "龙族法术",
+              "en": "Draconic Spells"
+            },
+            {
+              "level": 3,
+              "name": "龙族体魄",
+              "en": "Draconic Resilience"
+            },
+            {
+              "level": 6,
+              "name": "元素亲和",
+              "en": "Elemental Affinity"
+            },
+            {
+              "level": 14,
+              "name": "龙翼",
+              "en": "Dragon Wings"
+            },
+            {
+              "level": 18,
+              "name": "龙族伙伴",
+              "en": "Dragon Companion"
+            }
+          ]
+        },
+        "狂野术法": {
+          "en": "Wild Magic Sorcery",
+          "features": [
+            {
+              "level": 3,
+              "name": "混乱之潮",
+              "en": "Tide of Chaos"
+            },
+            {
+              "level": 3,
+              "name": "狂野魔法浪涌",
+              "en": "Wild Magic Surge"
+            },
+            {
+              "level": 6,
+              "name": "扭曲幸运",
+              "en": "Bend Luck"
+            },
+            {
+              "level": 14,
+              "name": "受控混沌",
+              "en": "Controlled Chaos"
+            },
+            {
+              "level": 18,
+              "name": "驯服浪涌",
+              "en": "Tamed Surge"
+            }
+          ]
+        }
+      }
+    },
+    "邪术师": {
+      "label": "异界宗主",
+      "subclasses": {
+        "至高妖精宗主": {
+          "en": "Archfey Patron",
+          "features": [
+            {
+              "level": 3,
+              "name": "妖精步伐",
+              "en": "Steps of the Fey"
+            },
+            {
+              "level": 3,
+              "name": "至高妖精法术",
+              "en": "Archfey Spells"
+            },
+            {
+              "level": 6,
+              "name": "雾遁",
+              "en": "Misty Escape"
+            },
+            {
+              "level": 10,
+              "name": "斗转星移",
+              "en": "Beguiling Defenses"
+            },
+            {
+              "level": 14,
+              "name": "醉心魔法",
+              "en": "Bewitching Magic"
+            }
+          ]
+        },
+        "天界宗主": {
+          "en": "Celestial Patron",
+          "features": [
+            {
+              "level": 3,
+              "name": "天界法术",
+              "en": "Celestial Spells"
+            },
+            {
+              "level": 3,
+              "name": "治愈之光",
+              "en": "Healing Light"
+            },
+            {
+              "level": 6,
+              "name": "光耀之魂",
+              "en": "Radiant Soul"
+            },
+            {
+              "level": 10,
+              "name": "天界韧性",
+              "en": "Celestial Resilience"
+            },
+            {
+              "level": 14,
+              "name": "灼光复仇",
+              "en": "Searing Vengeance"
+            }
+          ]
+        },
+        "邪魔宗主": {
+          "en": "Fiend Patron",
+          "features": [
+            {
+              "level": 3,
+              "name": "黑暗赐福",
+              "en": "Dark One's Blessing"
+            },
+            {
+              "level": 3,
+              "name": "邪魔法术",
+              "en": "Fiend Spells"
+            },
+            {
+              "level": 6,
+              "name": "黑暗强运",
+              "en": "Dark One's Own Luck"
+            },
+            {
+              "level": 10,
+              "name": "邪魔体魄",
+              "en": "Fiendish Resilience"
+            },
+            {
+              "level": 14,
+              "name": "直坠噩梦",
+              "en": "Hurl Through Hell"
+            }
+          ]
+        },
+        "旧日支配者宗主": {
+          "en": "Great Old One Patron",
+          "features": [
+            {
+              "level": 3,
+              "name": "唤醒心灵",
+              "en": "Awakened Mind"
+            },
+            {
+              "level": 3,
+              "name": "旧日支配者法术",
+              "en": "Great Old One Spells"
+            },
+            {
+              "level": 3,
+              "name": "心灵法术",
+              "en": "Psychic Spells"
+            },
+            {
+              "level": 6,
+              "name": "锐眼斗士",
+              "en": "Clairvoyant Combatant"
+            },
+            {
+              "level": 10,
+              "name": "骇异恶咒",
+              "en": "Eldritch Hex"
+            },
+            {
+              "level": 10,
+              "name": "思维之盾",
+              "en": "Thought Shield"
+            },
+            {
+              "level": 14,
+              "name": "创造奴仆",
+              "en": "Create Thrall"
+            }
+          ]
+        }
+      }
+    },
+    "法师": {
+      "label": "奥术传承",
+      "subclasses": {
+        "防护师": {
+          "en": "Abjurer",
+          "features": [
+            {
+              "level": 3,
+              "name": "奥术守御",
+              "en": "Arcane Ward"
+            },
+            {
+              "level": 3,
+              "name": "防护学者",
+              "en": "Abjuration Savant"
+            },
+            {
+              "level": 6,
+              "name": "投射守御",
+              "en": "Projected Ward"
+            },
+            {
+              "level": 10,
+              "name": "破法者",
+              "en": "Spell Breaker"
+            },
+            {
+              "level": 14,
+              "name": "法术抗性",
+              "en": "Spell Resistance"
+            }
+          ]
+        },
+        "预言师": {
+          "en": "Diviner",
+          "features": [
+            {
+              "level": 3,
+              "name": "预言学者",
+              "en": "Divination Savant"
+            },
+            {
+              "level": 3,
+              "name": "预兆",
+              "en": "Portent"
+            },
+            {
+              "level": 6,
+              "name": "专业预言",
+              "en": "Expert Divination"
+            },
+            {
+              "level": 10,
+              "name": "天眼通",
+              "en": "The Third Eye"
+            },
+            {
+              "level": 14,
+              "name": "高等预兆",
+              "en": "Greater Portent"
+            }
+          ]
+        },
+        "塑能师": {
+          "en": "Evoker",
+          "features": [
+            {
+              "level": 3,
+              "name": "强力戏法",
+              "en": "Potent Cantrip"
+            },
+            {
+              "level": 3,
+              "name": "塑能学者",
+              "en": "Evocation Savant"
+            },
+            {
+              "level": 6,
+              "name": "法术塑形",
+              "en": "Sculpt Spells"
+            },
+            {
+              "level": 10,
+              "name": "强效塑能",
+              "en": "Empowered Evocation"
+            },
+            {
+              "level": 14,
+              "name": "超限导能",
+              "en": "Overchannel"
+            }
+          ]
+        },
+        "幻术师": {
+          "en": "Illusionist",
+          "features": [
+            {
+              "level": 3,
+              "name": "幻术学者",
+              "en": "Illusion Savant"
+            },
+            {
+              "level": 3,
+              "name": "强化幻术",
+              "en": "Improved Illusions"
+            },
+            {
+              "level": 6,
+              "name": "魅影生灵",
+              "en": "Phantasmal Creatures"
+            },
+            {
+              "level": 10,
+              "name": "幻影化形",
+              "en": "Illusory Self"
+            },
+            {
+              "level": 14,
+              "name": "亦真亦幻",
+              "en": "Illusory Reality"
+            }
+          ]
+        }
+      }
+    }
+  },
+  "missing": []
+}

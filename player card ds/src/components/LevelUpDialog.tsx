@@ -5,7 +5,7 @@ import { ABILITIES } from '@/types'
 import { api } from '@/lib/api'
 import { totalLevel, xpInfo } from '@/lib/calc'
 import { featureFromEntry } from '@/lib/convert'
-import { applyLevelUp, describeNewFeatures, getLevelUpPlan } from '@/lib/level-up'
+import { applyLevelUp, describeNewFeatures, getLevelUpPlan, subclassFeaturesAt } from '@/lib/level-up'
 import { Badge, Btn, Empty, Modal, NumberField, Select } from '@/components/ui'
 
 type AsiMode = 'none' | 'plus2' | 'plus1s' | 'feat'
@@ -72,6 +72,8 @@ export function LevelUpDialog({
   }, [open, asiMode, featQuery])
 
   const hpGain = hpMode === 'manual' ? hpManual : (plan?.hpAverage || 1)
+  const previewSubclass = plan ? (plan.isSubclassLevel ? subclass : plan.subclass) : ''
+  const previewSubclassFeatures = plan ? subclassFeaturesAt(className, previewSubclass, plan.newLevel) : []
   const slotDiff = plan ? plan.slotsAfter.map((v, i) => ({ level: i + 1, delta: v - (plan.slotsBefore[i] || 0), before: plan.slotsBefore[i] || 0, after: v })).filter((x) => x.delta !== 0) : []
   const classOptions = character.classes.map((c) => ({ value: c.name, label: c.name }))
 
@@ -187,7 +189,7 @@ export function LevelUpDialog({
                 options={plan.classDef.subclasses.map((s) => ({ value: s, label: s }))}
                 placeholder="选择子职业"
               />
-              <p className="hint">子职业特性不会逐条自动录入，升级后可在特性卡中按名称检索。</p>
+              <p className="hint">子职业特性会按 2024 规则在对应等级自动加入角色卡，随后可在特性卡中检索细节。</p>
             </div>
           )}
 
@@ -266,7 +268,17 @@ export function LevelUpDialog({
                 </ul>
               </div>
             )}
-            {plan.newFeatures.length === 0 && slotDiff.length === 0 && (
+            {previewSubclassFeatures.length > 0 && (
+              <div className="preview-block">
+                <span>{plan.classDef.subclassLabel}特性</span>
+                <ul className="preview-features">
+                  {previewSubclassFeatures.map((f) => (
+                    <li key={`${f.level}-${f.name}`}>{f.level} 级 · {f.name}{f.en ? `（${f.en}）` : ''}</li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            {plan.newFeatures.length === 0 && previewSubclassFeatures.length === 0 && slotDiff.length === 0 && (
               <p className="hint">本级没有新的职业特性或法术位变化，主要获得生命值提升。</p>
             )}
             <div className="preview-note">

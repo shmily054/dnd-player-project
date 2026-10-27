@@ -28,7 +28,9 @@
       "subclassLabel": "原初道途",
       "subclasses": [
         "狂战士道途",
-        "图腾武者道途"
+        "兽心道途",
+        "世界树道途",
+        "狂热者道途"
       ],
       "asiLevels": [
         4,
@@ -435,10 +437,12 @@
       "caster": "full",
       "spellAbility": "cha",
       "subclassLevel": 3,
-      "subclassLabel": "诗人学院",
+      "subclassLabel": "吟游诗人学院",
       "subclasses": [
-        "轶闻学院",
-        "勇气学院"
+        "勇气学院",
+        "舞蹈学院",
+        "逸闻学院",
+        "魅心学院"
       ],
       "asiLevels": [
         4,
@@ -854,11 +858,8 @@
       "subclassLevel": 1,
       "subclassLabel": "神圣领域",
       "subclasses": [
-        "知识领域",
         "生命领域",
         "光明领域",
-        "自然领域",
-        "风暴领域",
         "诡术领域",
         "战争领域"
       ],
@@ -1286,7 +1287,9 @@
       "subclassLabel": "德鲁伊结社",
       "subclasses": [
         "大地结社",
-        "月亮结社"
+        "月亮结社",
+        "海洋结社",
+        "星辰结社"
       ],
       "asiLevels": [
         4,
@@ -1704,9 +1707,10 @@
       "subclassLevel": 3,
       "subclassLabel": "武术范型",
       "subclasses": [
-        "勇士",
         "战斗大师",
-        "奥法骑士"
+        "勇士",
+        "奥法骑士",
+        "灵能武士"
       ],
       "asiLevels": [
         4,
@@ -2153,11 +2157,12 @@
       "caster": "none",
       "spellAbility": null,
       "subclassLevel": 3,
-      "subclassLabel": "修行宗派",
+      "subclassLabel": "武僧宗派",
       "subclasses": [
-        "散打宗",
-        "暗影宗",
-        "四象宗"
+        "命流武者",
+        "暗影武者",
+        "四象武者",
+        "散打武者"
       ],
       "asiLevels": [
         4,
@@ -2553,6 +2558,7 @@
       "subclassLabel": "神圣誓言",
       "subclasses": [
         "奉献之誓",
+        "荣耀之誓",
         "古贤之誓",
         "复仇之誓"
       ],
@@ -2970,8 +2976,10 @@
       "subclassLevel": 3,
       "subclassLabel": "游侠范型",
       "subclasses": [
-        "猎人",
-        "驯兽师"
+        "驯兽师",
+        "妖精漫游者",
+        "幽域追猎者",
+        "猎人"
       ],
       "asiLevels": [
         4,
@@ -3351,9 +3359,10 @@
       "subclassLevel": 3,
       "subclassLabel": "游荡者范型",
       "subclasses": [
-        "盗贼",
+        "诡术师",
         "刺客",
-        "诡术师"
+        "魂刃",
+        "盗贼"
       ],
       "asiLevels": [
         4,
@@ -3734,8 +3743,10 @@
       "subclassLevel": 1,
       "subclassLabel": "术法起源",
       "subclasses": [
-        "龙族血脉",
-        "狂野魔法"
+        "畸变术法",
+        "时械术法",
+        "龙族术法",
+        "狂野术法"
       ],
       "asiLevels": [
         4,
@@ -4129,9 +4140,10 @@
       "subclassLevel": 1,
       "subclassLabel": "异界宗主",
       "subclasses": [
-        "至高妖精",
-        "邪魔",
-        "旧日支配者"
+        "至高妖精宗主",
+        "天界宗主",
+        "邪魔宗主",
+        "旧日支配者宗主"
       ],
       "asiLevels": [
         4,
@@ -4382,14 +4394,10 @@
       "subclassLevel": 2,
       "subclassLabel": "奥术传承",
       "subclasses": [
-        "防护学派",
-        "咒法学派",
-        "预言学派",
-        "附魔学派",
-        "塑能学派",
-        "幻术学派",
-        "死灵学派",
-        "变化学派"
+        "防护师",
+        "预言师",
+        "塑能师",
+        "幻术师"
       ],
       "asiLevels": [
         4,

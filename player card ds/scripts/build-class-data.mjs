@@ -215,6 +215,19 @@ export function buildClassData() {
       if (lv5.slots[0] !== 4 || lv5.slots[1] !== 2) warnings.push('圣武士 5 级法术位不是 4/2')
     }
   }
+  // 子职业列表以 2024 登记表（shared/subclasses.json）为准，避免 CLASS_META 的旧列表被写回
+  try {
+    const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'shared', 'subclasses.json'), 'utf8'))
+    const alias = { 魔契师: '邪术师' }
+    for (const cls of classes) {
+      const defs = (registry.subclasses || []).filter((d) => (alias[d.className] || d.className) === cls.name)
+      if (!defs.length) continue
+      cls.subclassLabel = defs[0].label || cls.subclassLabel
+      cls.subclasses = defs.map((d) => d.name)
+    }
+  } catch (e) {
+    warnings.push(`未能读取 shared/subclasses.json：${e.message}`)
+  }
   return { version: 1, generatedAt: new Date().toISOString(), classes, warnings }
 }
 

@@ -1,8 +1,28 @@
-import type { AbilityKey, Character, ClassDef, ClassLevelData, Feature, Resource } from '@/types'
+import type {
+  AbilityKey, Character, ClassDef, ClassLevelData, Feature, Resource, SubclassFeatureFile, SubclassFeatureRef,
+} from '@/types'
 import {
   abilityMod, autoResourcesForLevel, classLevel, getClassDef, proficiencyBonus,
   suggestedSpellSlots, totalLevel, uid,
 } from '@/lib/calc'
+import subclassGrowthData from '@shared/subclass-features.json'
+
+const SUBCLASS_GROWTH = ((subclassGrowthData as unknown as SubclassFeatureFile).classes || {})
+
+/** 某职业的子职在指定等级获得的特性（没有 2024 数据时返回空数组） */
+export function subclassFeaturesAt(className: string, subclass: string, level: number): SubclassFeatureRef[] {
+  if (!subclass) return []
+  const cls = SUBCLASS_GROWTH[className]
+  const sub = cls?.subclasses?.[subclass]
+  if (!sub) return []
+  return sub.features.filter((f) => f.level === level)
+}
+
+/** 该职业是否登记了子职成长数据（用于升级向导提示） */
+export function hasSubclassGrowth(className: string): boolean {
+  const cls = SUBCLASS_GROWTH[className]
+  return Boolean(cls && Object.keys(cls.subclasses).length > 0)
+}
 
 export interface LevelUpPlan {
   className: string
@@ -12,6 +32,10 @@ export interface LevelUpPlan {
   oldData: ClassLevelData | null
   newData: ClassLevelData
   newFeatures: string[]
+  /** 当前子职业（未选择则为空字符串） */
+  subclass: string
+  /** 当前子职业在本级获得的特性 */
+  subclassFeatures: SubclassFeatureRef[]
   hpAverage: number
   hpMin: number
   hpMax: number
@@ -43,6 +67,7 @@ export function getLevelUpPlan(c: Character, className: string): LevelUpPlan | n
   const conMod = abilityMod(c.abilities.con)
   const avg = Math.floor(def.hitDie / 2) + 1
   const beforeTotal = totalLevel(c)
+  const subclass = c.classes.find((x) => x.name === className)?.subclass || ''
   return {
     className,
     classDef: def,
@@ -51,6 +76,8 @@ export function getLevelUpPlan(c: Character, className: string): LevelUpPlan | n
     oldData,
     newData,
     newFeatures,
+    subclass,
+    subclassFeatures: subclassFeaturesAt(className, subclass, newLevel),
     hpAverage: Math.max(1, avg + conMod),
     hpMin: Math.max(1, 1 + conMod),
     hpMax: Math.max(1, def.hitDie + conMod),
@@ -107,6 +134,7 @@ export function applyLevelUp(c: Character, className: string, opts: LevelUpOptio
   entry.level = plan.newLevel
   entry.hitDie = plan.classDef.hitDie
   if (opts.subclass && plan.isSubclassLevel) entry.subclass = opts.subclass
+  const subclassName = entry.subclass || ''
 
   const hpGain = Math.max(0, Math.min(plan.hpMax, Math.round(opts.hpGain)))
   next.hp.max += hpGain
@@ -153,10 +181,30 @@ export function applyLevelUp(c: Character, className: string, opts: LevelUpOptio
         name: opts.subclass,
         source,
         level: plan.newLevel,
-        description: '子职业介绍与专属特性请到规则库检索并添加。',
+        description: '子职业介绍与专属特性会在对应等级自动加入。',
         auto: true,
         searchName: opts.subclass,
       })
+    }
+  }
+
+  const subclassFeatureNames: string[] = []
+  if (subclassName) {
+    const source = `${plan.classDef.subclassLabel}：${subclassName}`
+    for (const sf of subclassFeaturesAt(className, subclassName, plan.newLevel)) {
+      const key = `${sf.name}|${source}|${plan.newLevel}`
+      if (existingNames.has(key)) continue
+      next.features.push({
+        id: uid('feat'),
+        name: sf.name,
+        source,
+        level: plan.newLevel,
+        description: '',
+        auto: true,
+        searchName: sf.name,
+      })
+      summary.push(`获得子职特性：${sf.name}`)
+      subclassFeatureNames.push(sf.name)
     }
   }
 
@@ -179,7 +227,7 @@ export function applyLevelUp(c: Character, className: string, opts: LevelUpOptio
   }
   summary.push(...updateResources(next, plan.classDef, plan.newLevel))
 
-  return { character: next, summary, newFeatures: plan.newFeatures }
+  return { character: next, summary, newFeatures: [...plan.newFeatures, ...subclassFeatureNames] }
 }
 
 /** 为升级新增的特性自动摘录规则文字（失败则留空，由 UI 提供检索入口） */
@@ -196,9 +244,9 @@ export async function describeNewFeatures(
     if (!base) continue
     try {
       const res = await search(base)
-      const hit = res.results.find((r) => r.book === '玩家手册' && r.chapter.includes('第3章职业'))
+      const hit = res.results.find((r) => r.book === '玩家手册' && /第3章.*职业/.test(r.chapter))
       if (!hit) continue
-      const f = next.features.find((x) => x.name === name && x.source === className)
+      const f = next.features.find((x) => x.name === name && !x.description && (x.source === className || x.source.includes('：')))
       if (!f || f.description) continue
       const text = (hit.fullText || hit.snippet || '').replace(/\s+/g, ' ').slice(0, 1400)
       f.description = `（自动摘录，请核对）\n${text}`
