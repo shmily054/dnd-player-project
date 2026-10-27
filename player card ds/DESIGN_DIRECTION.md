@@ -343,7 +343,7 @@ hover/focus 160–200ms；面板出现 220ms；HP 条 300ms；除升级“可升
 - `src/types.ts` 的 `Character` 字段、嵌套、法术位字符串键 `"1"`–`"9"`。
 - `src/lib/calc.ts`、`src/lib/level-up.ts`、`src/lib/api.ts`。
 - `server/` 的读写、校验、备份、头像。
-- `data/characters/justinian01.json`、`data/backups/`。
+- `data/characters/`、`data/backups/`（运行时数据，不在设计改动范围）。
 - 分区 id、`Ctrl+K`/`Ctrl+S`、800ms 自动保存、原生 `<dialog>` 行为、中文逻辑键（圣武士、野蛮人、武僧、防御、警觉、所有武器、简易武器、军用武器等）。
 
 ---
@@ -372,7 +372,7 @@ hover/focus 160–200ms；面板出现 220ms；HP 条 300ms；除升级“可升
 - 八个分区都能通过锚点/底栏到达。
 - 可编辑值与计算值一眼可分；所有输入仍可编辑。
 - `npx tsc --noEmit`、`npm run build` 通过；`npm test` 27/27 通过。
-- `data/characters/justinian01.json` 无改动。
+- `data/characters/` 无预置角色文件（首次启动自动新建）。
 
 ---
 
@@ -400,7 +400,7 @@ hover/focus 160–200ms；面板出现 220ms；HP 条 300ms；除升级“可升
 - 实测 1440：topbar 56px、Vitals 76px（top=56，和顶栏无缝）、身份 249px；三列高 1875 / 1542 / 1643px，最大差 333px；角色故事从 2333px 开始；整页约 3048px（改版前 3799px）。
 - 实测 900：topbar 96px、Vitals top=96，无重叠；两列流式分栏。
 - 实测 390：topbar 86px、Vitals 68px（top=86，无缝）；底栏 5 项；无横向滚动；整页约 8037px（内容更完整、字号更大，滚动变长）。
-- `data/characters/justinian01.json` 未改动。
+- `data/characters/` 无预置角色文件。
 
 ## 11. 关于 credits 与生成方式
 

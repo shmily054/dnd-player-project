@@ -11,8 +11,7 @@
     "test:watch": "vitest",
     "db:build": "node scripts/build-compendium.mjs && node scripts/build-subclass-features.mjs",
     "db:subclass-features": "node scripts/build-subclass-features.mjs",
-    "db:classes": "node scripts/build-class-data.mjs",
-    "db:migrate-old": "node scripts/migrate-old-character.mjs"
+    "db:classes": "node scripts/build-class-data.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.562.0",

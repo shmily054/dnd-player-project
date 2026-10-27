@@ -365,42 +365,27 @@
   ],
   "resources": [
     {
-      "id": "res-1",
       "name": "圣疗",
+      "source": "圣武士",
       "total": 20,
       "used": 0,
       "reset": "long",
-      "source": "圣武士",
-      "auto": true,
-      "infinite": false
+      "auto": true
     },
     {
-      "id": "res-2",
-      "name": "神圣感知",
-      "total": 3,
-      "used": 0,
-      "reset": "long",
-      "source": "圣武士",
-      "auto": true,
-      "infinite": false
-    },
-    {
-      "id": "res-3",
       "name": "引导神力",
+      "source": "圣武士",
       "total": 2,
       "used": 0,
       "reset": "short",
-      "source": "自定义",
-      "auto": false,
-      "infinite": false
+      "auto": true
     },
     {
-      "id": "res-4",
       "name": "天启变身",
+      "source": "自定义",
       "total": 1,
       "used": 0,
       "reset": "long",
-      "source": "自定义",
       "auto": false
     }
   ],
@@ -547,72 +532,138 @@
   },
   "features": [
     {
-      "id": "feature-2",
-      "name": "神圣感知",
-      "source": "圣武士",
-      "description": "附赠动作，感知 60 尺内天界生物/邪魔/不死生物及受祝圣/亵渎之物（3 次/长休）。",
-      "auto": false
-    },
-    {
-      "id": "feature-3",
-      "name": "天界抗性",
-      "source": "阿斯莫",
-      "description": "光辉、暗蚀伤害减半。",
-      "auto": false
-    },
-    {
-      "id": "feature-4",
-      "name": "治愈之手",
-      "source": "阿斯莫",
-      "description": "魔法动作，2d4 回血。",
-      "auto": false
-    },
-    {
-      "id": "feature-5",
-      "name": "黑暗视觉",
-      "source": "阿斯莫",
-      "description": "60 尺。",
-      "auto": false
-    },
-    {
-      "id": "feature-6",
-      "name": "奉献之誓",
-      "source": "圣武士 3 级誓言",
-      "description": "赠予誓约法术，获得引导神力×2 并解锁圣洁武器。",
-      "auto": false
-    },
-    {
-      "id": "feature-7",
-      "name": "天启",
-      "source": "阿斯莫",
-      "description": "附赠动作变身，三种形态任选其一，持续 1 分钟，1 次/长休。",
-      "auto": false
-    },
-    {
-      "id": "feat-f0ap2sarad",
-      "name": "哨兵",
-      "source": "专长",
-      "description": "你的掌握的技术让你在击破敌人防御时占尽优势,并获得下\n列增益:\n•你的借机攻击命中目标时,目标在本回合剩下时间内的移动速\n度降至0。\n•生物即使执行撤离动作离开你的触及范围也会引发你的借机\n攻击。\n•处于你周边5尺范围内的生物对除你外的目标发动攻击后(且\n被攻击者没有这个专长),你可以用你的反应对该攻击者发动\n一次近战攻击。",
-      "searchName": "哨兵",
-      "auto": false
-    },
-    {
-      "id": "feat-zfglz25vif",
+      "id": "feat-lay-on-hands",
       "name": "圣疗",
       "source": "圣武士",
       "level": 1,
-      "description": "你的触碰溢满祝福,可以医治伤口。你获得一个治疗能量池,\n其内的治疗能量在每次完成长休后自动补满。治疗能量池储备的\n可恢复生命值总值等于你的圣武士职业等级×5。\n你可以用一个动作触碰一个生物,并抽取治疗能量池中的能\n量恢复该生物的生命值,其恢复量最多等于你治疗能量池中剩余\n的治疗量。\n此外,你也可以使用 5点治疗量治愈目标生物身上的一种疾\n病,或者祛除一种中毒效应。你可以在一次圣疗中治愈复数的疾\n病并祛除复数的毒素,但你需要为每一种疾病和毒素分别支付治\n疗量。\n该职业特性对不死生物和构装生物无效。",
-      "searchName": "圣疗",
-      "auto": false
+      "description": "你获得一个治疗能量池，可恢复的生命值等于圣武士等级 × 5。",
+      "auto": false,
+      "searchName": "圣疗"
     },
     {
-      "id": "feat-bhqj1nb5k9",
-      "name": "至圣斩",
+      "id": "feat-spellcasting-paladin",
+      "name": "施法",
+      "source": "圣武士",
+      "level": 1,
+      "description": "你准备并施放圣武士法术，施法属性为魅力。",
+      "auto": false,
+      "searchName": "施法"
+    },
+    {
+      "id": "feat-weapon-mastery-paladin",
+      "name": "武器精通",
+      "source": "圣武士",
+      "level": 1,
+      "description": "你受过两种武器的精通训练，可使用其精通词条。",
+      "auto": false,
+      "searchName": "武器精通"
+    },
+    {
+      "id": "feat-fighting-style",
+      "name": "战斗风格",
       "source": "圣武士",
       "level": 2,
-      "description": "第 2级起,你使用近战武器攻击命中一个生物时,可以消耗\n一枚法术位,并对目标造成除武器伤害外附加的光耀伤害。额外\n伤害的数值为1环法术位时的2d8,以及更高法术位时每比1环\n高一环就外加1d8,其最高值为5d8。如果目标是不死生物或邪\n魔,则该伤害将再额外增加1d8。",
-      "searchName": "至圣斩",
-      "auto": false
+      "description": "你获得一项战斗风格专长。",
+      "auto": false,
+      "searchName": "战斗风格"
+    },
+    {
+      "id": "feat-divine-smite",
+      "name": "圣武斩",
+      "source": "圣武士",
+      "level": 2,
+      "description": "近战武器命中后，你可消耗一枚法术位造成额外光耀伤害。",
+      "auto": false,
+      "searchName": "圣武斩"
+    },
+    {
+      "id": "feat-channel-divinity",
+      "name": "引导神力",
+      "source": "圣武士",
+      "level": 3,
+      "description": "你每个短休可引导神力 2 次，驱动誓言赋予的选项。",
+      "auto": false,
+      "searchName": "引导神力"
+    },
+    {
+      "id": "feat-oath-devotion",
+      "name": "奉献之誓",
+      "source": "神圣誓言：奉献之誓",
+      "level": 3,
+      "description": "你将自身奉献于正义与秩序的崇高理念，立下奉献之誓。",
+      "auto": false,
+      "searchName": "奉献之誓"
+    },
+    {
+      "id": "feat-oath-devotion-spells",
+      "name": "奉献之誓法术",
+      "source": "神圣誓言：奉献之誓",
+      "level": 3,
+      "description": "你始终准备着誓言法术：防护善恶、虔诚护盾（3 级）。",
+      "auto": false,
+      "searchName": "奉献之誓法术"
+    },
+    {
+      "id": "feat-sacred-weapon",
+      "name": "圣洁武器",
+      "source": "神圣誓言：奉献之誓",
+      "level": 3,
+      "description": "引导神力，让手中的武器充满神圣之力。",
+      "auto": false,
+      "searchName": "圣洁武器"
+    },
+    {
+      "id": "feat-asi-paladin",
+      "name": "属性值提升",
+      "source": "圣武士",
+      "level": 4,
+      "description": "你的某项属性值提升 2 点，或两项各提升 1 点。",
+      "auto": false,
+      "searchName": "属性值提升"
+    },
+    {
+      "id": "feat-celestial-resistance",
+      "name": "天界抗性",
+      "source": "阿斯莫",
+      "level": 1,
+      "description": "你具有光耀与死灵伤害的抗性。",
+      "auto": false,
+      "searchName": "天界抗性"
+    },
+    {
+      "id": "feat-healing-hands",
+      "name": "治愈之手",
+      "source": "阿斯莫",
+      "level": 1,
+      "description": "你可用一个动作触碰生物，为其恢复等于等级的生命值。",
+      "auto": false,
+      "searchName": "治愈之手"
+    },
+    {
+      "id": "feat-darkvision",
+      "name": "黑暗视觉",
+      "source": "阿斯莫",
+      "level": 1,
+      "description": "你在黑暗中也能看清 60 尺内的事物。",
+      "auto": false,
+      "searchName": "黑暗视觉"
+    },
+    {
+      "id": "feat-celestial-revelation",
+      "name": "天启",
+      "source": "阿斯莫",
+      "level": 3,
+      "description": "你可展现天界本质：天堂飞翼、内耀辉光或死灵环绕。",
+      "auto": false,
+      "searchName": "天启"
+    },
+    {
+      "id": "feat-sentinel",
+      "name": "哨兵",
+      "source": "专长",
+      "description": "你擅长守护队友，敌人难以绕过你的防线。",
+      "auto": false,
+      "searchName": "哨兵"
     }
   ],
   "roleplay": {

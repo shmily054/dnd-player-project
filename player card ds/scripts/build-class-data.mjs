@@ -1,17 +1,32 @@
 /**
- * 生成 shared/classes.json
+ * 生成 shared/classes.json —— 2024 版《玩家手册》职业数据
  *
- * 职业特性名从 database 的职业表中提取；施法位、职业资源、子职业信息
- * 使用 PHB 标准数据在校对后写入。生成后应人工抽查关键等级。
+ * 数据来源：
+ *  - 基础职业特性：规则库索引解析出的 classFeature 条目（第 3 章 `N 级：特性` 标题）
+ *  - 施法位、戏法数、契约魔法、职业资源：2024 PHB 职业表，校对后写入本文件
+ *  - 子职业：shared/subclasses.json
+ *
+ * 2024 版与 2014 版的差异已全部落到这里的常量上（子职业一律 3 级、
+ * 引导神力/荒野变形/回气/宿敌等资源次数、诗人与术士改为准备施法），
+ * 不再读取任何 2014 资料。
+ *
+ * 用法：node scripts/build-class-data.mjs
  */
 import fs from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { buildCompendium } from './build-compendium.mjs'
 
 export const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..')
 
 const DB = path.resolve(ROOT, '..', 'database')
-const CH3 = path.join(DB, 'player handbook', '03-第3章职业.md')
+const SHARED = path.join(ROOT, 'shared')
+
+/** 规则库索引里的「魔契师」，角色卡内部沿用「邪术师」。 */
+const SHEET_CLASS_ALIAS = { 魔契师: '邪术师' }
+
+const SPELL_CASTER_CLASSES = ['吟游诗人', '牧师', '德鲁伊', '术士', '法师']
+const HALF_CASTER_CLASSES = ['圣武士', '游侠']
 
 const FULL_SLOTS = [
   [2,0,0,0,0,0,0,0,0],[3,0,0,0,0,0,0,0,0],[4,2,0,0,0,0,0,0,0],[4,3,0,0,0,0,0,0,0],
@@ -27,6 +42,7 @@ const HALF_SLOTS = [
   [4,3,3,1,0,0,0,0,0],[4,3,3,1,0,0,0,0,0],[4,3,3,2,0,0,0,0,0],[4,3,3,2,0,0,0,0,0],
   [4,3,3,3,1,0,0,0,0],[4,3,3,3,1,0,0,0,0],[4,3,3,3,2,0,0,0,0],[4,3,3,3,2,0,0,0,0],
 ]
+/** 契约魔法：与 2024 邪术师特性表的「法术位」「法术位环阶」两列一致。 */
 const PACT = [
   { count: 1, level: 1 },{ count: 2, level: 1 },{ count: 2, level: 2 },{ count: 2, level: 2 },
   { count: 2, level: 3 },{ count: 2, level: 3 },{ count: 2, level: 4 },{ count: 2, level: 4 },
@@ -34,6 +50,7 @@ const PACT = [
   { count: 3, level: 5 },{ count: 3, level: 5 },{ count: 3, level: 5 },{ count: 3, level: 5 },
   { count: 4, level: 5 },{ count: 4, level: 5 },{ count: 4, level: 5 },{ count: 4, level: 5 },
 ]
+/** 戏法数量：4 级与 10 级各 +1。 */
 const CANTRIPS = {
   吟游诗人: [2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4],
   牧师: [3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],
@@ -43,205 +60,175 @@ const CANTRIPS = {
   法师: [3,3,3,4,4,4,4,4,4,5,5,5,5,5,5,5,5,5,5,5],
 }
 
+/**
+ * 2024 版职业元数据。subclassLevel 一律为 3；preparedFormula 只描述
+ * 2024 的准备法术数，已知法术职业留 null。
+ */
 const CLASS_META = {
-  野蛮人: { en: 'Barbarian', hitDie: 12, saves: ['str','con'], primary: ['str'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'none', spellAbility: null, subclassLevel: 3, subclassLabel: '原初道途', subclasses: ['狂战士道途','图腾武者道途'], asiLevels: [4,8,12,16,19], preparedFormula: null },
-  吟游诗人: { en: 'Bard', hitDie: 8, saves: ['dex','cha'], primary: ['cha'], armorProfs: ['轻甲'], weaponProfs: ['简易武器'], caster: 'full', spellAbility: 'cha', subclassLevel: 3, subclassLabel: '诗人学院', subclasses: ['轶闻学院','勇气学院'], asiLevels: [4,8,12,16,19], preparedFormula: null },
-  牧师: { en: 'Cleric', hitDie: 8, saves: ['wis','cha'], primary: ['wis'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器'], caster: 'full', spellAbility: 'wis', subclassLevel: 1, subclassLabel: '神圣领域', subclasses: ['知识领域','生命领域','光明领域','自然领域','风暴领域','诡术领域','战争领域'], asiLevels: [4,8,12,16,19], preparedFormula: 'wis+level' },
-  德鲁伊: { en: 'Druid', hitDie: 8, saves: ['int','wis'], primary: ['wis'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器'], caster: 'full', spellAbility: 'wis', subclassLevel: 2, subclassLabel: '德鲁伊结社', subclasses: ['大地结社','月亮结社'], asiLevels: [4,8,12,16,19], preparedFormula: 'wis+level' },
-  战士: { en: 'Fighter', hitDie: 10, saves: ['str','con'], primary: ['str'], armorProfs: ['所有护甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'none', spellAbility: null, subclassLevel: 3, subclassLabel: '武术范型', subclasses: ['勇士','战斗大师','奥法骑士'], asiLevels: [4,6,8,12,14,16,19], preparedFormula: null },
-  武僧: { en: 'Monk', hitDie: 8, saves: ['str','dex'], primary: ['dex','wis'], armorProfs: [], weaponProfs: ['简易武器','短剑'], caster: 'none', spellAbility: null, subclassLevel: 3, subclassLabel: '修行宗派', subclasses: ['散打宗','暗影宗','四象宗'], asiLevels: [4,8,12,16,19], preparedFormula: null },
-  圣武士: { en: 'Paladin', hitDie: 10, saves: ['wis','cha'], primary: ['str','cha'], armorProfs: ['所有护甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'half', spellAbility: 'cha', subclassLevel: 3, subclassLabel: '神圣誓言', subclasses: ['奉献之誓','古贤之誓','复仇之誓'], asiLevels: [4,8,12,16,19], preparedFormula: 'cha+halfLevel' },
-  游侠: { en: 'Ranger', hitDie: 10, saves: ['str','dex'], primary: ['dex','wis'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'half', spellAbility: 'wis', subclassLevel: 3, subclassLabel: '游侠范型', subclasses: ['猎人','驯兽师'], asiLevels: [4,8,12,16,19], preparedFormula: null },
-  游荡者: { en: 'Rogue', hitDie: 8, saves: ['dex','int'], primary: ['dex'], armorProfs: ['轻甲'], weaponProfs: ['简易武器','手弩','长剑','刺剑','短剑'], caster: 'none', spellAbility: null, subclassLevel: 3, subclassLabel: '游荡者范型', subclasses: ['盗贼','刺客','诡术师'], asiLevels: [4,8,10,12,16,19], preparedFormula: null },
-  术士: { en: 'Sorcerer', hitDie: 6, saves: ['con','cha'], primary: ['cha'], armorProfs: [], weaponProfs: ['匕首','飞镖','投石索','长棍','轻弩'], caster: 'full', spellAbility: 'cha', subclassLevel: 1, subclassLabel: '术法起源', subclasses: ['龙族血脉','狂野魔法'], asiLevels: [4,8,12,16,19], preparedFormula: null },
-  邪术师: { en: 'Warlock', hitDie: 8, saves: ['wis','cha'], primary: ['cha'], armorProfs: ['轻甲'], weaponProfs: ['简易武器'], caster: 'pact', spellAbility: 'cha', subclassLevel: 1, subclassLabel: '异界宗主', subclasses: ['至高妖精','邪魔','旧日支配者'], asiLevels: [4,8,12,16,19], preparedFormula: null },
-  法师: { en: 'Wizard', hitDie: 6, saves: ['int','wis'], primary: ['int'], armorProfs: [], weaponProfs: ['匕首','飞镖','投石索','长棍','轻弩'], caster: 'full', spellAbility: 'int', subclassLevel: 2, subclassLabel: '奥术传承', subclasses: ['防护学派','咒法学派','预言学派','附魔学派','塑能学派','幻术学派','死灵学派','变化学派'], asiLevels: [4,8,12,16,19], preparedFormula: 'int+level' },
+  野蛮人: { en: 'Barbarian', hitDie: 12, saves: ['str','con'], primary: ['str'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'none', spellAbility: null, subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: null },
+  吟游诗人: { en: 'Bard', hitDie: 8, saves: ['dex','cha'], primary: ['cha'], armorProfs: ['轻甲'], weaponProfs: ['简易武器'], caster: 'full', spellAbility: 'cha', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'cha+level' },
+  牧师: { en: 'Cleric', hitDie: 8, saves: ['wis','cha'], primary: ['wis'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器'], caster: 'full', spellAbility: 'wis', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'wis+level' },
+  德鲁伊: { en: 'Druid', hitDie: 8, saves: ['int','wis'], primary: ['wis'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器'], caster: 'full', spellAbility: 'wis', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'wis+level' },
+  战士: { en: 'Fighter', hitDie: 10, saves: ['str','con'], primary: ['str'], armorProfs: ['所有护甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'none', spellAbility: null, subclassLevel: 3, asiLevels: [4,6,8,12,14,16], preparedFormula: null },
+  武僧: { en: 'Monk', hitDie: 8, saves: ['str','dex'], primary: ['dex','wis'], armorProfs: [], weaponProfs: ['简易武器','短剑'], caster: 'none', spellAbility: null, subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: null },
+  圣武士: { en: 'Paladin', hitDie: 10, saves: ['wis','cha'], primary: ['str','cha'], armorProfs: ['所有护甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'half', spellAbility: 'cha', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'cha+halfLevel' },
+  游侠: { en: 'Ranger', hitDie: 10, saves: ['str','dex'], primary: ['dex','wis'], armorProfs: ['轻甲','中甲','盾牌'], weaponProfs: ['简易武器','军用武器'], caster: 'half', spellAbility: 'wis', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'wis+halfLevel' },
+  游荡者: { en: 'Rogue', hitDie: 8, saves: ['dex','int'], primary: ['dex'], armorProfs: ['轻甲'], weaponProfs: ['简易武器','手弩','长剑','刺剑','短剑'], caster: 'none', spellAbility: null, subclassLevel: 3, asiLevels: [4,8,10,12,16], preparedFormula: null },
+  术士: { en: 'Sorcerer', hitDie: 6, saves: ['con','cha'], primary: ['cha'], armorProfs: [], weaponProfs: ['匕首','飞镖','投石索','长棍','轻弩'], caster: 'full', spellAbility: 'cha', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'cha+level' },
+  邪术师: { en: 'Warlock', hitDie: 8, saves: ['wis','cha'], primary: ['cha'], armorProfs: ['轻甲'], weaponProfs: ['简易武器'], caster: 'pact', spellAbility: 'cha', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: null },
+  法师: { en: 'Wizard', hitDie: 6, saves: ['int','wis'], primary: ['int'], armorProfs: [], weaponProfs: ['匕首','飞镖','投石索','长棍','轻弩'], caster: 'full', spellAbility: 'int', subclassLevel: 3, asiLevels: [4,8,12,16], preparedFormula: 'int+level' },
 }
 
+/**
+ * 2024 版职业资源。数值取自第 3 章职业特性表，与特性描述交叉核对：
+ * 野蛮人 20 级 6 次（不是无限）、牧师 2/6/18 级 2/3/4 次、
+ * 德鲁伊 2/6/17 级 2/3/4 次、战士回气 1/4/10 级 2/3/4 次、
+ * 圣武士 3/11 级 2/3 次、游侠宿敌 5/9/13/17 级各 +1。
+ */
 const RESOURCES = {
   野蛮人: [
-    { name: '狂暴', reset: 'long', formula: { type: 'byLevel', values: [2,2,3,3,3,4,4,4,4,4,4,5,5,5,5,5,6,6,6,'无限'] } },
+    { name: '狂暴', reset: 'long', formula: { type: 'byLevel', values: [2,2,3,3,3,4,4,4,4,4,4,5,5,5,5,5,6,6,6,6] } },
   ],
   吟游诗人: [
     { name: '诗人激励', reset: 'long', resetAtLevel: { 5: 'short' }, formula: { type: 'abilityPlus', ability: 'cha', plus: 0, min: 1 } },
   ],
   牧师: [
-    { name: '引导神力', reset: 'short', formula: { type: 'byLevel', values: [1,1,1,1,1,2,2,2,2,2,2,2,2,2,2,2,3,3,3,3] }, minLevel: 2 },
+    { name: '引导神力', reset: 'short', minLevel: 2, formula: { type: 'byLevel', values: [0,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,3,4,4,4] } },
   ],
   德鲁伊: [
-    { name: '荒野形态', reset: 'short', formula: { type: 'byLevel', values: [0,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,'无限'] }, minLevel: 2 },
+    { name: '荒野变形', reset: 'short', minLevel: 2, formula: { type: 'byLevel', values: [0,2,2,2,2,3,3,3,3,3,3,3,3,3,3,3,4,4,4,4] } },
   ],
   战士: [
-    { name: '回气', reset: 'short', formula: { type: 'fixed', value: 1 } },
-    { name: '动作如潮', reset: 'short', formula: { type: 'byLevel', values: [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2] }, minLevel: 2 },
-    { name: '不屈', reset: 'long', formula: { type: 'byLevel', values: [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3] }, minLevel: 9 },
+    { name: '回气', reset: 'short', formula: { type: 'byLevel', values: [2,2,2,3,3,3,3,3,3,4,4,4,4,4,4,4,4,4,4,4] } },
+    { name: '动作如潮', reset: 'short', minLevel: 2, formula: { type: 'byLevel', values: [0,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,2,2,2,2] } },
+    { name: '不屈', reset: 'long', minLevel: 9, formula: { type: 'byLevel', values: [0,0,0,0,0,0,0,0,1,1,1,1,2,2,2,2,3,3,3,3] } },
   ],
   武僧: [
-    { name: '气', reset: 'short', formula: { type: 'level' }, minLevel: 2 },
+    { name: '功力', reset: 'short', minLevel: 2, formula: { type: 'level' } },
   ],
   圣武士: [
     { name: '圣疗', reset: 'long', formula: { type: 'levelTimes', factor: 5 } },
-    { name: '神圣感知', reset: 'long', formula: { type: 'abilityPlus', ability: 'cha', plus: 1 } },
-    { name: '引导神力', reset: 'short', formula: { type: 'fixed', value: 1 }, minLevel: 3 },
-    { name: '净化之触', reset: 'long', formula: { type: 'abilityPlus', ability: 'cha', plus: 0, min: 1 }, minLevel: 14 },
+    { name: '引导神力', reset: 'short', minLevel: 3, formula: { type: 'byLevel', values: [0,0,2,2,2,2,2,2,2,2,3,3,3,3,3,3,3,3,3,3] } },
   ],
-  游侠: [],
+  游侠: [
+    { name: '宿敌', reset: 'long', formula: { type: 'byLevel', values: [2,2,2,2,3,3,3,3,4,4,4,4,5,5,5,5,6,6,6,6] } },
+  ],
   游荡者: [],
   术士: [
-    { name: '术法点', reset: 'long', formula: { type: 'level' }, minLevel: 2 },
+    { name: '术法点', reset: 'long', minLevel: 2, formula: { type: 'level' } },
   ],
-  邪术师: [],
+  邪术师: [
+    { name: '秘法回流', reset: 'long', minLevel: 2, formula: { type: 'fixed', value: 1 } },
+  ],
   法师: [
     { name: '奥术回想', reset: 'long', formula: { type: 'fixed', value: 1 } },
   ],
 }
 
-function cleanLine(s) {
-  return s.replace(/\{\{p\.\d+\}\}/g, '').replace(/\s+/g, ' ').trim()
+const CLASS_ORDER = ['野蛮人','吟游诗人','牧师','德鲁伊','战士','武僧','圣武士','游侠','游荡者','术士','邪术师','法师']
+
+function readJson(file) {
+  return JSON.parse(fs.readFileSync(file, 'utf8'))
 }
 
-function parseClassTable(lines, title) {
-  const start = lines.findIndex((l) => l.trim().startsWith(title))
-  if (start < 0) return null
-  const rowStarts = []
-  for (let i = start + 1; i < lines.length && rowStarts.length < 20; i++) {
-    const t = lines[i].trim()
-    if (/^\d+(?:st|nd|rd|th)\s+\+\d+/.test(t)) rowStarts.push(i)
+function sheetClassName(name) {
+  return SHEET_CLASS_ALIAS[name] || name
+}
+
+/** 从规则库索引里取每个职业的基础特性（子职条目、子职选择占位都排除）。 */
+function baseFeaturesByClass(compendium) {
+  const map = new Map(CLASS_ORDER.map((name) => [name, new Map()]))
+  for (const e of compendium.entries || []) {
+    if (e.type !== 'classFeature') continue
+    if (e.subclass) continue
+    if (e.featureKind && e.featureKind !== 'feature') continue
+    // 「圣武士子职」这类占位行由子职业选择负责，不再当作特性
+    if (/子职$/u.test(e.name)) continue
+    const className = sheetClassName(e.className)
+    const byLevel = map.get(className)
+    if (!byLevel) continue
+    if (!byLevel.has(e.level)) byLevel.set(e.level, [])
+    const list = byLevel.get(e.level)
+    if (!list.includes(e.name)) list.push(e.name)
   }
-  if (rowStarts.length !== 20) return { error: `只找到 ${rowStarts.length} 行`, rows: [] }
-  const rows = []
-  for (let k = 0; k < rowStarts.length; k++) {
-    const startIdx = rowStarts[k]
-    // 最后一行后面通常紧接职业特性正文，不能按下一行判断；只取该行本身。
-    let endIdx = k + 1 < rowStarts.length ? rowStarts[k + 1] : startIdx + 1
-    const parts = []
-    for (let j = startIdx; j < endIdx; j++) {
-      const t = cleanLine(lines[j])
-      if (!t) continue
-      if (/^\d+$/.test(t) || /^\{\{p\./.test(t)) continue
-      parts.push(t)
-    }
-    let content = parts.join(' ')
-    content = content.replace(/^\d+(?:st|nd|rd|th)\s+\+\d+\s*/, '')
-    let tokens = content.split(/\s+/).filter(Boolean)
-    // 去掉职业表前面的数值列（游荡者偷袭骰、术士术法点等）
-    while (tokens.length && /^(?:\+?\d+(?:\/\d+)?|\d+d\d+|无限|—|-)$/.test(tokens[0])) tokens.shift()
-    // 去掉职业表右侧的数值列（狂暴次数/戏法/已知/法术位/气/术法点等）
-    while (tokens.length) {
-      const last = tokens[tokens.length - 1]
-      if (/^(?:\+?\d+(?:\/\d+)?|\d+d\d+|\d+(?:st|nd|rd|th)|无限|—|-|\+\d+尺|\d+尺)$/.test(last)) {
-        tokens.pop()
-      } else break
-    }
-    content = tokens.join(' ')
-    const features = content
-      .split(/[,，、]/)
-      .map((x) => {
-        let f = x.trim()
-        // 跨行续写时，右侧数值列可能夹在特性名前，例如「4 领域特性」「4 14 魔法奥秘」
-        while (/^(?:\+?\d+(?:\/\d+)?|\d+d\d+|无限|—|-)\s+/.test(f)) f = f.replace(/^(?:\+?\d+(?:\/\d+)?|\d+d\d+|无限|—|-)\s+/, '')
-        return f.trim()
-      })
-      .filter(Boolean)
-      .filter((x) => !/^职业特性$/.test(x))
-    const level = Number(lines[startIdx].trim().match(/^(\d+)/)[1])
-    rows.push({ level, features })
-  }
-  return { rows }
+  return map
+}
+
+function subclassRegistry(className) {
+  const registry = readJson(path.join(SHARED, 'subclasses.json'))
+  const defs = (registry.subclasses || []).filter((d) => sheetClassName(d.className) === className)
+  const label = defs[0]?.label || ''
+  return { label, names: defs.map((d) => d.name), level: defs[0]?.level || 3 }
 }
 
 export function buildClassData() {
-  if (!fs.existsSync(CH3)) throw new Error(`找不到职业章节：${CH3}`)
-  const lines = fs.readFileSync(CH3, 'utf8').split(/\r?\n/)
-  const titles = {
-    野蛮人: '野蛮人职业表',
-    吟游诗人: '吟游诗人职业表',
-    牧师: '牧师职业表',
-    德鲁伊: '德鲁伊职业表',
-    战士: '战士职业表',
-    武僧: '武僧职业表',
-    圣武士: '圣武士职业表',
-    游侠: '游侠职业表',
-    游荡者: '游荡着职业表',
-    术士: '术士职业表',
-    邪术师: '邪术师职业表',
-    法师: '法师职业表',
-  }
-  const classes = []
+  const compendium = buildCompendium(DB)
+  const featuresByClass = baseFeaturesByClass(compendium)
   const warnings = []
-  for (const [name, meta] of Object.entries(CLASS_META)) {
-    const table = parseClassTable(lines, titles[name])
-    if (!table || table.error) {
-      warnings.push(`${name}: ${table?.error || '未找到职业表'}`)
-      continue
-    }
+  const classes = []
+
+  for (const name of CLASS_ORDER) {
+    const meta = CLASS_META[name]
+    const registry = subclassRegistry(name)
+    const byLevel = featuresByClass.get(name) || new Map()
     const levels = []
-    let monkSecondary = null
-    if (name === '武僧') {
-      const h = lines.findIndex((l) => /^无甲移动\s+职业特性$/.test(l.trim()))
-      if (h >= 0) {
-        monkSecondary = []
-        for (let i = h + 1; i < lines.length && monkSecondary.length < 20; i++) {
-          const t = cleanLine(lines[i])
-          if (!t || /^\{\{p\./.test(t) || /^\d+$/.test(t)) continue
-          const m = t.match(/^(?:\+\d+尺|\d+尺|[+\-—])\s*(.+)$/)
-          if (!m) continue
-          monkSecondary.push(m[1].split(/[,，、]/).map((x) => x.trim()).filter(Boolean))
-        }
-        if (monkSecondary.length !== 20) warnings.push(`武僧第二张表只找到 ${monkSecondary.length} 行`)
-      }
-    }
-    for (let lv = 1; lv <= 20; lv++) {
-      const row = table.rows.find((r) => r.level === lv)
-      let features = row ? row.features : []
-      if (monkSecondary && monkSecondary[lv - 1]) features = monkSecondary[lv - 1]
-      const entry = { level: lv, features }
-      if (meta.caster === 'full') entry.slots = FULL_SLOTS[lv - 1]
-      else if (meta.caster === 'half') entry.slots = HALF_SLOTS[lv - 1]
-      else if (meta.caster === 'pact') entry.pact = PACT[lv - 1]
-      else entry.slots = [0,0,0,0,0,0,0,0,0]
-      if (CANTRIPS[name]) entry.cantrips = CANTRIPS[name][lv - 1]
+    for (let level = 1; level <= 20; level++) {
+      const entry = { level, features: [...(byLevel.get(level) || [])] }
+      if (meta.caster === 'full') entry.slots = FULL_SLOTS[level - 1]
+      else if (meta.caster === 'half') entry.slots = HALF_SLOTS[level - 1]
+      else if (meta.caster === 'pact') entry.pact = PACT[level - 1]
+      const cantrips = CANTRIPS[name]
+      if (cantrips) entry.cantrips = cantrips[level - 1]
       levels.push(entry)
     }
+
+    const totalFeatures = levels.reduce((n, l) => n + l.features.length, 0)
+    if (levels[0].features.length === 0) warnings.push(`${name}：1 级没有任何基础特性`)
+    if (totalFeatures < 6) warnings.push(`${name}：基础特性只有 ${totalFeatures} 条，请检查索引`)
+    if (!registry.names.length) warnings.push(`${name}：shared/subclasses.json 里没有子职业`)
+    if (registry.level !== meta.subclassLevel) {
+      warnings.push(`${name}：子职业等级登记为 ${registry.level}，与元数据 ${meta.subclassLevel} 不一致`)
+    }
+
     classes.push({
       name,
-      ...meta,
+      en: meta.en,
+      hitDie: meta.hitDie,
+      saves: meta.saves,
+      primary: meta.primary,
+      armorProfs: meta.armorProfs,
+      weaponProfs: meta.weaponProfs,
+      caster: meta.caster,
+      spellAbility: meta.spellAbility,
+      subclassLevel: meta.subclassLevel,
+      subclassLabel: registry.label,
+      subclasses: registry.names,
+      asiLevels: meta.asiLevels,
+      preparedFormula: meta.preparedFormula,
       levels,
       resources: RESOURCES[name] || [],
     })
-    if (name === '圣武士') {
-      const lv5 = levels[4]
-      if (!lv5.features.includes('额外攻击')) warnings.push('圣武士 5 级没有解析到「额外攻击」')
-      if (lv5.slots[0] !== 4 || lv5.slots[1] !== 2) warnings.push('圣武士 5 级法术位不是 4/2')
-    }
   }
-  // 子职业列表以 2024 登记表（shared/subclasses.json）为准，避免 CLASS_META 的旧列表被写回
-  try {
-    const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'shared', 'subclasses.json'), 'utf8'))
-    const alias = { 魔契师: '邪术师' }
-    for (const cls of classes) {
-      const defs = (registry.subclasses || []).filter((d) => (alias[d.className] || d.className) === cls.name)
-      if (!defs.length) continue
-      cls.subclassLabel = defs[0].label || cls.subclassLabel
-      cls.subclasses = defs.map((d) => d.name)
-    }
-  } catch (e) {
-    warnings.push(`未能读取 shared/subclasses.json：${e.message}`)
-  }
-  return { version: 1, generatedAt: new Date().toISOString(), classes, warnings }
+
+  return { version: 2, ruleset: '2024', generatedAt: new Date().toISOString(), classes, warnings }
 }
 
 function main() {
   const data = buildClassData()
-  const out = path.join(ROOT, 'shared', 'classes.json')
-  fs.mkdirSync(path.dirname(out), { recursive: true })
-  fs.writeFileSync(out, JSON.stringify(data, null, 2), 'utf8')
-  console.log(`[classes] ${data.classes.length} 个职业 → ${out}`)
-  for (const w of data.warnings) console.log('[warn]', w)
-  for (const c of data.classes) {
-    const lv = (n) => c.levels[n - 1].features.join(',') || '-'
-    console.log(`${c.name}: L1 ${lv(1)} | L5 ${lv(5)} | L20 ${lv(20)}`)
+  fs.writeFileSync(path.join(SHARED, 'classes.json'), `${JSON.stringify(data, null, 2)}\n`, 'utf8')
+  console.log(`已写入 shared/classes.json：${data.classes.length} 个职业（2024 版）`)
+  for (const cls of data.classes) {
+    const l1 = cls.levels[0].features
+    const l5 = cls.levels[4].features
+    const l20 = cls.levels[19].features
+    console.log(`${cls.name}  1级: ${l1.join('、') || '—'}  |  5级: ${l5.join('、') || '—'}  |  20级: ${l20.join('、') || '—'}`)
+  }
+  if (data.warnings.length) {
+    console.warn('警告：')
+    for (const w of data.warnings) console.warn(`  - ${w}`)
   }
 }
 
-if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) main()
+if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+  main()
+}

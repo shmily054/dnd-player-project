@@ -55,49 +55,6 @@ const FEAT_NAMES = [
   'Spell Sniper', 'Tavern Brawler', 'Tough', 'War Caster', 'Weapon Master',
 ]
 
-const CLASS_FEATURE_SKIP = new Set([
-  '属性值提升',
-  '武术范型',
-  '术法起源',
-  '道途特性',
-  '学院特性',
-  '领域特性',
-  '结社特性',
-  '范型特性',
-  '宗派特性',
-  '圣誓特性',
-  '术法起源特性',
-  '异界宗主特性',
-  '奥术传承特性',
-])
-
-const CLASS_FEATURE_PARENT = {
-  神圣干预增效: '神圣干预',
-  荒野形态增效: '荒野形态',
-  无甲移动增效: '无甲移动',
-  灵光增效: '守护灵光',
-  增加宿敌及偏好环境: '宿敌',
-  增加偏好环境: '自然探索者',
-  增加宿敌: '宿敌',
-}
-
-const CLASS_FEATURE_ALIAS = {
-  契约之赐: '魔契恩泽',
-}
-
-const CLASS_FEATURE_BOUNDARY_ALIAS = {
-  选择原初道途: '原初道途',
-  选择诗人学院: '诗人学院',
-  选择领域: '神圣领域',
-  选择德鲁伊结社: '德鲁伊结社',
-  选择神圣誓言: '神圣誓言',
-  选择宗派: '修行宗派',
-  选择游侠范型: '游侠范型',
-  选择游荡者范型: '游荡者范型',
-  选择异界宗主: '异界宗主',
-  选择奥术传承: '奥术传承',
-}
-
 /** 标准武器属性与重量（PHB 武器表在数据库中只保留了名称/价格/伤害三列） */
 const WEAPON_META = {
   club: { weight: 2, properties: ['轻型'], ability: 'str' },
@@ -567,37 +524,6 @@ function parseFeats(file, dbDir) {
 
 /* ---------------- 职业特性 ---------------- */
 
-function loadClassData() {
-  try {
-    return JSON.parse(fs.readFileSync(path.join(ROOT, 'shared', 'classes.json'), 'utf8'))
-  } catch {
-    return { classes: [] }
-  }
-}
-
-function baseClassFeatureName(raw) {
-  return String(raw || '').replace(/\s*[（(].*$/, '').trim()
-}
-
-function isSkippedClassFeature(name) {
-  return !name || name.startsWith('选择') || CLASS_FEATURE_SKIP.has(name)
-}
-
-function classTableLineSet(lines, start, end) {
-  const drop = new Set()
-  for (let i = start; i < end; i++) {
-    if (!/职业表/.test(lines[i].trim())) continue
-    let rows = 0
-    let j = i + 1
-    while (j < end && rows < 20 && j - i < 80) {
-      if (/^\d+(?:st|nd|rd|th)\s+\+\d+/.test(lines[j].trim())) rows++
-      j++
-    }
-    if (rows >= 20) for (let k = i; k < j; k++) drop.add(k)
-  }
-  return drop
-}
-
 function cleanClassFeatureBody(lines, featureName = '') {
   const target = normName(featureName)
   const kept = []
@@ -965,122 +891,7 @@ export function parseClassFeatures(file, dbDir) {
   const lines = fs.readFileSync(file, 'utf8').split(/\r?\n/)
   const pages = linePageMap(lines)
   const { book, chapter } = bookInfo(file, dbDir)
-  const classData = loadClassData()
-  const entries = []
-  const missing = []
-
-  if (lines.some((line) => /^\d+\s*级[：:]/.test(line.trim()))) {
-    return parseClassFeatures2024(lines, pages, book, chapter)
-  }
-
-  for (const cls of classData.classes || []) {
-    const start = lines.findIndex((line) => line.trim() === `## ${cls.name}`)
-    if (start < 0) {
-      missing.push(`${cls.name}: 未找到职业章节`)
-      continue
-    }
-    const nextClass = lines.findIndex((line, i) => i > start && /^##\s+/.test(line.trim()))
-    const sectionEnd = nextClass < 0 ? lines.length : nextClass
-    const subclassStart = lines.findIndex((line, i) => i > start && i < sectionEnd && /^###\s+/.test(line.trim()))
-    const coreEnd = subclassStart < 0 ? sectionEnd : subclassStart
-
-    const catalog = []
-    const seen = new Set()
-    const allTableNames = new Set()
-    for (const level of cls.levels || []) {
-      for (const raw of level.features || []) {
-        const name = baseClassFeatureName(raw)
-        if (!name) continue
-        allTableNames.add(name)
-        if (isSkippedClassFeature(name)) continue
-        const key = normName(name)
-        if (!key || seen.has(key)) continue
-        seen.add(key)
-        catalog.push({ name, level: level.level })
-      }
-    }
-
-    const candidates = []
-    for (let i = start + 1; i < coreEnd; i++) {
-      const t = lines[i].trim()
-      if (!t || t.length > 120 || /^#{1,6}\s/.test(t)) continue
-      const parsed = splitName(t)
-      if (!parsed.en || !isCjk(parsed.name)) continue
-      candidates.push({ index: i, name: parsed.name, norm: normName(parsed.name), en: parsed.en })
-    }
-
-    const anchorFor = (featureName) => {
-      const target = normName(CLASS_FEATURE_ALIAS[featureName] || featureName)
-      return candidates.find((c) => c.norm === target)
-        || candidates.find((c) => c.norm.endsWith(target) && c.norm.length <= target.length + 3)
-        || null
-    }
-
-    const boundaryAnchors = new Set()
-    for (const name of allTableNames) {
-      if (!name.startsWith('选择') && name !== '武术范型' && name !== '术法起源') continue
-      const anchor = anchorFor(CLASS_FEATURE_BOUNDARY_ALIAS[name] || name)
-      if (anchor) boundaryAnchors.add(anchor.index)
-    }
-
-    const found = new Map()
-    for (const feature of catalog) {
-      const anchor = anchorFor(feature.name)
-      if (!anchor) continue
-      found.set(normName(feature.name), {
-        name: feature.name,
-        level: feature.level,
-        en: anchor.en,
-        page: pages[anchor.index] ?? null,
-        anchorIndex: anchor.index,
-      })
-    }
-
-    const anchorIndices = [...new Set([...found.values()].map((f) => f.anchorIndex).concat([...boundaryAnchors]))].sort((a, b) => a - b)
-    for (const feature of found.values()) {
-      const next = anchorIndices.find((index) => index > feature.anchorIndex) ?? coreEnd
-      const drop = classTableLineSet(lines, feature.anchorIndex + 1, next)
-      const body = lines.slice(feature.anchorIndex + 1, next).filter((_, index) => !drop.has(feature.anchorIndex + 1 + index))
-      feature.description = cleanClassFeatureBody(body, feature.name)
-      delete feature.anchorIndex
-    }
-
-    for (const feature of catalog) {
-      let item = found.get(normName(feature.name))
-      if (!item) {
-        const parentName = CLASS_FEATURE_PARENT[feature.name]
-        const parent = parentName ? found.get(normName(parentName)) : null
-        if (parent) {
-          item = {
-            name: feature.name,
-            level: feature.level,
-            en: '',
-            page: parent.page,
-            description: `该增益沿用「${parent.name}」的规则文本。\n\n${parent.description}`,
-          }
-        }
-      }
-      if (!item) {
-        missing.push(`${cls.name}/${feature.name}`)
-        continue
-      }
-      if (!item.description) missing.push(`${cls.name}/${feature.name}（无正文）`)
-      entries.push({
-        uid: makeUid('classFeature', `${cls.name}|${item.name}`, item.page, item.en),
-        type: 'classFeature',
-        name: item.name,
-        en: item.en,
-        className: cls.name,
-        level: item.level,
-        description: item.description || '',
-        page: item.page,
-        book,
-        chapter,
-      })
-    }
-  }
-
-  return { entries, missing }
+  return parseClassFeatures2024(lines, pages, book, chapter)
 }
 
 /* ---------------- 种族特性 ---------------- */
